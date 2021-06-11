@@ -1,11 +1,12 @@
-import React, { ReactNode } from 'react'
-import { Radar } from '@styled-icons/material'
-import { Badge, Flex } from 'rendition'
+import React from 'react'
 import styled from 'styled-components'
 import ScannerWithCount from './ScannerWithCount'
 import ClipsCount from './ClipsCount'
 import SourceStream from './SourceStream'
 import DurationBadge from './DurationBadge'
+import FrogCount from './FrogCount'
+import ViewCount from './ViewCount'
+import Trusted from './TrustedBadges'
 
 export const CatcherBadge = ({type, value, animate = false, className, link}: {type: string, value: string | number, animate?: boolean, className?: string, link?: string}) => {
 
@@ -15,9 +16,11 @@ export const CatcherBadge = ({type, value, animate = false, className, link}: {t
       { 
         // eslint-disable-next-line
         streamer: <SourceStream value={value}/>,
-        scanned: <ScannerWithCount value={value} spin={animate}/>,
         clips: <ClipsCount value={value}/>,
-        duration: <DurationBadge value={value}/>
+        duration: <DurationBadge value={value}/>,
+        frogCount: <FrogCount value={value}/>,
+        viewCount: <ViewCount value={value}/>,
+        trusted: <Trusted value={value.toString()}/>
       }[type]
     }
     </>

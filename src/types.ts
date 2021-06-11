@@ -42,6 +42,7 @@ export interface TwitchClipV5 {
 
 export interface CaughtClip extends TwitchClipV5 {
   postedBy: TwitchPrivateMessage['userInfo'][]
+  postedByBroadcaster?: boolean
   postedByMod?: boolean
   postedByVip?: boolean
   onGtarp?: boolean

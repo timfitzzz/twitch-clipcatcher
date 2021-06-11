@@ -1,10 +1,10 @@
 import React from "react";
 import { useContextSelector } from 'use-context-selector'
-import { TwitchContext } from "./twitchCtx";
+import { AuthContext } from "./twitchCtx";
 
 export const Logout = () => {
 
-  const logout = useContextSelector(TwitchContext, (c) => c.logout)
+  const logout = useContextSelector(AuthContext, (c) => c.logout)
 
   return <>
               {logout && logout()}

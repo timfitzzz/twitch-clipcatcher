@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useContextSelector } from 'use-context-selector'
 
 import { Card } from 'rendition'
-import { TwitchContext } from '../../contexts/TwitchContext'
+import { AuthContext } from '../../contexts/AuthContext'
 
 const TwitchLoginCard = styled(Card).attrs(p => ({
   ...p,
@@ -14,8 +14,8 @@ const TwitchLoginCard = styled(Card).attrs(p => ({
 
 const AuthCard = () => {
 
-  let isAuthenticated = useContextSelector(TwitchContext, (c) => c.isAuthenticated)
-  let user = useContextSelector(TwitchContext, (c) => c.user)
+  let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated)
+  let user = useContextSelector(AuthContext, (c) => c.user)
 
   return <TwitchLoginCard>
           { isAuthenticated && isAuthenticated() ? (

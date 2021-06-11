@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useContextSelector } from 'use-context-selector'
 import { Divider, Flex } from 'rendition'
-import { TwitchContext } from '../contexts/TwitchContext'
+import { AuthContext } from '../contexts/AuthContext'
 import AuthCard from '../components/AuthPanel/AuthCard'
 import Catcher from '../components/Catcher/Catcher'
 import PlayerPane from '../components/PlayerPane/PlayerPane'
@@ -20,7 +20,7 @@ const MainViewSideColumn = styled(Flex)`
 
 const MainView = () => {
 
-  let isAuthenticated = useContextSelector(TwitchContext, (c) => c.isAuthenticated)
+  let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated)
 
   return (
     <MainViewContainer flexDirection={"row"}>

@@ -1,9 +1,8 @@
-import React, { ClipProps, ReactChild, useEffect, useMemo, useRef, useState } from 'react'
+import React, { ReactChild, useEffect, useMemo, useState } from 'react'
 import { useContextSelector } from 'use-context-selector'
 import { Box } from 'rendition'
 import styled from 'styled-components'
 import { PlayerContext } from '../../contexts/PlayerContext/playerCtx'
-import { RestartAlt } from '@styled-icons/material'
 
 interface ClipEmbedOptions {
   src: string
@@ -14,6 +13,7 @@ interface ClipEmbedOptions {
   preload: string
   autoplay: boolean
   muted: boolean
+  title: string
 }
 
 
@@ -25,10 +25,10 @@ const PlayerPane = ({className}: { className?: string }) => {
 
   const renderPlayer = useMemo(() => (props: ClipEmbedOptions) => {
 
-    let { autoplay, muted, ...rest } = props;
+    let { autoplay, muted, title, ...rest } = props;
     // console.log(rest)
     return (
-      <iframe {...rest}/>
+      <iframe title={title} {...rest}/>
     )
 
   }, [])
@@ -41,11 +41,12 @@ const PlayerPane = ({className}: { className?: string }) => {
         width: '100%',
         preload: 'auto',
         autoplay: true,
-        muted: false
+        muted: false,
+        title: currentClip.tracking_id
       })
       playing && setPlayerFrame(player)
     }
-  }, [currentClip])
+  }, [currentClip, playing, renderPlayer])
 
   return (
     <Box className={className}>

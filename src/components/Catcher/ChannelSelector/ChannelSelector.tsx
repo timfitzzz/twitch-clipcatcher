@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useContextSelector } from 'use-context-selector'
 import styled from 'styled-components'
 import { Flex, Tab, Tabs } from 'rendition'
-import { TwitchContext } from '../../../contexts/TwitchContext'
+import { ChannelsContext } from '../../../contexts/ChannelsContext'
 import AddChannelForm from './AddChannel'
 import ClipList from '../ClipList/ClipList'
 import TabTitle from './TabTitle'
+import Channel from '../Channel/Channel'
 
 
 const ChannelSelectorTabs = styled(Tabs)`
@@ -13,16 +14,16 @@ const ChannelSelectorTabs = styled(Tabs)`
 
 const ChannelSelector = () => {
 
-  let channels = useContextSelector(TwitchContext, (c) => c.channels)
-  let channelNames = Object.getOwnPropertyNames(channels)
+  let channels = useContextSelector(ChannelsContext, (c) => c.channels)
+  let channelNames = useMemo(() => Object.getOwnPropertyNames(channels), [channels])
+
+  console.log('rendering channelselector')
 
   return (
     <Flex flexDirection={"column"}>
       <ChannelSelectorTabs>
         { channels && channelNames.length > 0 ? channelNames.map(channelName => (
-          <Tab title={<TabTitle channelName={channelName} />} key={channels![channelName].name}>
-            <ClipList channelName={channelName}/>
-          </Tab>  
+          <Channel channelName={channelName} key={'channel'+channelName}/>
         )) : (
           <div>
 

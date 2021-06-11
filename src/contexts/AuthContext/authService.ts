@@ -1,6 +1,5 @@
 import { IDENTITY_CONFIG } from './authConst'
-import { UserManager, WebStorageStateStore, Log, OidcMetadata, SessionStatus, IDTokenClaims } from 'oidc-client'
-import { AccessToken } from 'twitch-auth/lib';
+import { UserManager, WebStorageStateStore, Log, IDTokenClaims } from 'oidc-client'
 import { OIDCUserData } from '../../types';
 
 export default class AuthService {

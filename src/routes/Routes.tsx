@@ -2,13 +2,12 @@ import * as React from "react";
 import { Route, Switch } from "react-router-dom";
 
 
-import { Callback } from "../contexts/TwitchContext/callback";
-import { Logout } from "../contexts/TwitchContext/logout";
-import { LogoutCallback } from "../contexts/TwitchContext/logoutCallback";
+import { Callback } from "../contexts/AuthContext/callback";
+import { Logout } from "../contexts/AuthContext/logout";
+import { LogoutCallback } from "../contexts/AuthContext/logoutCallback";
 import { PrivateRoute } from "./PrivateRoute";
 // import { Register } from "../TwitchContext/register";
-import { SilentRenew } from "../contexts/TwitchContext/silentRenew";
-import Catcher from "../components/Catcher/Catcher"
+import { SilentRenew } from "../contexts/AuthContext/silentRenew";
 import MainView from "../pages/MainView";
 // import {PrivatePage} from "../components/privatePage"
 

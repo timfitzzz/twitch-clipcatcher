@@ -1,8 +1,7 @@
-import React from 'react'
-import { Badge, Flex } from 'rendition'
+import { Flex } from 'rendition'
 import styled from 'styled-components'
-import useChannel from '../../../hooks/useChannel'
 import CatcherBadge from '../../badges/CatcherBadge'
+import ScannerWithCount from '../../badges/ScannerWithCount'
 
 const TabTitleText = styled.h5`
   margin-right: 8px;
@@ -13,21 +12,15 @@ const TabTitleText = styled.h5`
 `
 
 
-const TabTitle = ({channelName}: { channelName: string}) => {
+const TabTitle = ({channelName, scanning, clipsCount}: { channelName: string, scanning: boolean, clipsCount: number}) => {
 
-  const channel = useChannel(channelName)
+  console.log('rendering tabtitle')
 
   return (
     <Flex flexDirection={"row"}>
       <TabTitleText>{channelName}</TabTitleText>
-      { channel ? (
-        <>
-          <CatcherBadge type={'clips'} value={channel.clips.length.toString()}/>
-          <CatcherBadge type={'scanned'} value={channel.currentScanned.toString()} animate={channel.scanning} />
-        </>
-      ) : (
-        <span>...</span>
-      )}
+      <CatcherBadge type={'clips'} value={clipsCount || 0}/>
+      <ScannerWithCount channelName={channelName} spin={scanning} />
     </Flex>
   )
 

@@ -1,4 +1,4 @@
-import { OidcClientSettings, OidcMetadata } from 'oidc-client'
+import { OidcClientSettings } from 'oidc-client'
 export const TWITCH_CLIENT_ID = process.env.REACT_APP_TWITCH_CLIENT_ID
 
 interface ExtendedOidcClientSettings extends OidcClientSettings {

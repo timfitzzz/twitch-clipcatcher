@@ -1,23 +1,54 @@
 import { Radar } from '@styled-icons/material'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Badge, Flex } from 'rendition'
 import styled from 'styled-components'
+import { MessageCountStore } from '../../contexts/ChannelsContext/MessageCountStore'
 
-const ScannedBadge = styled(Badge)`
+const ScannedBadge = styled.div`
   padding-left: 4px;
   padding-right: 4px;
   border: 1px dotted ${p => p.theme.colors.statusUpdating.main}; 
   background-color: transparent;
   color: ${p => p.theme.colors.statusInactive.dark};
 `
-const Scanner = ({className, value}: {className?: string, value: string | number}) => (
-  <Flex flexDirection={'row'} className={className}>
-    <Radar viewBox={'0 0 24 24'}/>
-    <ScannedBadge>{value.toString()}</ScannedBadge>
-  </Flex>
-)
 
-const ScannerWithCount = styled(Scanner)<{ spin: boolean }>`
+const ScannedCount = styled.span`
+`
+
+const ScannerWithCount = ({className, channelName}: {className?: string, channelName: string}) => {
+
+  const scanCountRef = useRef<HTMLSpanElement | null>(null)
+
+  console.log('rendered tabtitle')
+
+  useEffect(() => {
+
+    MessageCountStore.registerCallback(channelName, (count: number) => {
+      let countSpan = scanCountRef.current
+      if (countSpan) {
+        countSpan.innerHTML = `${count}`
+      }
+    })
+
+    return (() => {
+      MessageCountStore.clearCallback(channelName)
+    })
+
+  },[])
+
+  return (
+    <Flex flexDirection={'row'} className={className}>
+      <Radar viewBox={'0 0 24 24'}/>
+      <ScannedBadge>
+        <ScannedCount ref={scanCountRef}>
+          0
+        </ScannedCount>
+      </ScannedBadge>
+    </Flex>
+  )
+}
+
+export default styled(ScannerWithCount)<{ spin: boolean }>`
 
   margin-left: 4px;
 
@@ -53,5 +84,3 @@ const ScannerWithCount = styled(Scanner)<{ spin: boolean }>`
 }
 
 `
-
-export default ScannerWithCount

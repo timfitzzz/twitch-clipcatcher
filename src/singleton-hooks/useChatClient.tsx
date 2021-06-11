@@ -1,0 +1,55 @@
+import React, { useEffect, useState } from 'react'
+import { singletonHook } from 'react-singleton-hook'
+import { ChatClient } from 'twitch-chat-client/lib';
+import { useContextSelector } from 'use-context-selector';
+import { AuthContext } from '../contexts/AuthContext';
+
+const init = {
+  chatClient: null,
+  loggedIn: null
+}
+
+const useChatClientImpl = () => {
+
+  const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
+  const [chatClient, setChatClient] = useState<ChatClient | null>(null);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(false)
+
+  useEffect(() => {
+    if (authProvider && !chatClient) {
+      const chatClient = new ChatClient(authProvider, { webSocket: true});
+      if (chatClient) {
+        setChatClient(chatClient);
+      }
+      if (chatClient) {
+        if (!loggedIn) {
+          chatClient.connect();
+          chatClient.onRegister(() => {
+            // console.log('logged into chat')
+            chatClient.onJoin((chan, user) => console.log(`${user} joined ${chan}`))
+            chatClient.onPart((chan, user) => console.log(`${user} parted ${chan}`))
+            setLoggedIn(true);
+          });
+
+        }
+      }
+    }
+
+    return (() => {
+      if (chatClient) {
+        chatClient.quit()
+      }
+      setLoggedIn(false)
+      setChatClient(null)
+    })
+
+  }, [authProvider]);
+
+    console.log(chatClient)
+  return {chatClient, loggedIn}
+
+}
+
+export const useChatClient = singletonHook(init, useChatClientImpl)
+
+export default useChatClient

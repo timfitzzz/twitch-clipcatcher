@@ -1,11 +1,11 @@
 import React from 'react'
 import { Flex } from 'rendition'
-import useChannel from '../../../hooks/useChannel'
+import { CaughtClip } from '../../../types'
 import Clip from './Clip'
 
-const ClipList = ({channelName}: {channelName: string}) => {
+const ClipList = ({clips}: {clips: CaughtClip[]}) => {
 
-  const channel = useChannel(channelName)
+  console.log('rendering cliplist')
 
   return (
     <Flex flexDirection={"column"}>
@@ -13,7 +13,7 @@ const ClipList = ({channelName}: {channelName: string}) => {
         options
       </Flex>
       <Flex flexDirection={"column"}>
-        { channel && channel.clips && channel.clips.map((clip, idx) => <Clip key={clip.tracking_id + idx} clip={clip}/>)}
+        { clips && clips.map((clip, idx) => <Clip key={clip.tracking_id + idx} clip={clip}/>)}
       </Flex>
     </Flex>
   )
