@@ -34,7 +34,7 @@ const PlayerContextProvider = ({
   const [currentClip, setCurrentClip] = useState<TwitchClipV5 | null>(null);
   const [playing, setPlaying] = useState<boolean>();
   const [playlist, setPlaylist] = useState<TwitchClipV5[]>([]);
-  const [playlistPosition, _setPlaylistPosition] = useState<number>(0);
+  const [playlistPosition /*, _setPlaylistPosition*/] = useState<number>(0);
   const [autoplay, setAutoplay] = useState<boolean>(false);
 
   function addClipToPlaylist(clip: TwitchClipV5) {

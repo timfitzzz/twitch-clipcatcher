@@ -1,10 +1,10 @@
 import React from 'react'
-import { useContextSelector } from 'use-context-selector'
+// import { useContextSelector } from 'use-context-selector'
 import styled from 'styled-components';
 import { Box, Flex } from 'rendition'
 import { CaughtClip, TwitchClipV5 } from '../../../types'
 import { CatcherBadge } from '../../badges/CatcherBadge';
-import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
+// import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 
 
 const ClipThumb = styled.img`
@@ -34,18 +34,18 @@ position:relative;
 display: inline-block;
 `
 
-const ClipControlsContainer = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  box-sizing: border-box;
-  height: 170px;
-  width: 300px;
-`
+// const ClipControlsContainer = styled.div`
+//   position: absolute;
+//   height: 100%;
+//   width: 100%;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   box-sizing: border-box;
+//   height: 170px;
+//   width: 300px;
+// `
 
 const ClipOverlay = styled(Flex)`
   position: absolute;
@@ -62,10 +62,10 @@ const ClipOverlay = styled(Flex)`
   width: 300px;
 `
 
-const PlayPauseButton = styled.div`
+// const PlayPauseButton = styled.div`
 
 
-`
+// `
 
 const ClipOverlayStreamerBadge = styled(CatcherBadge).attrs((p) => ({
   ...p,
@@ -141,7 +141,7 @@ const ClipOverlayTrustedBadge = styled(CatcherBadge).attrs(p => ({
 
 const Clip = ({clip, className}: { clip: CaughtClip, className?: string}) => {
 
-  let playClip = useContextSelector(PlayerContext, (c) => c.playClip)
+  // let playClip = useContextSelector(PlayerContext, (c) => c.playClip)
 
   return (
     <Box className={className}>

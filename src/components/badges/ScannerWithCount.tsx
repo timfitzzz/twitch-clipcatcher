@@ -1,6 +1,6 @@
 import { Radar } from '@styled-icons/material'
 import React, { useEffect, useRef } from 'react'
-import { Badge, Flex } from 'rendition'
+import { Flex } from 'rendition'
 import styled from 'styled-components'
 import { MessageCountStore } from '../../contexts/ChannelsContext/MessageCountStore'
 
@@ -34,7 +34,7 @@ const ScannerWithCount = ({className, channelName}: {className?: string, channel
       MessageCountStore.clearCallback(channelName)
     })
 
-  },[])
+  },[channelName])
 
   return (
     <Flex flexDirection={'row'} className={className}>

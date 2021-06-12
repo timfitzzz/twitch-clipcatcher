@@ -1,4 +1,4 @@
-import React, { ReactChild, ReactChildren, useEffect, useMemo, useReducer, useRef } from 'react'
+import React, { ReactChild, ReactChildren, useMemo, useReducer, useRef } from 'react'
 import { createContext } from 'use-context-selector'
 import { CaughtClip } from '../../types';
 import { MessageCountStore } from './MessageCountStore';
@@ -30,6 +30,8 @@ const ChannelsContextProvider = ({
   children
 }: {children?: ReactChild | ReactChildren}) => {
 
+
+  console.log('rerendering channels context')
   const [channelsState, mainChannelsDispatch] = useReducer(
     channelsReducer,
     defaultChannelsState
@@ -38,22 +40,12 @@ const ChannelsContextProvider = ({
   const channelsRef = useRef(channelsState)
   const setChannels = (channels: IChannelsReducerState) => {
     channelsRef.current = channels;
-
   }
 
   const channelsDispatch = useMemo(() => (action: ChannelAction) => {
     mainChannelsDispatch(action)
     setChannels(channelsState)
   }, [channelsState])
-
-  // const [channels, currentScanned, channelsDispatch, processClip] = useChannelsReducer();
-
-  function updateCounts() {
-    channelsDispatch({
-      type: ChannelActions.UPDATE_SCANNED,
-      payload: MessageCountStore.getChannelCounts()
-    })
-  }
 
   const processClip = (clip: CaughtClip, channelName: string) => {
     let clipExists = -1;
@@ -79,25 +71,6 @@ const ChannelsContextProvider = ({
     }
   };
 
-  // const addClipByUrl = (channelName: string, clipUrl: string) => {
-  //   let splitUrl = clipUrl.split('/');
-  //   if (apiClient) {
-  //     apiClient
-  //       .callApi({
-  //         type: TwitchAPICallType.Kraken,
-  //         url: `/clips/${splitUrl[splitUrl.length - 1]}`,
-  //       })
-  //       .then((clip) => {
-  //         if (clip) {
-  //           channelsDispatch({
-  //             type: ChannelActions.ADD_CLIP,
-  //             payload: [channelName, clip],
-  //           });
-  //         }
-  //       });
-  //   }
-  // };
-
   const addChannel = (channelName: string) => {
     if (channelsDispatch) {
       channelsDispatch({
@@ -107,23 +80,9 @@ const ChannelsContextProvider = ({
     }
   };
 
-  // useEffect(() => {
-  //   updateCounts()
-  //   let scheduledUpdate = setInterval(() => {
-  //     updateCounts()
-  //   }, 5000)
-
-  //   return (() => {
-  //     clearInterval(scheduledUpdate)
-  //   })
-  // },[])
-
   const getChannels = () => {
     return channelsState.channels
   }
-
-  
-
 
   return (
     <ChannelsContext.Provider value={{getChannels, addChannel, channels: channelsState.channels, currentScanned: channelsState.currentScanned, channelsDispatch, processClip}}>

@@ -1,6 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
 import { CaughtClip } from '../../types';
-import { MessageCountStore } from './MessageCountStore';
 
 export interface ICatcherChannel {
   name: string;
@@ -91,7 +89,7 @@ function channelDataReducer(
   state: IChannelsReducerState,
   action: ChannelAction
 ): IChannelsReducerState {
-  // console.log('processing action: ', action);
+  console.log('processing action: ', action);
   switch (action.type) {
     case ChannelActions.ADD_CHANNEL:
       return { 
@@ -203,20 +201,5 @@ function channelDataReducer(
       }
   }
 }
-
-// const useChannelsReducer = (): [
-//   IChannelsReducerState['channels'],
-//   IChannelsReducerState['currentScanned'],
-//   React.Dispatch<ChannelAction>,
-//   (clip: CaughtClip, channelName: string) => void
-// ] => {
-
-
-  
-
-
-
-//   return [channelsState.channels, channelsState.currentScanned, channelsDispatch, processClip];
-// };
 
 export default channelDataReducer;

@@ -1,14 +1,12 @@
 import React from 'react'
 import { Tab } from 'rendition'
-import styled from 'styled-components'
-import { ChannelsContext } from '../../../contexts/ChannelsContext'
-import useChannel from '../../../hooks/useChannel'
+// import useChannel from '../../../hooks/useChannel'
 import TabTitle from '../ChannelSelector/TabTitle'
 import ClipList from '../ClipList/ClipList'
 
 const Channel = ({channelName}: {channelName: string}) => {
 
-  const channel = useChannel(channelName)
+  const channel = { scanning: false, clips: []} //useChannel(channelName)
 
   console.log('rendering channel')
 
@@ -21,5 +19,7 @@ const Channel = ({channelName}: {channelName: string}) => {
   )
 
 }
+
+Channel.whyDidYouRender = true
 
 export default Channel

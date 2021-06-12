@@ -4,8 +4,6 @@ import styled from 'styled-components'
 import { Flex, Tab, Tabs } from 'rendition'
 import { ChannelsContext } from '../../../contexts/ChannelsContext'
 import AddChannelForm from './AddChannel'
-import ClipList from '../ClipList/ClipList'
-import TabTitle from './TabTitle'
 import Channel from '../Channel/Channel'
 
 

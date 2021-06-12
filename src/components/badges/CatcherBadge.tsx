@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import ScannerWithCount from './ScannerWithCount'
 import ClipsCount from './ClipsCount'
 import SourceStream from './SourceStream'
 import DurationBadge from './DurationBadge'

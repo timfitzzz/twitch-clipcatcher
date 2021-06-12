@@ -53,5 +53,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@welldone-software/why-did-you-render": "^6.1.4",
+    "craco": "^0.0.3"
   }
 }
