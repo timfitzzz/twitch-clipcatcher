@@ -58,70 +58,70 @@ const useChannel = (channelName: string) => {
     return clip
   }
 
-  // // join / part channel
-  // useEffect(() => {
-  //   console.log('join part channel: ', chatClient, joined, error, loggedIn)
-  //   if (chatClient && !joined && !error && loggedIn) {
-  //     chatClient.join(channelName).then((success) => setJoined(true), (err) => setError(err));
-  //     setJoined(true)
-  //   }
+  // join / part channel
+  useEffect(() => {
+    console.log('join part channel: ', chatClient, joined, error, loggedIn)
+    if (chatClient && !joined && !error && loggedIn) {
+      chatClient.join(channelName).then((success) => setJoined(true), (err) => setError(err));
+      setJoined(true)
+    }
 
-  //   return (() => {
-  //     if (chatClient && joined && !error && (typeof channel === 'undefined')) {
-  //       chatClient.part(channelName)
-  //       setJoined(false)
-  //     }
-  //   })
-  // }, [joined, error, chatClient, loggedIn, channel, channelName])
+    return (() => {
+      if (chatClient && joined && !error && (typeof channel === 'undefined')) {
+        chatClient.part(channelName)
+        setJoined(false)
+      }
+    })
+  }, [joined, error, chatClient, loggedIn, channel, channelName])
 
 
-  // schedule message listener
-  // useEffect(() => {
-  //   console.log('rescheduling message listener')
-  //   // console.log('scheduling message listener', chatClient, apiClient, loggedIn)
+  //schedule message listener
+  useEffect(() => {
+    console.log('rescheduling message listener')
+    // console.log('scheduling message listener', chatClient, apiClient, loggedIn)
 
-  //   let oldListener = currentMessageListener
-  //   let newListener: Listener;
+    let oldListener = currentMessageListener
+    let newListener: Listener;
 
-  //   if (chatClient && apiClient && joined) {
-  //     newListener = chatClient.onMessage((_channel, _user, _message, msg) => {
-  //       // console.log(msg)
-  //       let { target } = msg;
-  //       let msgChannelName = target.value.substr(1, target.value.length);
+    if (chatClient && apiClient && joined) {
+      newListener = chatClient.onMessage((_channel, _user, _message, msg) => {
+        // console.log(msg)
+        let { target } = msg;
+        let msgChannelName = target.value.substr(1, target.value.length);
 
-  //       if (msgChannelName === channelName) {
-  //         let { message } = msg;
-  //         let ClipRegExp: RegExp = /(?:clips.twitch.tv\/|www.twitch.tv\/.*\/)+(?<clipName>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]*)?/g; 
-  //         let clipResult = ClipRegExp.exec(message.value)
-  //         if (clipResult && clipResult.groups && getClipMeta) {
-  //           getClipMeta(clipResult!.groups.clipName, apiClient)
-  //             .then((clip) => {
-  //               // console.log('found clip: ', clip.slug)
-  //               clip = preProcessClip(clip, msg)
-  //               // console.log(
-  //               //   'channelState before calling processClip: ',
-  //               //   channel
-  //               // );
-  //               processClip(clip, channelName);
-  //             })
-  //         }
-  //         MessageCountStore.incrementChannelCount(channelName);
-  //       }
-  //     });
-  //     if (oldListener) {
-  //       chatClient.removeListener(oldListener.event, oldListener.listener)
-  //     }
-  //     setCurrentMessageListener(newListener)
-  //   } 
+        if (msgChannelName === channelName) {
+          let { message } = msg;
+          let ClipRegExp: RegExp = /(?:clips.twitch.tv\/|www.twitch.tv\/.*\/)+(?<clipName>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]*)?/g; 
+          let clipResult = ClipRegExp.exec(message.value)
+          if (clipResult && clipResult.groups && getClipMeta) {
+            getClipMeta(clipResult!.groups.clipName, apiClient)
+              .then((clip) => {
+                // console.log('found clip: ', clip.slug)
+                clip = preProcessClip(clip, msg)
+                // console.log(
+                //   'channelState before calling processClip: ',
+                //   channel
+                // );
+                processClip(clip, channelName);
+              })
+          }
+          MessageCountStore.incrementChannelCount(channelName);
+        }
+      });
+      if (oldListener) {
+        chatClient.removeListener(oldListener.event, oldListener.listener)
+      }
+      setCurrentMessageListener(newListener)
+    } 
 
-  //   return (() => {
-  //     if (chatClient && oldListener) {
-  //       chatClient.removeListener(oldListener.event, oldListener.listener)
-  //       setCurrentMessageListener(null)
-  //     }
-  //   })
+    return (() => {
+      if (chatClient && oldListener) {
+        chatClient.removeListener(oldListener.event, oldListener.listener)
+        setCurrentMessageListener(null)
+      }
+    })
 
-  // }, [clipsLength, chatClient, apiClient, joined])
+  }, [clipsLength, chatClient, apiClient, joined])
 
   return channel
 
