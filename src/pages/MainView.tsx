@@ -13,8 +13,10 @@ const MainViewContainer = styled(Flex)`
 `
 
 const MainViewSideColumn = styled(Flex)`
-  width: 100%;
+  flex-grow: 1;
+  width: 400px;
   max-width: 400px;
+  min-width: 400px;
   height: 100%;
 `
 

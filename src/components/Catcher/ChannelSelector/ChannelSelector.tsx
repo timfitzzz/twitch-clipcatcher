@@ -1,47 +1,136 @@
-import React, { useMemo, useState } from 'react'
-import { useContextSelector } from 'use-context-selector'
-import styled from 'styled-components'
-import { Flex, Tab, Tabs } from 'rendition'
-import { ChannelsContext } from '../../../contexts/ChannelsContext'
-import AddChannelForm from './AddChannel'
-import Channel from '../Channel/Channel'
+import React, { useEffect, useMemo, useState } from 'react';
+import { Close, Add } from '@styled-icons/material'
+import { useContextSelector } from 'use-context-selector';
+import styled from 'styled-components';
+import { Box, Flex, Tabs } from 'rendition';
 
+import Tab from './Tab';
 
-const ChannelSelectorTabs = styled(Tabs)`
+const AddIcon = styled(Add)`
+  width: 18px;
+  height: 20px;
+  fill: ${p => p.theme.colors.gray.dark};
+  margin-top: auto;
+  margin-bottom: auto;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  &:hover {
+    fill: green
+  }
 `
 
-const ChannelSelector = () => {
+const CloseIcon = styled(Close)`
+  width: 18px;
+  height: 18px;
+  fill: ${p => p.theme.colors.gray.dark};
 
-  let channels = useContextSelector(ChannelsContext, (c) => c.channels)
-  let channelNames = useMemo(() => Object.getOwnPropertyNames(channels), [channels])
-  let [currentChannel, setCurrentChannel] = useState<number>(-1)
-
-  const switchChannel = (idx: number) => {
-    setCurrentChannel(idx)
+  &:hover {
+    fill: red;
   }
+`
 
-  console.log('rendering channelselector')
+const CloseTab = styled(Tab)`
+  margin-right: 0px;
+  margin-left: auto;
+  padding: 4px 1px 1px 1px;
+  margin-top: 8px;
+  border: none;
+`
+
+const ChannelSelectorTabs = styled(Flex).attrs(p => ({
+  ...p,
+  flexDirection: 'row'
+}))`
+  width: 100%;
+  flex-wrap: wrap;
+`;
+
+export const ReusableChannelSelector = ({
+  className,
+  channelNames,
+  currentChannelName,
+  setAddPanelVisible,
+  addPanelSelected,
+  handleChannelChange,
+}: {
+  setAddPanelVisible: (showPanel: boolean) => void;
+  addPanelSelected: boolean;
+  handleChannelChange: (channelName: string) => void;
+  className?: string;
+  channelNames: string[];
+  currentChannelName: string | null;
+}) => {
+
+
+  // const switchToChannel = (idx: number) => {
+  //   setCurrentChannel(idx);
+  //   setAddPanelVisible(false)
+  // };
+
+  // const showAddPanel = () => {
+  //   setAddPanelVisible(true)
+  // }
+
+  // const hideAddPanel = () => {
+  //   setAddPanelVisible(false)
+  // }
+
+  // console.log('rendering channelselector');
+
+  // useEffect(() => {
+  //   if (currentChannel !== -1) {
+  //     let allButCurrent: string[] = channelNames.splice(currentChannel, 1)
+  //     allButCurrent.push(channelNames[currentChannel])
+  //     setChannelNameOrder(allButCurrent)
+  //   } else {
+  //     setChannelNameOrder(channelNames)
+  //   }
+  // }, [currentChannel, channelNames])
+
+  // useEffect(() => {
+  //   setAddPanelVisible(false)
+  // }, [channelNames])
 
   return (
-    <Flex flexDirection={"column"}>
-      <ChannelSelectorTabs>
-        { channelNames.map((channel, idx) => (
-            <div onClick={() => switchChannel(idx)}>{channel}</div>
-        ))}
-        <div onClick={() => setCurrentChannel(-1)}>+</div>
-      </ChannelSelectorTabs>
-      { channels && channelNames.length > 0 && channelNames.map((channelName, idx) => (
-          <Channel channelName={channelName} key={'channel'+channelName} hidden={currentChannel === idx ? false : true}/>
-        ))}
-        { !channels || channelNames.length === 0 || currentChannel === -1 ? (
-          <AddChannelForm />
-        ):(<></>)}
-    </Flex>
-  )
-}
+    <ChannelSelectorTabs>
+      <Flex flexDirection={'row'} width={'100%'}>
+        <Flex flexDirection={'row-reverse'} justifyContent={"flex-end"} flexWrap={"wrap"}>
+          {channelNames.map((channelName) => (
+            <Tab
+              onClick={() => { setAddPanelVisible(false); handleChannelChange(channelName) }}
+              title={channelName}
+              current={!addPanelSelected && channelName === currentChannelName}
+              key={channelName+'tab'}
+            />
+          ))}
+          <Tab
+            onClick={() => setAddPanelVisible(true)}
+            icon={AddIcon}
+            current={addPanelSelected === true}
+            key={'addPanelTab'}
+          />
+        </Flex>
+        <CloseTab
+            hidden={addPanelSelected === true}
+            onClick={() => setAddPanelVisible(true)}
+            icon={CloseIcon}
+            current={true}
+            key={'addPanelTab'}
+
+          />
+      </Flex>
+
+    </ChannelSelectorTabs>
+  );
+};
+
+const ChannelSelector = styled(ReusableChannelSelector)`
+  width: 100%;
+  height: 100%;
+`
 
 export default ChannelSelector
 
-        // <Tab title={"+"}>
-        //   <AddChannelForm />
-        // </Tab>
+// <Tab title={"+"}>
+//   <AddChannelForm />
+// </Tab>

@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Box, Flex } from 'rendition'
 import { CaughtClip, TwitchClipV5 } from '../../../types'
 import { CatcherBadge } from '../../badges/CatcherBadge';
+import { useContextSelector } from 'use-context-selector';
+import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 // import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 
 
@@ -34,18 +36,18 @@ position:relative;
 display: inline-block;
 `
 
-// const ClipControlsContainer = styled.div`
-//   position: absolute;
-//   height: 100%;
-//   width: 100%;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   box-sizing: border-box;
-//   height: 170px;
-//   width: 300px;
-// `
+const ClipControlsContainer = styled.div`
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  height: 170px;
+  width: 300px;
+`
 
 const ClipOverlay = styled(Flex)`
   position: absolute;
@@ -108,6 +110,26 @@ const ClipOverlayViewCountBadge = styled(CatcherBadge).attrs((p) => ({
   margin-bottom: auto;
 `
 
+const ClipOverlayRight = styled(Flex).attrs(p => ({
+  ...p,
+  flexDirection: 'column',
+  height: '100%',
+  marginLeft: "auto",
+  marginRight: "0"
+}))`
+  min-width: 75px;
+
+`
+
+const ClipOverlayLeft = styled(Flex).attrs(p => ({
+  ...p,
+  flexDirection: 'column',
+  height: '100%',
+  marginLeft: "0",
+  marginRight: "auto"
+}))`
+`
+
 const ClipOverlayUpperLeft = styled(Box)`
   height: 50%;
 
@@ -141,7 +163,7 @@ const ClipOverlayTrustedBadge = styled(CatcherBadge).attrs(p => ({
 
 const Clip = ({clip, className}: { clip: CaughtClip, className?: string}) => {
 
-  // let playClip = useContextSelector(PlayerContext, (c) => c.playClip)
+  let playClip = useContextSelector(PlayerContext, (c) => c.playClip)
 
   return (
     <Box className={className}>
@@ -150,7 +172,7 @@ const Clip = ({clip, className}: { clip: CaughtClip, className?: string}) => {
            <ClipThumb src={clip.thumbnails.medium} />
            <ClipOverlay flexDirection={'column'} justifyContent={'space-between'}>
               <Flex flexDirection={'row'} height={'100%'}>
-                <Flex flexDirection={'column'} height={'100%'} marginLeft="0" marginRight="auto">
+                <ClipOverlayLeft>
                   <ClipOverlayUpperLeft>
                     <ClipOverlayStreamerBadge value={clip.broadcaster.name}/>
                   </ClipOverlayUpperLeft>
@@ -159,8 +181,8 @@ const Clip = ({clip, className}: { clip: CaughtClip, className?: string}) => {
                       <ClipTitle>{clip.title}</ClipTitle>
                     </ClipTitleContainer>
                   </ClipOverlayLowerLeft>
-                </Flex>
-                <Flex flexDirection={'column'} height={'100%'} marginRight="0" marginLeft="auto">
+                </ClipOverlayLeft>
+                <ClipOverlayRight>
                   <ClipOverlayUpperRight>
                     <ClipOverlayFrogCountBadge value={clip.postedBy.length}/>
                     <ClipOverlayViewCountBadge value={clip.views}/>
@@ -169,20 +191,20 @@ const Clip = ({clip, className}: { clip: CaughtClip, className?: string}) => {
                     <ClipOverlayTrustedBadge value={`${clip.postedByMod ? true : false} ${clip.postedByVip ? true : false} ${clip.postedByBroadcaster ? true : false}`}/>              
                     <ClipOverlayDurationBadge value={clip.duration.toString()}/>
                   </ClipOverlayLowerRight>
-               </Flex>
+               </ClipOverlayRight>
              </Flex>
            </ClipOverlay>
-           {/* <ClipControlsContainer onClick={(e) => playClip && playClip(clip)}>
-            </ClipControlsContainer> */}
+           <ClipControlsContainer onClick={(e) => playClip && playClip(clip)}>
+            </ClipControlsContainer>
          </ClipThumbContainer>
          <Flex flexDirection={'column'}>
            {/* <Flex flexDirection={'row'}>
              <CatcherBadge type={'streamer'} value={clip.broadcaster.name}/>
              <ClipTitle>{clip.title}</ClipTitle>
            </Flex> */}
-           <Flex flexDirection={'row'}>
+           {/* <Flex flexDirection={'row'}>
              <CatcherBadge type={'duration'} value={clip.duration.toString()}/>
-           </Flex>
+           </Flex> */}
          </Flex>
       </Flex>
     </Box>

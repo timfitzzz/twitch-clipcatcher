@@ -6,9 +6,11 @@ import {
 import { useContextSelector } from 'use-context-selector';
 import { AuthContext } from '../contexts/AuthContext';
 
-const init = { apiClient: null, getClipMeta: null}
+const init = null
 
 const useApiClientImpl = () => {
+
+  console.log('rerendering useapiclient')
 
   const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
   const [apiClient, setApiClient] = useState<ApiClient | null>(null);
@@ -28,25 +30,10 @@ const useApiClientImpl = () => {
   }, [authProvider]);
 
 
-  const getClipMeta = apiClient ? async (clipSlug: string, apiClient: ApiClient) => {
-    return apiClient
-      .callApi({
-        type: TwitchApiCallType.Kraken,
-        url: `/clips/${clipSlug}`,
-      })
-      .then((clip) => {
-        return clip;
-      });
-  } : null
-
-
-  return {
-    apiClient: apiClient, 
-    getClipMeta: getClipMeta
-  }
+  return apiClient
 
 }
 
-export const useApiClient = singletonHook({ apiClient: null, getClipMeta: null}, useApiClientImpl)
+export const useApiClient = singletonHook(init, useApiClientImpl)
 
 export default useApiClient

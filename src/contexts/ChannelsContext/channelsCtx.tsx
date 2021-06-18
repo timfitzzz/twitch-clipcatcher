@@ -31,7 +31,7 @@ const ChannelsContextProvider = ({
 }: {children?: ReactChild | ReactChildren}) => {
 
 
-  console.log('rerendering channels context')
+  // console.log('rerendering channels context')
   const [channelsState, mainChannelsDispatch] = useReducer(
     channelsReducer,
     defaultChannelsState
@@ -49,11 +49,11 @@ const ChannelsContextProvider = ({
 
   const processClip = (clip: CaughtClip, channelName: string) => {
     let clipExists = -1;
-    console.log(channelsState)
+    // console.log(channelsState)
     channelsState.channels[channelName].clips.forEach((foundClip, index) => {
-      console.log(clip.slug, foundClip.slug)
+      // console.log(clip.slug, foundClip.slug)
       if (clip.slug === foundClip.slug) {
-        console.log(`clip ${clip.slug} exists, adding new poster: `, clip.postedBy)
+        console.log(`clip ${clip.slug} exists, adding new poster: `, clip.postedBy[0].userName)
         clipExists = index;
         channelsDispatch({
           type: ChannelActions.UPDATE_CLIP_POSTED_BY,

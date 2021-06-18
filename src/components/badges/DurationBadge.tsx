@@ -1,6 +1,6 @@
 import { Timer } from '@styled-icons/material'
 import React from 'react'
-import { Flex } from 'rendition'
+import { Box, Flex } from 'rendition'
 import styled from 'styled-components'
 
 const DurationBadge = styled(Flex)`
@@ -18,7 +18,6 @@ const DurationBadge = styled(Flex)`
   margin-bottom: auto;
   background-color: ${p => p.theme.colors.primary.light};
 
-
   span {
     margin-top: auto;
     margin-bottom: auto;
@@ -35,7 +34,7 @@ const DurationBadge = styled(Flex)`
 `
 
 const Duration = ({className, value}: {className?: string, value: string | number}) => (
-    <DurationBadge flexDirection={"row"} className={className}>
+    <DurationBadge className={className}>
       <span><Timer viewBox={'0 0 24 24'}/>{value.toString()}s</span>
     </DurationBadge>
 )

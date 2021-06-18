@@ -1,7 +1,5 @@
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
-
-
 import { Callback } from "../contexts/AuthContext/callback";
 import { Logout } from "../contexts/AuthContext/logout";
 import { LogoutCallback } from "../contexts/AuthContext/logoutCallback";

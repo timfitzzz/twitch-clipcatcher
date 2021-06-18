@@ -31,7 +31,6 @@ const SourceStreamBadge = styled(Flex)<{charCount: number}>`
   }
 
   ${p => {
-    console.log(p.charCount)
     if (p.charCount > 15) {
       if (p.charCount <= 20) {
         return `

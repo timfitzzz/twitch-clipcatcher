@@ -2,20 +2,21 @@ import React, { useState } from 'react'
 import { useContextSelector } from 'use-context-selector'
 import { Button, Flex, Input } from 'rendition'
 import styled from 'styled-components'
-import { ChannelsContext } from '../../../contexts/ChannelsContext'
+import { useAppDispatch } from '../../../hooks/reduxHooks'
+import { channelAdded } from '../../../redux/channels'
 
 const AddChannelForm = ({className}: {className?: string}) => {
 
   let [ formText, setFormText ] = useState<string | null>(null)
-  let addChannel = useContextSelector(ChannelsContext, (c) => c.addChannel)
+  let dispatch = useAppDispatch()
 
   const handleFormTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormText(e.currentTarget.value)
   }
 
   const handleAddChannel = () => {
-    if (formText && addChannel) {
-      addChannel(formText.toLowerCase())
+    if (formText) {
+      dispatch(channelAdded(formText))
     }
   }
 

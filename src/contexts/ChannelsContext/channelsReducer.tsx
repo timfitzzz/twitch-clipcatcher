@@ -39,7 +39,7 @@ interface AddChannelAction {
   type: ChannelActions.ADD_CHANNEL;
   payload: string;
 }
-
+ 
 interface RemoveChannelAction {
   type: ChannelActions.REMOVE_CHANNEL;
   payload: string;
@@ -61,18 +61,18 @@ interface ClearChannelAction {
 }
 
 interface AddClipAction {
-  type: ChannelActions.ADD_CLIP;
-  payload: [streamName: string, clip: CaughtClip];
+  type: ChannelActions.ADD_CLIP
+  payload: [streamName: string, clip: CaughtClip]
 }
 
 interface UpdateClipPostedByAction {
-  type: ChannelActions.UPDATE_CLIP_POSTED_BY;
-  payload: [streamName: string, clip: CaughtClip, clipIndex: number];
+  type: ChannelActions.UPDATE_CLIP_POSTED_BY
+  payload: [streamName: string, clip: CaughtClip, clipIndex: number]
 }
 
 interface IncrementScannedAction {
-  type: ChannelActions.UPDATE_SCANNED;
-  payload: { [streamName: string]: number };
+  type: ChannelActions.UPDATE_SCANNED
+  payload: { [streamName: string]: number }
 }
 
 export type ChannelAction =
@@ -89,7 +89,7 @@ function channelDataReducer(
   state: IChannelsReducerState,
   action: ChannelAction
 ): IChannelsReducerState {
-  console.log('processing action: ', action);
+  // console.log('processing action: ', action);
   switch (action.type) {
     case ChannelActions.ADD_CHANNEL:
       return { 

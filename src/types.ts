@@ -41,7 +41,13 @@ export interface TwitchClipV5 {
 }
 
 export interface CaughtClip extends TwitchClipV5 {
-  postedBy: TwitchPrivateMessage['userInfo'][]
+  postedBy: {
+    userId: TwitchPrivateMessage['userInfo']['userId']
+    userName: TwitchPrivateMessage['userInfo']['userName']
+    isMod: boolean
+    isVip: boolean
+    isBroadcaster: boolean
+  }[]
   postedByBroadcaster?: boolean
   postedByMod?: boolean
   postedByVip?: boolean
@@ -68,4 +74,44 @@ declare module 'react' {
     parent: string
     preload: string
   }
+}
+
+export enum SortTypes {
+  frogscount,
+  frogstatus,
+  date,
+  length,
+  viewscount,
+  none
+}
+
+
+export enum ChannelFilters { 
+  sameChannel,
+  otherChannels,
+  allChannels
+}
+
+export enum SubmitterFilters {
+  specialFrogs,
+  normalFrogs,
+  allFrogs
+}
+
+export interface Filters {
+  showMeta: boolean
+  showDrama: boolean
+  onlyFaves: boolean
+  onlyToday: boolean
+  whichSubmitters: SubmitterFilters
+  whichChannels: ChannelFilters
+}
+
+export const defaultFilters: Filters = {
+  showMeta: true,
+  showDrama: true,
+  onlyFaves: false,
+  onlyToday: false,
+  whichSubmitters: SubmitterFilters.allFrogs,
+  whichChannels: ChannelFilters.allChannels,
 }

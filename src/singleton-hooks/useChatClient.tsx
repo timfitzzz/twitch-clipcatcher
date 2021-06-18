@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react'
+import { Listener } from '@d-fischer/typed-event-emitter'
 import { singletonHook } from 'react-singleton-hook'
 import { ChatClient } from 'twitch-chat-client/lib';
 import { useContextSelector } from 'use-context-selector';
 import { AuthContext } from '../contexts/AuthContext';
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import { intakeClip } from '../redux/channels';
+import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore';
+import { removeListener } from 'process';
 
 const init = {
   chatClient: null,
@@ -10,6 +15,8 @@ const init = {
 }
 
 const useChatClientImpl = () => {
+
+  console.log('rerendering usechatclient')
 
   const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
@@ -45,8 +52,7 @@ const useChatClientImpl = () => {
 
   }, [authProvider]);
 
-    console.log(chatClient)
-  return {chatClient, loggedIn}
+  return  { chatClient, loggedIn }
 
 }
 
