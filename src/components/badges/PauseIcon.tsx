@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { PauseCircle } from '@styled-icons/feather'
+import { PauseCircle } from '@styled-icons/feather/PauseCircle'
 
 export const PauseIcon = styled(PauseCircle)<{scanning: boolean}>`
   height: 17px;

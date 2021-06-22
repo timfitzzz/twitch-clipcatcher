@@ -103,7 +103,7 @@ const Tab = ({title, hidden, onClick, icon, current, className}: {title?: string
         ) : (
           <TabTitleText>{title}</TabTitleText>
         )}
-        { typeof scanning !== 'undefined' ? (
+        { typeof scanning !== 'undefined' && scanning !== false ? (
           <SteadyRecordingIcon fade={!current} scanning={false}/>
         ) : (<></>)}
         { typeof clipsCount !== 'undefined' ? (

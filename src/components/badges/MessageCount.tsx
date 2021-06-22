@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { MessageCountStore } from '../../contexts/ChannelsContext/MessageCountStore'
-
+import { abbreviateNumber } from 'js-abbreviation-number'
 
 const CountBadge = styled.div`
   padding-left: 4px;
@@ -23,7 +23,7 @@ useEffect(() => {
   MessageCountStore.registerCallback(channelName, (count: number) => {
     let countSpan = scanCountRef.current
     if (countSpan) {
-      countSpan.innerHTML = `${count}`
+      countSpan.innerHTML = `${abbreviateNumber(count)}`
     }
   })
 

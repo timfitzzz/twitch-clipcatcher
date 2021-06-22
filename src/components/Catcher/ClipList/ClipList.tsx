@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState, useMemo, useRef } from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'
-import { CaughtClip, SubmitterFilters, ChannelFilters, defaultFilters, Filters, SortTypes } from '../../../types'
+import { CaughtClip, SubmitterFilters, ChannelFilters, defaultFilters, Filters, SortTypes, SortList, defaultSort } from '../../../types'
 import Clip from './Clip'
 import {OptionsPanel} from '../OptionsPanel'
+import update from 'immutability-helper';
 
 
 
@@ -24,15 +25,61 @@ const ClipsContainer = styled(Flex)`
 
 `
 
-const ClipList = ({clips, channelName, scanning}: {clips: CaughtClip[], channelName: string, scanning: boolean}) => {
+
+
+// const defaultSort: SortTypes[] = []
+
+const ClipList = ({clips: currentClips, channelName, scanning}: {clips: CaughtClip[], channelName: string, scanning: boolean}) => {
 
   // console.log('rendering cliplist') 
-
-  const [sort, setSort] = useState<[sort: SortTypes, direction: "asc" | "desc"]>([SortTypes.none, "asc"])
+  const prevCurrentClipsRef = useRef<CaughtClip[]>();
+  const [sort, setSort] = useState<SortList>(defaultSort)
   const [filters, setFilters] = useState<Filters>(defaultFilters)
+  const [lockDisplay, setLockDisplay] = useState<boolean>(false)
+  const clips: CaughtClip[] = useMemo(() => {
+    if (lockDisplay && prevCurrentClipsRef.current) {
+      return prevCurrentClipsRef.current
+    } else {
+      prevCurrentClipsRef.current = currentClips
+      return currentClips
+    }
+  }, [currentClips, lockDisplay])
 
-  const updateSort = (sort: SortTypes, direction: "asc" | "desc") => {
-    setSort([sort, direction])
+  const moveSort = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      const dragSort = sort[dragIndex]
+      setSort(
+        update(sort, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragSort]
+        ]
+      }))
+    },
+    [sort]
+  )
+
+  const toggleDisplayLock = () => {
+    setLockDisplay(!lockDisplay)
+  }
+
+  const toggleSort = (toggleType: SortTypes) => {
+    console.log('toggling sort ', toggleType)
+    const newSort = [...sort]
+    newSort.map((sortSetting, i) => {
+      let { type: sortType, active, direction} = sortSetting
+      if (sortType === toggleType) {
+        if (!active) {
+          newSort[i].active = true
+          newSort[i].direction = "desc"
+        } else if (direction === 'desc') {
+          newSort[i].direction = 'asc'
+        } else if (direction === 'asc') {
+          newSort[i].active = false
+        }
+      }
+    })
+    setSort(newSort)
   }
 
   const setFilter = (filterName: keyof Filters, value?: SubmitterFilters | ChannelFilters ) => {
@@ -52,7 +99,7 @@ const ClipList = ({clips, channelName, scanning}: {clips: CaughtClip[], channelN
 
   return (
     <ClipListContainer flexDirection={"column"}>
-      <OptionsPanel channelName={channelName} clipCount={clips.length} scanning={scanning} currentSort={sort} setSort={updateSort} filters={filters} setFilter={setFilter}/>
+      <OptionsPanel locked={lockDisplay} toggleDisplayLock={toggleDisplayLock} toggleSort={toggleSort} channelName={channelName} clipCount={clips.length} scanning={scanning} currentSort={sort} moveSort={moveSort} filters={filters} setFilter={setFilter}/>
       {/* <Flex flexDirection={"row"}>
         
       </Flex> */}

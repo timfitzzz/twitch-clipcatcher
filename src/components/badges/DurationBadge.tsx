@@ -1,4 +1,4 @@
-import { Timer } from '@styled-icons/material'
+import { Timer } from '@styled-icons/material/Timer'
 import React from 'react'
 import { Box, Flex } from 'rendition'
 import styled from 'styled-components'

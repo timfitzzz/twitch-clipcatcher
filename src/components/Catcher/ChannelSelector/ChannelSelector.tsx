@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Close, Add } from '@styled-icons/material'
+import { Close } from '@styled-icons/material/Close'
+import { Add } from '@styled-icons/material/Add'
 import { useContextSelector } from 'use-context-selector';
 import styled from 'styled-components';
 import { Box, Flex, Tabs } from 'rendition';
@@ -76,7 +77,7 @@ export const ReusableChannelSelector = ({
   // }
 
   // console.log('rendering channelselector');
-
+ 
   // useEffect(() => {
   //   if (currentChannel !== -1) {
   //     let allButCurrent: string[] = channelNames.splice(currentChannel, 1)
@@ -110,14 +111,14 @@ export const ReusableChannelSelector = ({
             key={'addPanelTab'}
           />
         </Flex>
-        <CloseTab
+        {/* <CloseTab
             hidden={addPanelSelected === true}
             onClick={() => setAddPanelVisible(true)}
             icon={CloseIcon}
             current={true}
             key={'addPanelTab'}
 
-          />
+          /> */}
       </Flex>
 
     </ChannelSelectorTabs>

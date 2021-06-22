@@ -1,16 +1,22 @@
 import React from 'react';
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import styled from 'styled-components';
 import { Button, Flex } from 'rendition';
 import ScannerWithCount from '../../badges/ScannerWithCount';
-import { Filters, SortTypes } from '../../../types';
+import { Filters, SortList, SortTypes } from '../../../types';
 import { OptionsPanelContainer, OptionsPanelRow, OptionsPanelSection } from '.'
 import CollectionControls from './CollectionControls';
 import Count from '../../badges/MessageCount';
 import { useAppDispatch } from '../../../hooks/reduxHooks';
 import { channelCleared } from '../../../redux/channels';
-import { DeleteForever } from '@styled-icons/material';
-import ClipsCount from '../../badges/ClipsCount';
+import { DeleteForever } from '@styled-icons/material/DeleteForever';
+
 import SortSetter from './SortSetter';
+import StatsPanel from './StatsPanel';
+import CloseChannelButton from './CloseChannelButton';
+import FilterSetter from './FilterSetter';
+import ModerationFilter from './ModerationFilter';
 
 
 const OptionsPanelTitle = styled.h4`
@@ -20,35 +26,30 @@ const OptionsPanelTitle = styled.h4`
   flex-grow: 0;
 `
 
-const ClearIcon = styled(DeleteForever)`
-  height: 21px;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-right: 0px;
-  fill: orange;
-  width: 21px;
-
-  &:hover {
-    fill: red;
-  }
-`
-
 const Options = ({
+  locked,
+  toggleDisplayLock,
   channelName,
   clipCount,
   scanning,
   currentSort,
-  setSort,
+  moveSort,
+  toggleSort,
   filters,
   setFilter,
+  className
 }: {
-  channelName: string;
-  clipCount: number;
-  currentSort: [type: SortTypes, direction: "asc" | "desc"];
-  scanning: boolean;
-  setSort: (sort: SortTypes, direction: "asc" | "desc") => void;
-  setFilter: (filterName: keyof Filters) => void;
-  filters: Filters;
+  locked: boolean
+  toggleDisplayLock: () => void
+  className?: string
+  channelName: string
+  clipCount: number
+  currentSort: SortList
+  scanning: boolean
+  toggleSort: (type: SortTypes) => void
+  moveSort: (dragIndex: number, hoverIndex: number) => void
+  setFilter: (filterName: keyof Filters) => void
+  filters: Filters
 }) => {
 
   const dispatch = useAppDispatch()
@@ -58,34 +59,40 @@ const Options = ({
 
 
   return (
-    <OptionsPanelContainer>
-      <OptionsPanelRow>
-        <OptionsPanelSection>
-          <CollectionControls channelName={channelName}/>
-          <OptionsPanelTitle>{channelName}</OptionsPanelTitle>
-        </OptionsPanelSection>
-        <OptionsPanelSection>
-        </OptionsPanelSection>
-        <OptionsPanelSection style={{marginRight: '0px', marginLeft: 'auto'}}>
-          <ClipsCount value={clipCount} inverted={true} />/
-          <Count channelName={channelName}/>
-          <ClearIcon onClick={() => resetChannel()}/>
-        </OptionsPanelSection>
-      </OptionsPanelRow>
-      <OptionsPanelRow>
-        <OptionsPanelSection>
-          <SortSetter currentSort={currentSort} setSort={setSort}/>
-        </OptionsPanelSection>
-        <OptionsPanelSection>
-          <span>filters</span>
-        </OptionsPanelSection>
-      </OptionsPanelRow>
+    <OptionsPanelContainer className={className}>
+      <DndProvider backend={HTML5Backend}>
+        <OptionsPanelRow>
+          <OptionsPanelSection>
+            <CollectionControls channelName={channelName} locked={locked} toggleDisplayLock={toggleDisplayLock} resetChannel={resetChannel}/>
+            {/* <OptionsPanelTitle>{channelName}</OptionsPanelTitle> */}
+          </OptionsPanelSection>
+          <OptionsPanelSection>
+            <StatsPanel channelName={channelName}/>
+          </OptionsPanelSection>
+          <CloseChannelButton channelName={channelName}/>
+        </OptionsPanelRow>
+        <OptionsPanelRow>
+          <OptionsPanelSection>
+            <FilterSetter channelName={channelName}/>
+          </OptionsPanelSection>
+          <OptionsPanelSection>
+            <ModerationFilter channelName={channelName} />
+          </OptionsPanelSection>
+        </OptionsPanelRow>
+        <OptionsPanelRow>
+          <OptionsPanelSection>
+            <SortSetter currentSort={currentSort} moveSort={moveSort} toggleSort={toggleSort}/>
+          </OptionsPanelSection>
+        </OptionsPanelRow>
+      </DndProvider>
     </OptionsPanelContainer>
   )
 };
 
 
 export const OptionsPanel = styled(Options)`
+
+  background-color: ${p => p.theme.colors.primary.semilight};
 
 `
 

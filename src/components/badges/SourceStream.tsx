@@ -1,4 +1,4 @@
-import { Twitch } from '@styled-icons/feather'
+import { Twitch } from '@styled-icons/feather/Twitch'
 import React from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'

@@ -41,6 +41,59 @@ export interface TwitchClipV5 {
 }
 
 export interface CaughtClip extends TwitchClipV5 {
+  broadcasterName: string
+  postedBy: {
+      userId: TwitchPrivateMessage['userInfo']['userId']
+      userName: TwitchPrivateMessage['userInfo']['userName']
+      isMod: boolean
+      isVip: boolean
+      isBroadcaster: boolean
+    }[]
+  postedByBroadcaster?: boolean
+  postedByMod?: boolean
+  postedByVip?: boolean
+  gtarpFlair?: string[]
+  startEpoch?: number
+  vod: {
+    id: string,
+    url: string,
+    offset: number
+  }
+}
+
+export interface CaughtClipV2 extends TwitchClipV5 {
+  broadcasterName: string
+  postedBy: {
+    [channelName: string]: {
+      userId: TwitchPrivateMessage['userInfo']['userId']
+      userName: TwitchPrivateMessage['userInfo']['userName']
+      isMod: boolean
+      isVip: boolean
+      isBroadcaster: boolean
+    }[]
+  }
+  annotations: {
+    [channelName: string]: ClipAnnotation[]
+  }
+  startEpoch: number
+  postedByBroadcaster?: boolean
+  postedByMod?: boolean
+  postedByVip?: boolean
+}
+
+export interface ClipAnnotation {
+  channelName: string,
+  source: string,
+  userType: "user" | "sub" | "broadcaster" | "mod" | "vip",
+  words?: string,
+  meta?: boolean,
+  drama?: boolean,
+  report?: boolean,
+  vouch?: boolean
+}
+
+
+export interface ChannelClip {
   postedBy: {
     userId: TwitchPrivateMessage['userInfo']['userId']
     userName: TwitchPrivateMessage['userInfo']['userName']
@@ -48,12 +101,6 @@ export interface CaughtClip extends TwitchClipV5 {
     isVip: boolean
     isBroadcaster: boolean
   }[]
-  postedByBroadcaster?: boolean
-  postedByMod?: boolean
-  postedByVip?: boolean
-  onGtarp?: boolean
-  onLSF?: boolean
-  gtarpFlair?: string[]
 }
 
 export interface OIDCUserData {
@@ -78,11 +125,10 @@ declare module 'react' {
 
 export enum SortTypes {
   frogscount,
-  frogstatus,
+  views,
   date,
   length,
-  viewscount,
-  none
+  streamername
 }
 
 
@@ -98,20 +144,70 @@ export enum SubmitterFilters {
   allFrogs
 }
 
+export enum TrinaryFilterState {
+  'none',
+  'only',
+  'off'
+}
+
 export interface Filters {
-  showMeta: boolean
-  showDrama: boolean
-  onlyFaves: boolean
-  onlyToday: boolean
-  whichSubmitters: SubmitterFilters
-  whichChannels: ChannelFilters
+  meta: TrinaryFilterState
+  drama: TrinaryFilterState
+  faves: TrinaryFilterState
+  today: TrinaryFilterState
+  trusted: TrinaryFilterState
+  moderated: TrinaryFilterState
+  otherChannels: TrinaryFilterState
 }
 
 export const defaultFilters: Filters = {
-  showMeta: true,
-  showDrama: true,
-  onlyFaves: false,
-  onlyToday: false,
-  whichSubmitters: SubmitterFilters.allFrogs,
-  whichChannels: ChannelFilters.allChannels,
+  meta: TrinaryFilterState.off,
+  drama: TrinaryFilterState.off,
+  faves: TrinaryFilterState.off,
+  today: TrinaryFilterState.off,
+  trusted: TrinaryFilterState.off,
+  moderated: TrinaryFilterState.off,
+  otherChannels: TrinaryFilterState.off
+}
+
+export interface Sort {
+  type: SortTypes
+  active: boolean
+  direction: 'desc' | 'asc'
+}
+
+export type SortList = Sort[]
+
+export const defaultSort: SortList = [{
+  type: SortTypes.frogscount,
+  active: false,
+  direction: 'desc'
+ },
+ {
+  type: SortTypes.views,
+  active: false,
+  direction: 'desc'
+ },
+ {
+   type: SortTypes.length,
+   active: false,
+   direction: 'desc'
+ },
+ {
+   type: SortTypes.streamername, 
+   active: false,
+   direction: 'desc'
+ },
+ {
+   type: SortTypes.date,
+   active: false,
+   direction: 'desc'
+ }]
+
+
+
+export interface ICatcherChannel {
+  name: string;
+  scanning: boolean;
+  clips: CaughtClip[];
 }

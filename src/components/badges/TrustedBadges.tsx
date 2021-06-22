@@ -1,4 +1,4 @@
-import { Visibility } from '@styled-icons/material'
+import { Visibility } from '@styled-icons/material/Visibility'
 import React from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'

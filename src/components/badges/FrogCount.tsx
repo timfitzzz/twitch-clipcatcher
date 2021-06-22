@@ -1,4 +1,4 @@
-import { Frog } from '@styled-icons/fa-solid'
+import { Frog } from '@styled-icons/fa-solid/Frog'
 import React from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'

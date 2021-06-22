@@ -1,13 +1,10 @@
-import { createSlice, configureStore, PayloadAction, SliceCaseReducers, CreateSliceOptions, createAsyncThunk } from '@reduxjs/toolkit'
-import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
-import { RejectedWithValueActionFromAsyncThunk } from '@reduxjs/toolkit/dist/matchers'
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { TwitchPrivateMessage } from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
-import { ApiClient } from 'twitch/lib'
-import { StringLiteralType } from 'typescript'
-import { CaughtClip, TwitchClipV5 } from '../types'
+import { CaughtClip, ICatcherChannel, TwitchClipV5 } from '../types'
+import { getClipEpoch } from '../utilities/apiMethods'
 import { AppDispatch, RootState } from './store'
 
-interface ChannelsSliceState {
+export interface ChannelsSliceState {
   [channelName: string]: ICatcherChannel
 }
 
@@ -18,14 +15,9 @@ type ChannelRemovedPayload = string
 type ScanningStartedPayload = string
 type ScanningStoppedPayload = string
 type ChannelClearedPayload = string
-type ClipAddedPayload = [streamName: string, clip: CaughtClip]
+export type ClipAddedPayload = [streamName: string, clip: CaughtClip, messageId: string]
 type ClipReaddedPayload = [streamName: string, clip: CaughtClip, clipIndex: number]
 
-export interface ICatcherChannel {
-  name: string;
-  scanning: boolean;
-  clips: CaughtClip[];
-}
 export function initChannelState(channelName: string): ICatcherChannel {
   return {
     name: channelName,
@@ -43,6 +35,7 @@ export function initChannelState(channelName: string): ICatcherChannel {
       isBroadcaster: msg.userInfo.isBroadcaster,
       isVip: msg.userInfo.isVip
     }]
+    clip.broadcasterName = clip.broadcaster.name
     clip.postedByMod = msg.userInfo.isMod
     clip.postedByBroadcaster = msg.userInfo.isBroadcaster
     clip.postedByVip = msg.userInfo.isVip
@@ -60,6 +53,7 @@ export const intakeClip = createAsyncThunk<
   clipName: string
   msg: TwitchPrivateMessage
   getClipMeta: (clipSlug: string) => Promise<TwitchClipV5>
+  getVodEpoch: (vodId: string, offset: number) => Promise<number | undefined>
 },
 {
   dispatch: AppDispatch
@@ -67,17 +61,27 @@ export const intakeClip = createAsyncThunk<
   rejectValue: Error
 }>(
   'channels/intakeClip',
-  async({channelName, clipName, msg, getClipMeta}, { getState, rejectWithValue, requestId, dispatch }) => {
+  async({channelName, clipName, msg, getClipMeta, getVodEpoch}, { getState, rejectWithValue, requestId, dispatch }) => {
     let { channels: { [channelName]: channel } } = getState()
-    let clipMeta: TwitchClipV5 | undefined;
+    let clipMeta: Partial<CaughtClip> | undefined;
+    let clipEpoch: number | undefined
     try {
-      clipMeta = await getClipMeta(clipName)
+      clipMeta = await getClipMeta(clipName) as Partial<CaughtClip>
     } catch (err) {
       rejectWithValue(err)
     }
 
+    if (clipMeta && clipMeta.vod) {
+      try {
+        clipEpoch = await getVodEpoch(clipMeta.vod.id, clipMeta.vod.offset)
+      } catch (err) {
+        rejectWithValue(err)
+      }
+    }
+
     const preProcessedClip: CaughtClip = preProcessClip(clipMeta as CaughtClip, msg)
-    
+    preProcessedClip.startEpoch = clipEpoch
+
     let clipExists = -1
     if (channel) {
       channel.clips.forEach((clip: CaughtClip, index: number) => {
@@ -97,7 +101,8 @@ export const intakeClip = createAsyncThunk<
     } else {
       dispatch(channelsSlice.actions.clipAdded([
         channelName,
-        preProcessedClip
+        preProcessedClip,
+        msg.id
       ]))
       return { result: 'new', clip: preProcessedClip}
     }

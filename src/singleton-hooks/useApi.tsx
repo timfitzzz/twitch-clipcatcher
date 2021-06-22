@@ -28,19 +28,7 @@ const useApiClientImpl = () => {
   }, [authProvider]);
 
 
-  const getClipMeta = async (clipSlug: string, apiClient: ApiClient) => {
-    return apiClient
-      .callApi({
-        type: TwitchApiCallType.Kraken,
-        url: `/clips/${clipSlug}`,
-      })
-      .then((clip) => {
-        return clip; 
-      });
-  };
-
-
-  return {apiClient, getClipMeta}
+  return {apiClient}
 
 }
 

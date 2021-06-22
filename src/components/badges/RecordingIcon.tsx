@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { FiberManualRecord } from '@styled-icons/material'
+import { FiberManualRecord } from '@styled-icons/material/FiberManualRecord'
 
 export const RecordingIcon = styled(FiberManualRecord).attrs(p => ({
   ...p,

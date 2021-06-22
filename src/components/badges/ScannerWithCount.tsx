@@ -1,4 +1,4 @@
-import { Radar } from '@styled-icons/material'
+import { Radar } from '@styled-icons/material/Radar'
 import React, { useEffect, useRef } from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'

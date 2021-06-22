@@ -1,9 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import channelsReducer from './channels'
+import clipsReducer from './clips'
+import messagesReducer from './messages'
 
 export const store = configureStore({
   reducer: {
-    channels: channelsReducer
+    channels: channelsReducer,
+    clips: clipsReducer,
+    messages: messagesReducer
   }
 });
 
