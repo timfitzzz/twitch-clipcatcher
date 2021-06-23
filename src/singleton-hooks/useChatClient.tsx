@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars*/
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { singletonHook } from 'react-singleton-hook'
 import { ChatClient } from 'twitch-chat-client/lib';
@@ -17,6 +18,8 @@ const useChatClientImpl = () => {
   const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);
   const [loggedIn, setLoggedIn] = useState<boolean | null>(false)
+
+  
 
   useEffect(() => {
     if (authProvider && !chatClient) {
@@ -46,7 +49,7 @@ const useChatClientImpl = () => {
       setChatClient(null)
     })
 
-  }, [authProvider, chatClient, loggedIn]);
+  }, [authProvider]);
 
   return  { chatClient, loggedIn }
 

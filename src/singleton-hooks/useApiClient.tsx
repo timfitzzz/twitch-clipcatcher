@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-ignore @typescript-eslint/no-unused-vars */
 
-import React, { useEffect, useState } from 'react'
+// import React, { useEffect, useState } from 'react'
+import { useMemo } from 'react';
 import { singletonHook } from 'react-singleton-hook'
 import {
   ApiClient
@@ -15,21 +16,15 @@ const useApiClientImpl = () => {
   console.log('rerendering useapiclient')
 
   const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
-  const [apiClient, setApiClient] = useState<ApiClient | null>(null);
+  // const [apiClient, setApiClient] = useState<ApiClient | null>(null);
 
-  useEffect(() => {
-    if (authProvider && !apiClient) {
-      const apiClient = new ApiClient({ authProvider });
-      if (apiClient) {
-        setApiClient(apiClient);
-      }
+  const apiClient = useMemo(() => {
+    if (authProvider) {
+      return new ApiClient({ authProvider })
+    } else {
+      return null
     }
-
-    return (() => {
-      setApiClient(null)
-    })
-
-  }, [authProvider, apiClient]);
+  }, [authProvider])
 
 
   return apiClient

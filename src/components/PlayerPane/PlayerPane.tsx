@@ -16,6 +16,11 @@ interface ClipEmbedOptions {
   title: string
 }
 
+const parentString = process.env.REACT_APP_VERCEL_ENV === 'production' 
+                      ? "clipstime.manapool.nyc" 
+                      : process.env.REACT_APP_VERCEL_ENV === 'preview'
+                        ? process.env.REACT_APP_VERCEL_URL
+                        : "localhost"
 
 const PlayerPane = ({className}: { className?: string }) => {
 
@@ -36,7 +41,7 @@ const PlayerPane = ({className}: { className?: string }) => {
   useEffect(() => {
     if (currentClip) {
       let player = renderPlayer({
-        src: currentClip.embed_url + '&autoplay=true&muted=false&parent=localhost&allowfullscreen=true',
+        src: currentClip.embed_url + `&autoplay=true&muted=false&parent=${parentString}&allowfullscreen=true`,
         height: '100%',
         width: '100%',
         preload: 'auto',
