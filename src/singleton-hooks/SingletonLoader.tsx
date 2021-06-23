@@ -7,11 +7,13 @@ import useChatClient from './useChatClient'
 import { Listener } from '@d-fischer/typed-event-emitter'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { intakeClip } from '../redux/channels';
+import { intakeReply } from '../redux/messages';
 import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore';
 import { ChatClient } from 'twitch-chat-client/lib'
 import { TwitchApiCallType } from 'twitch/lib'
 import { shallowEqual } from 'react-redux'
 import { TwitchPrivateMessage } from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
+import { parseUserType } from '../redux/clips'
 
 // const messageParser = (msg: TwitchPrivateMessage) => {
 //   let { target, message } = msg
@@ -41,7 +43,7 @@ const SingletonLoader = () => {
       });
   } : null, [apiClient])
 
-  const getVodEpoch = apiClient ? async (vodId: string, offset: number) => {
+  const getVodEpoch = useMemo(() => apiClient ? async (vodId: string, offset: number): Promise<number | undefined> => {
     return apiClient.helix.videos.getVideoById(vodId).then((video) => {
       if (video) {
         return video.creationDate.getTime() + offset * 1000
@@ -49,7 +51,7 @@ const SingletonLoader = () => {
         return undefined
       }
     }, (err) => { console.log(err); return undefined})
-  } : null
+  } : null, [apiClient])
 
   // use msg.tags.get('${tagName}') to discover these
 //   {"reply-parent-display-name" => "yolson_13"}
@@ -65,19 +67,31 @@ const SingletonLoader = () => {
     let oldListener = currentMessageListener
     let newListener: Listener | null;
 
-    console.log('getVodEpoch: ', getVodEpoch)
-
     if (apiClient && chatClient && loggedIn && getClipMeta && getVodEpoch) {
       console.log('setting message listener')
       newListener = chatClient.onMessage((_channel, _user, _message, msg) => {
         let { target, message } = msg;
         let channelName = target.value.substr(1, target.value.length);
-        // console.log(channelName)
+
         if (channelsToScan.indexOf(channelName) > -1) {
-          console.log('got message for ', channelName)
-          let ClipRegExp: RegExp = /(?:clips.twitch.tv\/|www.twitch.tv\/.*\/)+(?<clipName>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]*)?/g; 
+          
+          let replyParentId = msg.tags.get('reply-parent-msg-id')
+          if (replyParentId) {
+            let tags = message.value.split(" ")
+            let sub = msg.tags.get('subscriber')
+            dispatch(intakeReply({
+              channelName,
+              messageId: msg.id,
+              parentMessageId: replyParentId,
+              tags: tags,
+              messageText: message.value,
+              userName: msg.userInfo.userName,
+              userTypes: parseUserType(msg.userInfo, sub ? parseInt(sub) as 0 | 1 : 0)
+            }))
+          }
+
+          let ClipRegExp: RegExp = /(?:[https://]*clips.twitch.tv\/|www.twitch.tv\/.*\/)+(?<clipName>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+-{1}[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+)/g;
           let clipResult = ClipRegExp.exec(message.value)
-          console.log('got clipResult: ', clipResult)
           if (clipResult && clipResult.groups) {
             dispatch(intakeClip({
               channelName,
@@ -104,7 +118,7 @@ const SingletonLoader = () => {
         chatClient?.removeListener(currentMessageListener.event, currentMessageListener.listener)
       }
     })
-  }, [chatClient, loggedIn, apiClient, getClipMeta, channelsToScan])
+  }, [chatClient, loggedIn, apiClient, getClipMeta, getVodEpoch, channelsToScan])
 
   return (<></>)
 

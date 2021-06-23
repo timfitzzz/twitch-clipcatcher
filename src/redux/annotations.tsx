@@ -9,9 +9,15 @@ import { AppDispatch, RootState } from './store'
 import { ClipAddedPayloadV2, ClipReaddedPayloadV2, ClipAnnotatedPayload, UserTypes, clipAnnotated } from './clips'
 import { clipAdded as clipAddedV1, ClipAddedPayload } from './channels'
 
-interface MessagesSliceState {
-  messages: {
-    [messageId: string]: string
+interface AnnotationsSliceState {
+  annotations: {
+    [messageId: string]: ClipAnnotation
+  }
+  annotationsByClip: {
+    [clipSlug: string]: string[]
+  }
+  annotationsByChannel: {
+    [channelName: string]: string[]
   }
 }
 
@@ -71,31 +77,34 @@ export const intakeReply = createAsyncThunk<
   )
 
 
-const initialState: MessagesSliceState = {
-  messages: {}
+const initialState: AnnotationsSliceState = {
+  annotations: {},
+  annotationsByClip: {},
+  annotationsByChannel: {}
 }
 
 
-const messagesSlice = createSlice({ 
-  name: 'messages',
+const annotationsSlice = createSlice({ 
+  name: 'annotations',
   initialState,
   reducers: {
-    clipAdded(messages, action: PayloadAction<ClipAddedPayloadV2>) {
-      messages.messages[action.payload.messageId] = action.payload.clip.slug
-    },
-    clipReadded(messages, action: PayloadAction<ClipReaddedPayloadV2>) {
-      messages.messages[action.payload.readdedBy.messageId] = action.payload.clipSlug
-    },
-    clipAnnotated(messages, action: PayloadAction<ClipAnnotatedPayload>) {
-      messages.messages[action.payload.messageId] = action.payload.clipSlug
-    }
   },
   extraReducers: (builder) => {
-    builder.addCase(clipAddedV1, (messages, action: PayloadAction<ClipAddedPayload>) => {
-      let { payload }: { payload: ClipAddedPayload} = action
-      messages.messages[payload[2]] = action.payload[1].slug
+    builder.addCase(clipAnnotated, (annotations, action: PayloadAction<ClipAnnotatedPayload>) => {
+      let { payload }: { payload: ClipAnnotatedPayload} = action
+      annotations.annotations[payload.messageId] = payload.annotation
+      if (annotations.annotationsByChannel[payload.channelName]) {
+        annotations.annotationsByChannel[payload.channelName].push(payload.messageId)
+      } else {
+        annotations.annotationsByChannel[payload.channelName] = [payload.messageId]
+      }
+      if (annotations.annotationsByClip[payload.clipSlug]) {
+        annotations.annotationsByClip[payload.clipSlug].push(payload.messageId)
+      } else {
+        annotations.annotationsByClip[payload.clipSlug] = [payload.messageId]
+      }
     })
   }
 })
 
-export default messagesSlice.reducer
+export default annotationsSlice.reducer

@@ -1,6 +1,7 @@
 import React from "react";
 import { ChatMessageRequest } from "twitch-chat-client/lib/ChatClient";
 import { TwitchPrivateMessage } from "twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage";
+import { UserTypes } from "./redux/clips";
 
 export interface TwitchClipV5 {
   slug: string
@@ -82,14 +83,15 @@ export interface CaughtClipV2 extends TwitchClipV5 {
 }
 
 export interface ClipAnnotation {
-  channelName: string,
-  source: string,
-  userType: "user" | "sub" | "broadcaster" | "mod" | "vip",
-  words?: string,
-  meta?: boolean,
-  drama?: boolean,
-  report?: boolean,
+  channelName: string
+  source: string
+  userTypes: UserTypes[]
+  tags?: string[]
+  meta?: boolean
+  drama?: boolean
+  block?: boolean
   vouch?: boolean
+  messageText: string
 }
 
 

@@ -1,4 +1,4 @@
-import { createSlice, configureStore, PayloadAction, SliceCaseReducers, CreateSliceOptions, createAsyncThunk, current } from '@reduxjs/toolkit'
+import { createSlice, configureStore, PayloadAction, SliceCaseReducers, CreateSliceOptions, createAsyncThunk } from '@reduxjs/toolkit'
 import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
 import { RejectedWithValueActionFromAsyncThunk } from '@reduxjs/toolkit/dist/matchers'
 import { TwitchPrivateMessage } from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
@@ -18,7 +18,9 @@ function recursiveSearch<key extends keyof CaughtClipV2>(
   right: number = targetArray.length - 1
   ): number {
 
-  if (left === right) {
+  // console.log(left, right, targetArray.length)
+
+  if (targetArray.length === 0 || left >= right) {
     return left
   }
 
@@ -29,35 +31,35 @@ function recursiveSearch<key extends keyof CaughtClipV2>(
   } else {
     if (typeof targetValue === 'number') {
       if (referenceObject[targetArray[mid]][referenceProp] > targetValue) {
-        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid)
+        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid-1)
       } else {
-        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid, right)
+        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid+1, right)
       }
     } else {
       if ((referenceObject[targetArray[mid]][referenceProp] as string).localeCompare(targetValue as string) < 0 ) {
-        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid)
+        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid-1)
       } else {
-        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid, right)
+        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid+1, right)
       }
     }
   }
 }
 
 
-// const insertEpoch = (clipsByStartEpoch: { target: string[] }, startEpoch: number, clipSlug: string, clips: { target: {[key: string]: CaughtClipV2} }): string[] => {
-//   const newIndex = recursiveSearch(clipsByStartEpoch.target, clips.target, 'startEpoch', startEpoch)
-//   return clipsByStartEpoch.target.splice(newIndex, 0, clipSlug)
-// }
+const insertEpoch = (clipsByStartEpoch: string[], startEpoch: number, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
+  const newIndex = recursiveSearch(clipsByStartEpoch, clips, 'startEpoch', startEpoch)
+  return clipsByStartEpoch.splice(newIndex, 0, clipSlug)
+}
 
-// const insertStream = (clipsByStream: { target: string[] }, broadcasterName: string, clipSlug: string, clips: { target: {[key: string]: CaughtClipV2} }): string[] => {
-//   const newIndex = recursiveSearch(clipsByStream.target, clips.target, 'broadcasterName', broadcasterName)
-//   return clipsByStream.target.splice(newIndex, 0, clipSlug)
-// }
+const insertStream = (clipsByStream: string[], broadcasterName: string, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
+  const newIndex = recursiveSearch(clipsByStream, clips, 'broadcasterName', broadcasterName)
+  return clipsByStream.splice(newIndex, 0, clipSlug)
+}
 
-// const insertDuration = (clipsByDuration: { target: string[] }, duration: number, clipSlug: string, clips: { target: {[key: string]: CaughtClipV2} }): string[] => {
-//   const newIndex = recursiveSearch(clipsByDuration.target, clips.target, 'duration', duration)
-//   return clipsByDuration.splice(newIndex, 0, clipSlug)
-// }
+const insertDuration = (clipsByDuration: string[], duration: number, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
+  const newIndex = recursiveSearch(clipsByDuration, clips, 'duration', duration)
+  return clipsByDuration.splice(newIndex, 0, clipSlug)
+}
 
 interface ClipsSliceState {
   clips: {
@@ -122,12 +124,13 @@ export interface ClipsUpdatedPayload {
   updates: ClipUpdate[]
 }
 
-export const parseUserType = (userInfo: TwitchPrivateMessage['userInfo']) => {
-  return [
-    userInfo.isMod ? 'mod' : undefined,
-    userInfo.isVip ? 'vip' : undefined,
-    userInfo.isBroadcaster ? 'broadcaster' : undefined
-  ]
+export const parseUserType = (userInfo: TwitchPrivateMessage['userInfo'], sub: 0 | 1): UserTypes[] => {
+  let response = [UserTypes['user']]
+  sub === 1 && response.push(UserTypes['sub'])
+  userInfo.isMod && response.push(UserTypes['mod'])
+  userInfo.isVip && response.push(UserTypes['vip'])
+  userInfo.isBroadcaster && response.push(UserTypes['broadcaster'])
+  return response
 }
 
 // preprocess clip using existing metadata for convenience
@@ -141,6 +144,7 @@ const preProcessClip = (clip: TwitchClipV5 & CaughtClipV2, msg: TwitchPrivateMes
       isVip: msg.userInfo.isVip
     }]
   }
+  clip.annotations = { [channelName]: []}
   clip.postedByMod = msg.userInfo.isMod
   clip.postedByBroadcaster = msg.userInfo.isBroadcaster
   clip.postedByVip = msg.userInfo.isVip
@@ -221,13 +225,9 @@ const clipsSlice = createSlice({
   reducers: {
     clipAdded(clips, action: PayloadAction<ClipAddedPayloadV2>) {
       clips.clips[action.payload.clip.slug] = action.payload.clip
-        const newEpochIndex = recursiveSearch(clips.clipsByStartEpoch, clips.clips, 'startEpoch', action.payload.clip.startEpoch)
-        clips.clipsByStartEpoch.splice(newEpochIndex, 0, action.payload.clip.slug)
-      
-      const newStreamIndex = recursiveSearch(clips.clipsByStream, clips.clips, 'broadcasterName', action.payload.clip.broadcasterName)
-      clips.clipsByStream.splice(newStreamIndex, 0, action.payload.clip.slug)
-      const newDurationIndex = recursiveSearch(clips.clipsByDuration, clips.clips, 'duration', action.payload.clip.duration)
-      clips.clipsByDuration.splice(newDurationIndex, 0, action.payload.clip.slug)
+      insertEpoch(clips.clipsByStartEpoch, action.payload.clip.startEpoch, action.payload.clip.slug, clips.clips)
+      insertStream(clips.clipsByStream, action.payload.clip.broadcasterName, action.payload.clip.slug, clips.clips)
+      insertDuration(clips.clipsByDuration, action.payload.clip.duration, action.payload.clip.slug, clips.clips)
     },
     clipReadded(clips, action: PayloadAction<ClipReaddedPayloadV2>) {
       clips.clips[action.payload.clipSlug].postedBy[action.payload.channelName].push({
@@ -242,7 +242,11 @@ const clipsSlice = createSlice({
       clips.clips[action.payload.clipSlug].postedByVip = clips.clips[action.payload.clipSlug].postedByMod || action.payload.types.indexOf(UserTypes["vip"]) > -1
     },
     clipAnnotated(clips, action: PayloadAction<ClipAnnotatedPayload>) {
-      clips.clips[action.payload.clipSlug].annotations[action.payload.channelName].push(action.payload.annotation)
+      if (!clips.clips[action.payload.clipSlug].annotations[action.payload.channelName]) {
+        clips.clips[action.payload.clipSlug].annotations[action.payload.channelName] = [action.payload.annotation]
+      } else {
+        clips.clips[action.payload.clipSlug].annotations[action.payload.channelName].push(action.payload.annotation)
+      }
     },
     clipsUpdated(clips, action: PayloadAction<ClipsUpdatedPayload>) {
       action.payload.updates.forEach(update => {
@@ -266,18 +270,12 @@ const clipsSlice = createSlice({
           [channelName]: clip.postedBy
         }
       }
-
-      let tempClips = current(clips.clips)
-
       if (clip.startEpoch) {
-        const newEpochIndex = recursiveSearch(current(clips.clipsByStartEpoch), tempClips, 'startEpoch', clip.startEpoch)
-        clips.clipsByStartEpoch.splice(newEpochIndex, 0, clip.slug)
+        insertEpoch(clips.clipsByStartEpoch, clip.startEpoch, clip.slug, clips.clips)
       }
       
-      const newStreamIndex = recursiveSearch(current(clips.clipsByStream), tempClips, 'broadcasterName', clip.broadcasterName)
-      clips.clipsByStream.splice(newStreamIndex, 0, clip.slug)
-      const newDurationIndex = recursiveSearch(current(clips.clipsByDuration), tempClips, 'duration', clip.duration)
-      clips.clipsByDuration.splice(newDurationIndex, 0, clip.slug)
+      insertStream(clips.clipsByStream, clip.broadcasterName, clip.slug, clips.clips)
+      insertDuration(clips.clipsByDuration, clip.duration, clip.slug, clips.clips)
     })
   }
 })
