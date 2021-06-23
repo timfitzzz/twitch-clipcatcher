@@ -1,13 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Listener } from '@d-fischer/typed-event-emitter'
-import { TwitchPrivateMessage } from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
-import useApiClient from '../singleton-hooks/useApiClient'
+import { useEffect, useState } from 'react'
 import useChatClient from '../singleton-hooks/useChatClient'
-import { CaughtClip } from '../types'
-import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore'
-
-import { useAppDispatch, useAppSelector } from './reduxHooks'
-import { clipAdded, clipReadded, scanningStarted, scanningStopped } from '../redux/channels'
+import { useAppSelector } from './reduxHooks'
 
 const useChannel = (channelName: string) => {
 
@@ -78,7 +71,7 @@ const useChannel = (channelName: string) => {
         setJoined(false)
       }
     })
-  }, [joined, error, chatClient, loggedIn, channelName])
+  }, [joined, error, chatClient, channel, loggedIn, channelName])
 
 
   // //schedule message listener

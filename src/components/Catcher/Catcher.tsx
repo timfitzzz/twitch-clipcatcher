@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Flex, Box } from 'rendition'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import { scanningStarted, scanningStopped } from '../../redux/channels'
+import { Flex } from 'rendition'
+import { useAppSelector } from '../../hooks/reduxHooks'
 // import { useContextSelector } from 'use-context-selector'
 // import { ChannelActions, ChannelsContext } from '../../contexts/ChannelsContext'
 import ChannelSelector from './ChannelSelector/ChannelSelector'
@@ -39,21 +38,9 @@ const Catcher = () => {
 
   let [addPanelVisible, setAddPanelVisible] = useState<boolean>(true)
 
-  let dispatch = useAppDispatch()
-
   // let channelNames = useContextSelector(ChannelsContext, (c) => Object.getOwnPropertyNames(c.channels))
   // let channelsDispatch = useContextSelector(ChannelsContext, (c) => c.channelsDispatch)
   // let channelNames = useMemo(() => Object.getOwnPropertyNames(channels), [channels])
-
-
-  const getStartCallback = (channelName: string) => () => {
-    dispatch(scanningStarted(channelName))
-  }
-
-  const getStopCallback = (channelName: string) => () => {
-    dispatch(scanningStopped(channelName))
-  }
-
 
   return (
     <>

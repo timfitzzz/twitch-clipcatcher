@@ -1,11 +1,6 @@
-import { createSlice, configureStore, PayloadAction, SliceCaseReducers, CreateSliceOptions, createAsyncThunk } from '@reduxjs/toolkit'
-import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
-import { RejectedWithValueActionFromAsyncThunk } from '@reduxjs/toolkit/dist/matchers'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TwitchPrivateMessage } from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
-import { ApiClient } from 'twitch/lib'
-import { StringLiteralType } from 'typescript'
-import { CaughtClipV2, ClipAnnotation, TwitchClipV5 } from '../types'
-import { AppDispatch, RootState } from './store'
+import { CaughtClipV2, ClipAnnotation } from '../types'
 import { clipAdded as clipAddedV1, ClipAddedPayload } from './channels'
 
 
@@ -133,25 +128,6 @@ export const parseUserType = (userInfo: TwitchPrivateMessage['userInfo'], sub: 0
   return response
 }
 
-// preprocess clip using existing metadata for convenience
-const preProcessClip = (clip: TwitchClipV5 & CaughtClipV2, msg: TwitchPrivateMessage, channelName: string): CaughtClipV2 => {
-  clip.postedBy = {
-    [channelName]: [{
-      userName: msg.userInfo.userName,
-      userId: msg.userInfo.userId,
-      isMod: msg.userInfo.isMod,
-      isBroadcaster: msg.userInfo.isBroadcaster,
-      isVip: msg.userInfo.isVip
-    }]
-  }
-  clip.annotations = { [channelName]: []}
-  clip.postedByMod = msg.userInfo.isMod
-  clip.postedByBroadcaster = msg.userInfo.isBroadcaster
-  clip.postedByVip = msg.userInfo.isVip
-  // console.log(msg)
-  return clip
-}
-
 // export const intakeClip = createAsyncThunk<
 // { 
 //   result: string
@@ -261,7 +237,7 @@ const clipsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(clipAddedV1, (clips, action: PayloadAction<ClipAddedPayload>) => {
       let { payload }: { payload: ClipAddedPayload} = action
-      let [channelName, clip, messageId] = payload
+      let [channelName, clip ] = payload
       clips.clips[clip.slug] = { 
         ...clip,
         annotations: {},

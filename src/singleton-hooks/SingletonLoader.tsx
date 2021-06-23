@@ -1,7 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { useContextSelector } from 'use-context-selector'
-import { AuthContext } from '../contexts/AuthContext'
 import useApiClient from './useApiClient'
 import useChatClient from './useChatClient'
 import { Listener } from '@d-fischer/typed-event-emitter'
@@ -9,10 +7,8 @@ import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { intakeClip } from '../redux/channels';
 import { intakeReply } from '../redux/messages';
 import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore';
-import { ChatClient } from 'twitch-chat-client/lib'
 import { TwitchApiCallType } from 'twitch/lib'
 import { shallowEqual } from 'react-redux'
-import { TwitchPrivateMessage } from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
 import { parseUserType } from '../redux/clips'
 
 // const messageParser = (msg: TwitchPrivateMessage) => {

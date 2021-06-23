@@ -2,15 +2,11 @@ import React from 'react';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import styled from 'styled-components';
-import { Button, Flex } from 'rendition';
-import ScannerWithCount from '../../badges/ScannerWithCount';
 import { Filters, SortList, SortTypes } from '../../../types';
 import { OptionsPanelContainer, OptionsPanelRow, OptionsPanelSection } from '.'
 import CollectionControls from './CollectionControls';
-import Count from '../../badges/MessageCount';
 import { useAppDispatch } from '../../../hooks/reduxHooks';
 import { channelCleared } from '../../../redux/channels';
-import { DeleteForever } from '@styled-icons/material/DeleteForever';
 
 import SortSetter from './SortSetter';
 import StatsPanel from './StatsPanel';
@@ -19,12 +15,12 @@ import FilterSetter from './FilterSetter';
 import ModerationFilter from './ModerationFilter';
 
 
-const OptionsPanelTitle = styled.h4`
-  margin-top: 2px;
-  margin-bottom: 2px;
-  font-size: 18px;
-  flex-grow: 0;
-`
+// const OptionsPanelTitle = styled.h4`
+//   margin-top: 2px;
+//   margin-bottom: 2px;
+//   font-size: 18px;
+//   flex-grow: 0;
+// `
 
 const Options = ({
   locked,

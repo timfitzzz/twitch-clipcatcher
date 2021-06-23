@@ -2,7 +2,7 @@ import React from 'react'
 // import { useContextSelector } from 'use-context-selector'
 import styled from 'styled-components';
 import { Box, Flex } from 'rendition'
-import { CaughtClip, TwitchClipV5 } from '../../../types'
+import { CaughtClip } from '../../../types'
 import { CatcherBadge } from '../../badges/CatcherBadge';
 import { useContextSelector } from 'use-context-selector';
 import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';

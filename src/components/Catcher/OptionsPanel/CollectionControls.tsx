@@ -1,15 +1,11 @@
 import React from 'react'
 import { DeleteForever } from '@styled-icons/material/DeleteForever'
-import { PauseCircle } from '@styled-icons/feather/PauseCircle'
-import { Record } from '@styled-icons/foundation/Record'
 import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
-import { channelCleared, scanningStarted, scanningStopped } from '../../../redux/channels'
-import { OptionsPanelSection, OptionsPanelSectionTitle } from '.'
-import { RecordingIcon } from '../../badges/RecordingIcon'
+import { scanningStarted, scanningStopped } from '../../../redux/channels'
+import { OptionsPanelSectionTitle } from '.'
 import { RecordingButton } from '../../badges/RecordingButton'
 import { LockButton } from '../../badges/LockButton'
-import { PauseIcon } from '../../badges/PauseIcon'
 
 
 const LargerRecordingButton = styled(RecordingButton)`

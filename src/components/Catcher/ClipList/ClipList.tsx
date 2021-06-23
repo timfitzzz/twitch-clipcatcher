@@ -66,7 +66,7 @@ const ClipList = ({clips: currentClips, channelName, scanning}: {clips: CaughtCl
   const toggleSort = (toggleType: SortTypes) => {
     console.log('toggling sort ', toggleType)
     const newSort = [...sort]
-    newSort.map((sortSetting, i) => {
+    newSort.forEach((sortSetting, i) => {
       let { type: sortType, active, direction} = sortSetting
       if (sortType === toggleType) {
         if (!active) {

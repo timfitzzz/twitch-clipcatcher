@@ -1,9 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
-import { scanningStarted, scanningStopped } from '../../../redux/channels'
+import { useAppSelector } from '../../../hooks/reduxHooks'
 import { OptionsPanelSectionTitle } from '.'
-import ClipsCount from '../../badges/ClipsCount';
 import Count from '../../badges/MessageCount';
 import { OndemandVideo } from '@styled-icons/material/OndemandVideo'
 import { MessageSquare } from '@styled-icons/feather/MessageSquare'

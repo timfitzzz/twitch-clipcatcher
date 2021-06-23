@@ -1,7 +1,7 @@
-import React from 'react'
+// import React from 'react'
 import styled from 'styled-components'
 import { Button, Flex } from 'rendition'
-import { StyledIcon } from '@styled-icons/styled-icon'
+// import { StyledIcon } from '@styled-icons/styled-icon'
 
 export * from './OptionsPanel'
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import AuthContextProvider from './contexts/AuthContext/twitchCtx';
-import ChannelsContextProvider from './contexts/ChannelsContext/channelsCtx';
 import { BrowserRouter } from 'react-router-dom';
 import { Routes } from './routes/Routes';
 import { Provider } from 'rendition';

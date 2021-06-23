@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useContextSelector } from 'use-context-selector'
 import { Button, Flex, Input } from 'rendition'
 import styled from 'styled-components'
 import { useAppDispatch } from '../../../hooks/reduxHooks'

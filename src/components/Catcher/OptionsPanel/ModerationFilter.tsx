@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { BalanceScale } from '@styled-icons/fa-solid/BalanceScale'
 import { BalanceScaleLeft } from '@styled-icons/fa-solid/BalanceScaleLeft'
 import { BalanceScaleRight } from '@styled-icons/fa-solid/BalanceScaleRight'
-import { useAppSelector } from '../../../hooks/reduxHooks'
 import { OptionsPanelSectionTitle, FiltersRow } from '.'
 import { FilterButton } from '../../badges/FilterButton'
 
@@ -15,7 +14,7 @@ const ModerationTitleIcon = styled(BalanceScale)`
 
 const ReusableToggleSetter = ({channelName, className}: {channelName: string, className?: string}) => {
 
-  const clipsCount = useAppSelector(state => state.channels[channelName].clips.length)
+  // const clipsCount = useAppSelector(state => state.channels[channelName].clips.length)
   
   return (
     <div className={className}>

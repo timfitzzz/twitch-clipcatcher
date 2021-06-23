@@ -1,9 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Close } from '@styled-icons/material/Close'
+import React from 'react';
 import { Add } from '@styled-icons/material/Add'
-import { useContextSelector } from 'use-context-selector';
 import styled from 'styled-components';
-import { Box, Flex, Tabs } from 'rendition';
+import { Flex } from 'rendition';
 
 import Tab from './Tab';
 
@@ -18,24 +16,6 @@ const AddIcon = styled(Add)`
   &:hover {
     fill: green
   }
-`
-
-const CloseIcon = styled(Close)`
-  width: 18px;
-  height: 18px;
-  fill: ${p => p.theme.colors.gray.dark};
-
-  &:hover {
-    fill: red;
-  }
-`
-
-const CloseTab = styled(Tab)`
-  margin-right: 0px;
-  margin-left: auto;
-  padding: 4px 1px 1px 1px;
-  margin-top: 8px;
-  border: none;
 `
 
 const ChannelSelectorTabs = styled(Flex).attrs(p => ({
@@ -62,36 +42,6 @@ export const ReusableChannelSelector = ({
   currentChannelName: string | null;
 }) => {
 
-
-  // const switchToChannel = (idx: number) => {
-  //   setCurrentChannel(idx);
-  //   setAddPanelVisible(false)
-  // };
-
-  // const showAddPanel = () => {
-  //   setAddPanelVisible(true)
-  // }
-
-  // const hideAddPanel = () => {
-  //   setAddPanelVisible(false)
-  // }
-
-  // console.log('rendering channelselector');
- 
-  // useEffect(() => {
-  //   if (currentChannel !== -1) {
-  //     let allButCurrent: string[] = channelNames.splice(currentChannel, 1)
-  //     allButCurrent.push(channelNames[currentChannel])
-  //     setChannelNameOrder(allButCurrent)
-  //   } else {
-  //     setChannelNameOrder(channelNames)
-  //   }
-  // }, [currentChannel, channelNames])
-
-  // useEffect(() => {
-  //   setAddPanelVisible(false)
-  // }, [channelNames])
-
   return (
     <ChannelSelectorTabs>
       <Flex flexDirection={'row'} width={'100%'}>
@@ -111,14 +61,6 @@ export const ReusableChannelSelector = ({
             key={'addPanelTab'}
           />
         </Flex>
-        {/* <CloseTab
-            hidden={addPanelSelected === true}
-            onClick={() => setAddPanelVisible(true)}
-            icon={CloseIcon}
-            current={true}
-            key={'addPanelTab'}
-
-          /> */}
       </Flex>
 
     </ChannelSelectorTabs>

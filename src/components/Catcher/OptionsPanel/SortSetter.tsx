@@ -1,10 +1,9 @@
-import React, { MouseEventHandler, ReactSVGElement, useEffect, useRef, useState } from 'react'
-import styled, { StyledComponentInnerComponent } from 'styled-components'
-import { ButtonGroup, Button, Flex } from 'rendition'
+import React, { useRef } from 'react'
+import styled from 'styled-components'
+import { Flex } from 'rendition'
 import { SortList, SortTypes } from '../../../types'
 import { Frog } from '@styled-icons/fa-solid/Frog'
-import { StyledIcon } from '@styled-icons/styled-icon'
-import { FlatterButton, OptionsPanelSectionTitle } from '.'
+import { OptionsPanelSectionTitle } from '.'
 import { Timer as OriginalTimer } from '@styled-icons/material/Timer'
 import { Visibility } from '@styled-icons/material/Visibility'
 import { AccessTimeFilled } from '@styled-icons/material/AccessTimeFilled'
@@ -183,7 +182,7 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, childre
     const Icon = SortIcons[id]
 
     const opacity = isDragging ? 0 : 1
-    const previewDisplay = isDragging ? 'inherit' : 'none'
+    // const previewDisplay = isDragging ? 'inherit' : 'none'
     drag(drop(ref))
     return (
         <div onClick={onClick} ref={ref} className={className} style={{ opacity }} data-handler-id={handlerId}>
@@ -344,7 +343,7 @@ export const SortSetter = ({currentSort, moveSort, toggleSort, className}: {
   moveSort: (dragIndex: number, hoverIndex: number) => void
   toggleSort: (type: SortTypes) => void
 }) => {
-  const [displaySortOrder, setDisplaySortOrder] = useState<SortList>(currentSort)
+  // const [displaySortOrder, setDisplaySortOrder] = useState<SortList>(currentSort)
 
   return (
     <SortSetterOuterContainer className={className}>

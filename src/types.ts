@@ -1,5 +1,4 @@
 import React from "react";
-import { ChatMessageRequest } from "twitch-chat-client/lib/ChatClient";
 import { TwitchPrivateMessage } from "twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage";
 import { UserTypes } from "./redux/clips";
 

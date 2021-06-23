@@ -1,13 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars*/
 import React, { useEffect, useState } from 'react'
-import { Listener } from '@d-fischer/typed-event-emitter'
 import { singletonHook } from 'react-singleton-hook'
 import { ChatClient } from 'twitch-chat-client/lib';
 import { useContextSelector } from 'use-context-selector';
 import { AuthContext } from '../contexts/AuthContext';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
-import { intakeClip } from '../redux/channels';
-import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore';
-import { removeListener } from 'process';
 
 const init = {
   chatClient: null,
@@ -50,7 +46,7 @@ const useChatClientImpl = () => {
       setChatClient(null)
     })
 
-  }, [authProvider]);
+  }, [authProvider, chatClient, loggedIn]);
 
   return  { chatClient, loggedIn }
 

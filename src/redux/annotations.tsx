@@ -1,13 +1,7 @@
-import { createSlice, configureStore, PayloadAction, SliceCaseReducers, CreateSliceOptions, createAsyncThunk } from '@reduxjs/toolkit'
-import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
-import { RejectedWithValueActionFromAsyncThunk } from '@reduxjs/toolkit/dist/matchers'
-import { TwitchPrivateMessage } from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
-import { ApiClient } from 'twitch/lib'
-import { StringLiteralType } from 'typescript'
-import { CaughtClipV2, ClipAnnotation, TwitchClipV5 } from '../types'
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { ClipAnnotation } from '../types'
 import { AppDispatch, RootState } from './store'
-import { ClipAddedPayloadV2, ClipReaddedPayloadV2, ClipAnnotatedPayload, UserTypes, clipAnnotated } from './clips'
-import { clipAdded as clipAddedV1, ClipAddedPayload } from './channels'
+import { ClipAnnotatedPayload, UserTypes, clipAnnotated } from './clips'
 
 interface AnnotationsSliceState {
   annotations: {

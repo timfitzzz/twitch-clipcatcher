@@ -1,9 +1,8 @@
-import React, { ReactComponentElement, ReactElement, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Flex, Box } from 'rendition'
 import { CatcherBadge } from '../../badges/CatcherBadge'
 import { RecordingIcon } from '../../badges/RecordingIcon'
-import { Scanner } from '../../badges/ScannerWithCount'
 import { useAppSelector } from '../../../hooks/reduxHooks'
 
 const TabTitleText = styled.h5`
@@ -14,16 +13,6 @@ const TabTitleText = styled.h5`
   margin-left: 4px;
   margin-right: 4px;
 `
-
-const TabIconBox = styled.div`
-  padding-top: 0px;
-  padding-bottom: 0px;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 4px;
-  margin-right: 4px;
-`
-
 
 const TabBox = styled(Box)<{ current: boolean, buttonOnly?: boolean}>`
 
@@ -81,8 +70,8 @@ const SteadyRecordingIcon = styled(RecordingIcon)<{fade?: boolean}>`
 `
 
 const Tab = ({title, hidden, onClick, icon, current, className}: {title?: string, icon?: React.FC, hidden?: boolean, clipsCount?: number, scanning?: boolean, onClick: () => void, newClips?: boolean, current: boolean, className?: string}) => {
-
-  const [lastAcknowledgedCount, setLastAcknowledgedCount ] = useState<number>(0)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_lastAcknowledgedCount, setLastAcknowledgedCount ] = useState<number>(0)
 
   const clipsCount = useAppSelector(state => icon || !title ? undefined : state.channels[title].clips.length)
   const scanning = useAppSelector(state => icon || !title ? undefined: state.channels[title].scanning)
@@ -93,7 +82,7 @@ const Tab = ({title, hidden, onClick, icon, current, className}: {title?: string
     if (current) {
       setLastAcknowledgedCount(clipsCount || 0)
     }
-  }, [current])
+  }, [current, clipsCount])
 
   return (
     <TabBox hidden={hidden} className={className} current={current} onClick={onClick} buttonOnly={icon ? true : false }>

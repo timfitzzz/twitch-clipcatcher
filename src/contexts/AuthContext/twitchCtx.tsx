@@ -1,15 +1,12 @@
 import React, {
   ReactChild,
   ReactChildren,
-  useState,
 } from 'react';
 import { createContext } from 'use-context-selector';
 import {
-  ApiClient,
   StaticAuthProvider,
-  TwitchApiCallType
 } from 'twitch/lib';
-import { CaughtClip, OIDCUserData } from '../../types';
+import { OIDCUserData } from '../../types';
 import useTwitchAuth from './useTwitchAuth';
 
 
@@ -41,7 +38,7 @@ const AuthContextProvider = ({
   children?: ReactChild | ReactChildren | ReactChild[];
 }) => {
 
-  const [apiClient, setApiClient] = useState<ApiClient | null>(null)
+  // const [apiClient, setApiClient] = useState<ApiClient | null>(null)
 
   const {
     authProvider,

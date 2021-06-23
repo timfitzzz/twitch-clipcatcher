@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import React, { useEffect, useState } from 'react'
 import { singletonHook } from 'react-singleton-hook'
 import {
-  ApiClient, TwitchApiCallType,
+  ApiClient
 } from 'twitch/lib';
 import { useContextSelector } from 'use-context-selector';
 import { AuthContext } from '../contexts/AuthContext';
@@ -27,7 +29,7 @@ const useApiClientImpl = () => {
       setApiClient(null)
     })
 
-  }, [authProvider]);
+  }, [authProvider, apiClient]);
 
 
   return apiClient
