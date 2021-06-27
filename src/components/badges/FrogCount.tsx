@@ -28,7 +28,7 @@ const FrogCountBadge = styled(Flex)`
       margin-top: auto;
       margin-bottom: 1px;
       margin-right: 4px;
-      height: 14px;
+      height: 12px;
       fill: ${p => p.theme.colors.success.dark};
       path {
         fill:${p => p.theme.colors.success.dark};

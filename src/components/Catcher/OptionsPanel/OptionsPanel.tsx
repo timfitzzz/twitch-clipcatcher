@@ -26,26 +26,20 @@ const Options = ({
   locked,
   toggleDisplayLock,
   channelName,
-  clipCount,
-  scanning,
-  currentSort,
-  moveSort,
-  toggleSort,
-  filters,
-  setFilter,
+  // clipCount,
+  // scanning,
+  // filters,
+  // setFilter,
   className
 }: {
   locked: boolean
   toggleDisplayLock: () => void
   className?: string
   channelName: string
-  clipCount: number
-  currentSort: SortList
-  scanning: boolean
-  toggleSort: (type: SortTypes) => void
-  moveSort: (dragIndex: number, hoverIndex: number) => void
-  setFilter: (filterName: keyof Filters) => void
-  filters: Filters
+  // clipCount: number
+  // scanning: boolean
+  // setFilter: (filterName: keyof Filters) => void
+  // filters: Filters
 }) => {
 
   const dispatch = useAppDispatch()
@@ -77,7 +71,7 @@ const Options = ({
         </OptionsPanelRow>
         <OptionsPanelRow>
           <OptionsPanelSection>
-            <SortSetter currentSort={currentSort} moveSort={moveSort} toggleSort={toggleSort}/>
+            <SortSetter channelName={channelName}/>
           </OptionsPanelSection>
         </OptionsPanelRow>
       </DndProvider>

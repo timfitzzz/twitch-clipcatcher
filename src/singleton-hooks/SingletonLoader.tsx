@@ -4,12 +4,11 @@ import useApiClient from './useApiClient'
 import useChatClient from './useChatClient'
 import { Listener } from '@d-fischer/typed-event-emitter'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
-import { intakeClip } from '../redux/channels';
-import { intakeReply } from '../redux/messages';
+import { intakeClip, intakeReply } from '../redux/actions';
 import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore';
 import { TwitchApiCallType } from 'twitch/lib'
 import { shallowEqual } from 'react-redux'
-import { parseUserType } from '../redux/clips'
+import { parseUserType } from '../utilities/parsers';
 
 // const messageParser = (msg: TwitchPrivateMessage) => {
 //   let { target, message } = msg
@@ -17,6 +16,8 @@ import { parseUserType } from '../redux/clips'
 //   let replyMsgId = msg.tags.get("e6f55087-a031-456c-8657-9c9f74d1015a")
 //   if ()
 // }
+
+let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+-{1}[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+)/g;
 
 const SingletonLoader = () => {
 
@@ -26,7 +27,7 @@ const SingletonLoader = () => {
   const { chatClient, loggedIn } = useChatClient()
   const [currentMessageListener, setCurrentMessageListener] = useState<Listener | null>(null)
   const dispatch = useAppDispatch()
-  const channelsToScan = useAppSelector(state => Object.getOwnPropertyNames(state.channels).filter(channelName => state.channels[channelName].scanning), shallowEqual)
+  // const channelsToScan = useAppSelector(state => Object.getOwnPropertyNames(state.channels).filter(channelName => state.channels[channelName].scanning), shallowEqual)
 
   const getClipMeta = useMemo(() => apiClient ? async (clipSlug: string) => {
     return apiClient
@@ -64,41 +65,50 @@ const SingletonLoader = () => {
     let newListener: Listener | null;
 
     if (apiClient && chatClient && loggedIn && getClipMeta && getVodEpoch) {
-      console.log('setting message listener')
       newListener = chatClient.onMessage((_channel, _user, _message, msg) => {
         let { target, message } = msg;
         let channelName = target.value.substr(1, target.value.length);
+        let replyParentId = msg.tags.get('reply-parent-msg-id')
+        ClipRegExp.lastIndex = 0;
+        let clipResult = ClipRegExp.exec(message.value)
+        if (replyParentId || clipResult) {
+          let messageText = message.value
+          // we'll process all replies, and any non reply with a clip
+          let words: string[];
+          if (clipResult && clipResult.groups) {
+            words = messageText.replace(clipResult[0].toString(), "").toLocaleLowerCase().split(" ")
+          } else {
+            words = messageText.toLocaleLowerCase().split(" ")
+          }
+          let sub = msg.tags.get('subscriber')
 
-        if (channelsToScan.indexOf(channelName) > -1) {
-          
-          let replyParentId = msg.tags.get('reply-parent-msg-id')
           if (replyParentId) {
-            let tags = message.value.split(" ")
-            let sub = msg.tags.get('subscriber')
             dispatch(intakeReply({
               channelName,
+              clipSlug: clipResult && clipResult.groups ? clipResult.groups.clipSlug : undefined,
               messageId: msg.id,
               parentMessageId: replyParentId,
-              tags: tags,
-              messageText: message.value,
+              words,
               userName: msg.userInfo.userName,
-              userTypes: parseUserType(msg.userInfo, sub ? parseInt(sub) as 0 | 1 : 0)
+              userTypes: parseUserType(msg.userInfo, sub ? parseInt(sub) as 0 | 1 : 0),
+              getClipMeta,
+              getVodEpoch
             }))
-          }
-
-          let ClipRegExp: RegExp = /(?:[https://]*clips.twitch.tv\/|www.twitch.tv\/.*\/)+(?<clipName>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+-{1}[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+)/g;
-          let clipResult = ClipRegExp.exec(message.value)
-          if (clipResult && clipResult.groups) {
+          } else if (clipResult && clipResult.groups) {
+            // console.log(channelName, clipResult.groups.clipSlug, getClipMeta)
             dispatch(intakeClip({
               channelName,
-              clipName: clipResult.groups.clipName,
-              msg,
+              userName: msg.userInfo.userName,
+              words,
+              clipSlug: clipResult.groups.clipSlug,
+              userTypes: parseUserType(msg.userInfo, sub ? parseInt(sub) as 0 | 1 : 0),
+              messageId: msg.id,
               getClipMeta,
               getVodEpoch
             }))
           }
-          MessageCountStore.incrementChannelCount(channelName)
         }
+        MessageCountStore.incrementChannelCount(channelName)
       })
 
       if (oldListener) {
@@ -114,7 +124,7 @@ const SingletonLoader = () => {
         chatClient?.removeListener(currentMessageListener.event, currentMessageListener.listener)
       }
     })
-  }, [chatClient, loggedIn, apiClient, getClipMeta, getVodEpoch, channelsToScan])
+  }, [chatClient, loggedIn, apiClient, getClipMeta, getVodEpoch])
 
   return (<></>)
 

@@ -1,6 +1,5 @@
 import React from "react";
 import { TwitchPrivateMessage } from "twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage";
-import { UserTypes } from "./redux/clips";
 
 export interface TwitchClipV5 {
   slug: string
@@ -61,37 +60,30 @@ export interface CaughtClip extends TwitchClipV5 {
   }
 }
 
-export interface CaughtClipV2 extends TwitchClipV5 {
-  broadcasterName: string
-  postedBy: {
-    [channelName: string]: {
-      userId: TwitchPrivateMessage['userInfo']['userId']
-      userName: TwitchPrivateMessage['userInfo']['userName']
-      isMod: boolean
-      isVip: boolean
-      isBroadcaster: boolean
-    }[]
-  }
-  annotations: {
-    [channelName: string]: ClipAnnotation[]
-  }
-  startEpoch: number
-  postedByBroadcaster?: boolean
-  postedByMod?: boolean
-  postedByVip?: boolean
-}
-
-export interface ClipAnnotation {
-  channelName: string
-  source: string
-  userTypes: UserTypes[]
-  tags?: string[]
-  meta?: boolean
-  drama?: boolean
-  block?: boolean
-  vouch?: boolean
-  messageText: string
-}
+// export interface CaughtClipV2 extends TwitchClipV5 {
+//   broadcasterName: string
+//   postedBy: {
+//     [channelName: string]: {
+//       userId: TwitchPrivateMessage['userInfo']['userId']
+//       userName: TwitchPrivateMessage['userInfo']['userName']
+//       isMod: boolean
+//       isVip: boolean
+//       isBroadcaster: boolean
+//     }[]
+//   }
+//   annotations: {
+//     [channelName: string]: ClipAnnotation[]
+//   }
+//   startEpoch?: number
+//   postedByBroadcaster?: boolean
+//   postedByMod?: boolean
+//   postedByVip?: boolean
+//   vod: {
+//     id: string,
+//     url: string,
+//     offset: number
+//   }
+// }
 
 
 export interface ChannelClip {
@@ -161,6 +153,16 @@ export interface Filters {
   otherChannels: TrinaryFilterState
 }
 
+enum FilterNames {
+  'meta' = 'meta',
+  'drama' = 'drama',
+  'faves' = 'faves',
+  'today' = 'today',
+  'trusted' = 'trusted',
+  'moderated' = 'moderated',
+  'otherChannels' = 'otherChannels'
+}
+
 export const defaultFilters: Filters = {
   meta: TrinaryFilterState.off,
   drama: TrinaryFilterState.off,
@@ -210,5 +212,15 @@ export const defaultSort: SortList = [{
 export interface ICatcherChannel {
   name: string;
   scanning: boolean;
-  clips: CaughtClip[];
+  clips: string[];
+  sort: SortList
+  filters: Filters
+}
+
+export enum UserTypes {
+  'user',
+  'sub',
+  'broadcaster',
+  'mod',
+  'vip'
 }
