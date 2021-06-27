@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rendition'
-import { SortList, SortTypes } from '../../../types'
+import { SortTypes } from '../../../types'
 import { Frog } from '@styled-icons/fa-solid/Frog'
 import { OptionsPanelSectionTitle } from '.'
 import { Timer as OriginalTimer } from '@styled-icons/material/Timer'
@@ -9,6 +9,9 @@ import { Visibility } from '@styled-icons/material/Visibility'
 import { AccessTimeFilled } from '@styled-icons/material/AccessTimeFilled'
 import { useDrop, XYCoord, DropTargetMonitor, useDrag } from 'react-dnd'
 import { Twitch } from '@styled-icons/feather/Twitch'
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
+import { useMemo } from 'react'
+import { sortMoved, sortToggled } from '../../../redux/channels'
 
 const Timer = styled(OriginalTimer)`
   padding-bottom: 2px;
@@ -124,7 +127,7 @@ const DraggableIconsContainer = styled(Flex).attrs(p => ({
   margin-left: 7px;
 `
 
-const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, children }: { onClick?: (e: React.MouseEvent) => void, children?: JSX.Element, id: SortTypes, index: number, moveIcon: (dragIndex: number, hoverIndex: number) => void, className?: string}) => {
+const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channelName, children }: { onClick?: (e: React.MouseEvent) => void, children?: JSX.Element, channelName: string, id: SortTypes, index: number, moveIcon: (dragIndex: number, hoverIndex: number, channelName: string) => void, className?: string}) => {
 
     const ref = useRef<HTMLDivElement>(null)
 
@@ -162,7 +165,7 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, childre
             return
           }
 
-          moveIcon(dragIndex, hoverIndex)
+          moveIcon(dragIndex, hoverIndex, channelName)
           item.index = hoverIndex
         
 
@@ -331,19 +334,33 @@ const DescendingArrow = styled.div<{brighten: boolean}>`
 
 const renderDescendingRow = (brighten: boolean[]) => brighten.map((brighten, i) => {
   return (
-
       <DescendingArrow key={'descendingarrow'+i} brighten={brighten}/>
   )
 })
 
 
-export const SortSetter = ({currentSort, moveSort, toggleSort, className}: {
+export const SortSetter = ({channelName, className}: {
+  channelName: string
   className?: string
-  currentSort: SortList
-  moveSort: (dragIndex: number, hoverIndex: number) => void
-  toggleSort: (type: SortTypes) => void
 }) => {
   // const [displaySortOrder, setDisplaySortOrder] = useState<SortList>(currentSort)
+  const currentSort = useAppSelector(state => state.channels[channelName].sort)
+  const dispatch = useAppDispatch()
+
+  const moveSort = useMemo(() => (dragIndex: number, hoverIndex: number, channelName: string) => {
+    dispatch(sortMoved({
+      dragIndex,
+      hoverIndex,
+      channelName
+    }))}, [dispatch])
+  
+  const toggleSort = useMemo(() => (toggleIndex: number, channelName: string) => {
+    dispatch(sortToggled({
+      toggleIndex,
+      channelName
+    }))
+  }, [dispatch])
+
 
   return (
     <SortSetterOuterContainer className={className}>
@@ -363,7 +380,7 @@ export const SortSetter = ({currentSort, moveSort, toggleSort, className}: {
         <DraggableIconsContainer>
           {currentSort.map((sort, i) => {
             let Icon = SortIcons[sort.type]
-            return <DraggableIcon disabled={!sort.active} onClick={(e) => toggleSort(sort.type)} id={sort.type} key={sort.type+'icon'} index={i} moveIcon={moveSort}><Icon  /></DraggableIcon>
+            return <DraggableIcon disabled={!sort.active} onClick={(e) => toggleSort(i, channelName)} id={sort.type} key={sort.type+'icon'+channelName} index={i} moveIcon={moveSort} channelName={channelName}><Icon  /></DraggableIcon>
           })}
         </DraggableIconsContainer>
       </SortSetterContainer>

@@ -30,7 +30,6 @@ const ChannelsContextProvider = ({
   children
 }: {children?: ReactChild | ReactChildren}) => {
 
-
   // console.log('rerendering channels context')
   const [channelsState, mainChannelsDispatch] = useReducer(
     channelsReducer,
