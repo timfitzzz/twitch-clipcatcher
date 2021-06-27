@@ -2,7 +2,6 @@ import React from 'react';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import styled from 'styled-components';
-import { Filters, SortList, SortTypes } from '../../../types';
 import { OptionsPanelContainer, OptionsPanelRow, OptionsPanelSection } from '.'
 import CollectionControls from './CollectionControls';
 import { useAppDispatch } from '../../../hooks/reduxHooks';

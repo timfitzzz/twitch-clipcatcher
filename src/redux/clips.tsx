@@ -245,7 +245,7 @@ export const clipsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(annotationAdded.type, (clips, action: PayloadAction<FirstAnnotationAddedPayload>) => {
-      let { annotationTypes: types, messageId, channelName, clipSlug, by, userTypes } = action.payload.annotation
+      let { clipSlug } = action.payload.annotation
       let clip = clips.clips[clipSlug]
       mutateClipByAnnotation(clip, action.payload.annotation)
     })

@@ -1,9 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import { TwitchPrivateMessage } from "twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage"
 import { TwitchClipV5, UserTypes } from '../types'
-import { addUserTypes, getAnnotationTypes, parseTags } from "../utilities/parsers"
-import { annotationAdded, AnnotationTypes, ClipAnnotation, firstAnnotationAdded } from "./annotations"
-import { clipAdded, clipsSlice, CaughtClipV2 } from "./clips"
+import { getAnnotationTypes, parseTags } from "../utilities/parsers"
+import { annotationAdded, ClipAnnotation, firstAnnotationAdded } from "./annotations"
+import { clipAdded, CaughtClipV2 } from "./clips"
 import { mutateClipByAnnotation } from "./mutators"
 import { AppDispatch, RootState } from "./store"
 
@@ -54,7 +53,6 @@ export const intakeClip = createAsyncThunk<
   async({channelName, words, clipSlug, userTypes, messageId, userName, getClipMeta, getVodEpoch}, { getState, rejectWithValue, requestId, dispatch }) => {
     let { clips: { clips: { [clipSlug]: clip } } } = getState()
     let tagReport = parseTags(words)
-    let { tags } = tagReport
     let annotationTypes = getAnnotationTypes(tagReport, true)
 
     let newAnnotation = {
@@ -167,7 +165,6 @@ export const intakeReply = createAsyncThunk<
         if (clipSlug || parentClipSlug) {     // prefer clipSlug if there is a difference
 
           let tagReport = parseTags(words)
-          let { tags } = tagReport
           let annotationTypes = getAnnotationTypes(tagReport, false)
       
           let newAnnotation: ClipAnnotation = {

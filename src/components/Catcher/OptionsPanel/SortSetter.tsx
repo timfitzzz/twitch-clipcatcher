@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rendition'
-import { SortList, SortTypes } from '../../../types'
+import { SortTypes } from '../../../types'
 import { Frog } from '@styled-icons/fa-solid/Frog'
 import { OptionsPanelSectionTitle } from '.'
 import { Timer as OriginalTimer } from '@styled-icons/material/Timer'

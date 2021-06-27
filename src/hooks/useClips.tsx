@@ -1,7 +1,6 @@
-import { ClipboardNotesDimensions } from '@styled-icons/foundation/ClipboardNotes'
-import React, { useMemo, useState, useCallback } from 'react'
+import { useMemo, useCallback } from 'react'
 import { CaughtClipV2 } from '../redux/clips'
-import { Sort, SortTypes, Filters } from '../types'
+import { Sort, SortTypes } from '../types'
 import { useAppSelector } from './reduxHooks'
 
 const useClips = ({channelName}: { channelName: string}): string[] => {
@@ -9,7 +8,7 @@ const useClips = ({channelName}: { channelName: string}): string[] => {
   let clips = useAppSelector(state => state.clips.clips)
   let clipIds = useAppSelector(state => state.channels[channelName].clips)
   let sort = useAppSelector(state => state.channels[channelName].sort)
-  let filters = useAppSelector(state => state.channels[channelName].filters)
+  // let filters = useAppSelector(state => state.channels[channelName].filters)
 
   const sortersTable = useMemo(() => ({
     [SortTypes['frogscount']]: (clip: CaughtClipV2) => (clip.votes[channelName].up.length - clip.votes[channelName].down.length),
@@ -50,7 +49,7 @@ const useClips = ({channelName}: { channelName: string}): string[] => {
     }
 
     return 0
-  }, [sort, clips])
+  }, [sort, clips, sortersTable])
 
   let returnClips = useMemo(() => {
     return [...clipIds].sort(lexSort())

@@ -1,7 +1,7 @@
 import { TwitchPrivateMessage } from "twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage"
-import { AnnotationTypes, ClipAnnotation } from "../redux/annotations"
-import { CaughtClipV2, ClipPostedBy } from "../redux/clips"
-import { CaughtClip, UserTypes } from "../types"
+import { AnnotationTypes } from "../redux/annotations"
+import { ClipPostedBy } from "../redux/clips"
+import { UserTypes } from "../types"
 
 export const parseUserType = (userInfo: TwitchPrivateMessage ['userInfo'], sub: 0 | 1): UserTypes[] => {
   let response = [UserTypes['user']]
@@ -36,8 +36,8 @@ export const getAnnotationTypes = (tagReport: tagsReport, hasLink: boolean): Ann
   hasLink && !tagReport.downvote && types.push(AnnotationTypes['upvote'])
   !hasLink && tagReport.upvote && !tagReport.downvote && types.push(AnnotationTypes['upvote'])
   tagReport.downvote && !tagReport.upvote && types.push(AnnotationTypes['downvote'])
-  tagReport.veto && types.push(AnnotationTypes['veto'])
-  tagReport.drama || tagReport.meta || tagReport.tags.length > 0 && types.push(AnnotationTypes['tag'])
+  tagReport.veto && types.push(AnnotationTypes['veto']);
+  (tagReport.drama || tagReport.meta || tagReport.tags.length > 0) && types.push(AnnotationTypes['tag'])
   
   return types
 }

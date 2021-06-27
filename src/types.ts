@@ -153,7 +153,7 @@ export interface Filters {
   otherChannels: TrinaryFilterState
 }
 
-enum FilterNames {
+export enum FilterNames {
   'meta' = 'meta',
   'drama' = 'drama',
   'faves' = 'faves',

@@ -1,8 +1,7 @@
 import React from 'react'
 // import { useContextSelector } from 'use-context-selector'
 import styled from 'styled-components';
-import { Box, Flex } from 'rendition'
-import { CaughtClip } from '../../../types'
+import { Box, Flex } from 'rendition';
 import { CatcherBadge } from '../../badges/CatcherBadge';
 import { useContextSelector } from 'use-context-selector';
 import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';

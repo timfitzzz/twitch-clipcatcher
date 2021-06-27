@@ -3,11 +3,10 @@ import React, { useEffect, useMemo, useState } from 'react'
 import useApiClient from './useApiClient'
 import useChatClient from './useChatClient'
 import { Listener } from '@d-fischer/typed-event-emitter'
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import { useAppDispatch } from '../hooks/reduxHooks';
 import { intakeClip, intakeReply } from '../redux/actions';
 import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore';
 import { TwitchApiCallType } from 'twitch/lib'
-import { shallowEqual } from 'react-redux'
 import { parseUserType } from '../utilities/parsers';
 
 // const messageParser = (msg: TwitchPrivateMessage) => {

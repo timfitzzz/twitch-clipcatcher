@@ -1,11 +1,9 @@
-import React, { useCallback, useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'
-import { CaughtClip, SubmitterFilters, ChannelFilters, defaultFilters, Filters, SortTypes, SortList, defaultSort } from '../../../types'
+// import { defaultFilters, Filters } from '../../../types'
 import Clip from './Clip'
 import {OptionsPanel} from '../OptionsPanel'
-import update from 'immutability-helper';
-import { useAppSelector } from '../../../hooks/reduxHooks'
 import useClips from '../../../hooks/useClips'
 
 
@@ -36,7 +34,7 @@ const ClipList = ({channelName, scanning}: {channelName: string, scanning: boole
   // console.log('rendering cliplist') 
   const prevCurrentClipsRef = useRef<string[]>();
   const currentClips = useClips({channelName})
-  const [filters, setFilters] = useState<Filters>(defaultFilters)
+  // const [filters, setFilters] = useState<Filters>(defaultFilters)
   const [lockDisplay, setLockDisplay] = useState<boolean>(false)
   const clips: string[] = useMemo(() => {
     if (lockDisplay && prevCurrentClipsRef.current) {
@@ -86,19 +84,19 @@ const ClipList = ({channelName, scanning}: {channelName: string, scanning: boole
   //   setSort(newSort)
   // }
 
-  const setFilter = (filterName: keyof Filters, value?: SubmitterFilters | ChannelFilters ) => {
-    if (value) {
-      setFilters({
-        ...filters,
-        [filterName]: value
-      })
-    } else {
-      setFilters({
-        ...filters,
-        [filterName]: !filters[filterName]
-      })
-    }
-  }
+  // const setFilter = (filterName: keyof Filters, value?: SubmitterFilters | ChannelFilters ) => {
+  //   if (value) {
+  //     setFilters({
+  //       ...filters,
+  //       [filterName]: value
+  //     })
+  //   } else {
+  //     setFilters({
+  //       ...filters,
+  //       [filterName]: !filters[filterName]
+  //     })
+  //   }
+  // }
 
 
   return (

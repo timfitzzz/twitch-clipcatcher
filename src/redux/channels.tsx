@@ -1,9 +1,6 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { TwitchPrivateMessage } from 'twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage'
-import { updateSourceFile } from 'typescript'
-import { CaughtClip, defaultFilters, defaultSort, ICatcherChannel, SortTypes, TwitchClipV5 } from '../types'
-import { clipAdded, ClipAddedPayloadV2, clipsSlice } from './clips'
-import { AppDispatch, RootState } from './store'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { CaughtClip, defaultFilters, defaultSort, ICatcherChannel } from '../types'
+import { clipAdded, ClipAddedPayloadV2 } from './clips'
 
 export interface ChannelsSliceState {
   [channelName: string]: ICatcherChannel
@@ -17,7 +14,6 @@ type ScanningStartedPayload = string
 type ScanningStoppedPayload = string
 type ChannelClearedPayload = string
 export type ClipAddedPayload = [streamName: string, clip: CaughtClip, messageId: string]
-type ClipReaddedPayload = [streamName: string, clip: CaughtClip, clipIndex: number]
 
 interface SortMovedPayload {
   dragIndex: number
@@ -73,7 +69,7 @@ const channelsSlice = createSlice({
       if (!active) {
         channels[channelName].sort[toggleIndex].active = true
         channels[channelName].sort[toggleIndex].direction = 'desc'
-      } else if (direction == 'desc') {
+      } else if (direction === 'desc') {
         channels[channelName].sort[toggleIndex].direction = 'asc'
       } else if (direction === 'asc') {
         channels[channelName].sort[toggleIndex].active = false
