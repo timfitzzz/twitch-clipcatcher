@@ -16,7 +16,7 @@ const Channel = styled(({channelName, hidden}: {channelName: string, hidden?: bo
 
   return (
     <ChannelContainer hidden={hidden}>
-      <ClipList channelName={channelName} scanning={channel && channel.scanning ? channel.scanning : false} clips={channel ? channel.clips : []}/>
+      <ClipList channelName={channelName} scanning={channel && channel.scanning ? channel.scanning : false}/>
     </ChannelContainer>  
   )
 

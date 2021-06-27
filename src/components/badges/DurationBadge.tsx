@@ -21,13 +21,17 @@ const DurationBadge = styled(Flex)`
   span {
     margin-top: auto;
     margin-bottom: auto;
+    font-weight: bold;
+    padding-bottom: 1px;
+  }
 
-    svg {
-      margin-top: auto;
-      margin-bottom: 1px;
-      margin-right: 4px;
-      height: 14px;
-    }
+  svg {
+    margin-top: auto;
+    margin-bottom: 1.5px;
+    margin-left: 2px;
+    margin-right: 0px;
+    height: 14px;
+    line-weight: 2px;
   }
   
 
@@ -35,7 +39,7 @@ const DurationBadge = styled(Flex)`
 
 const Duration = ({className, value}: {className?: string, value: string | number}) => (
     <DurationBadge className={className}>
-      <span><Timer viewBox={'0 0 24 24'}/>{value.toString()}s</span>
+      <span>{value.toString()}s</span><Timer viewBox={'0 0 24 24'}/>
     </DurationBadge>
 )
 
