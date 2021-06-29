@@ -38,5 +38,4 @@ const messagesSlice = createSlice({
 })
 
 export const { messageParsed } = messagesSlice.actions
-console.log( messageParsed )
 export default messagesSlice.reducer

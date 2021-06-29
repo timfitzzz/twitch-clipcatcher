@@ -13,7 +13,7 @@ const init = {
 
 const useChatClientImpl = () => {
 
-  console.log('rerendering usechatclient')
+  // console.log('rerendering usechatclient')
 
   const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
   const [chatClient, setChatClient] = useState<ChatClient | null>(null);

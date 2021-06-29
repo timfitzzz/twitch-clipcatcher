@@ -14,7 +14,7 @@ const TabTitleText = styled.h5`
 
 const TabTitle = ({channelName, scanning, clipsCount}: { channelName: string, scanning: boolean, clipsCount: number}) => {
 
-  console.log('rendering tabtitle')
+  // console.log('rendering tabtitle')
 
   return (
     <Flex flexDirection={"row"}>

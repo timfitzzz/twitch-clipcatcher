@@ -13,7 +13,7 @@ const init = null
 
 const useApiClientImpl = () => {
 
-  console.log('rerendering useapiclient')
+  // console.log('rerendering useapiclient')
 
   const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
   // const [apiClient, setApiClient] = useState<ApiClient | null>(null);

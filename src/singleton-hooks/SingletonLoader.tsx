@@ -20,7 +20,7 @@ let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/
 
 const SingletonLoader = () => {
 
-  console.log('rerendering singleton loader')
+  // console.log('rerendering singleton loader')
 
   const apiClient = useApiClient()
   const { chatClient, loggedIn } = useChatClient()

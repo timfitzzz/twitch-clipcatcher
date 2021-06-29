@@ -57,7 +57,7 @@ const usersSlice = createSlice({
     builder.addCase(annotationAdded.type, (users, action: PayloadAction<AnnotationAddedPayload>) => {
       let { by, messageId, userTypes, channelName } = action.payload.annotation
       if (!users.users[by])  {
-        console.log('initializing users')
+        // console.log('initializing users')
         users.users[by] = 
           { userName: by, 
             annotations: [messageId], 
@@ -66,7 +66,7 @@ const usersSlice = createSlice({
             }
           }
       } else {
-        console.log(`user ${by} found`)
+        // console.log(`user ${by} found`)
         users.users[by].annotations.push(messageId)
         users.users[by].userTypes[channelName] = userTypes
       }
