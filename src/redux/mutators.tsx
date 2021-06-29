@@ -1,118 +1,69 @@
-import { CaughtClipV2, ClipPostedBy } from './clips'
+import { CaughtClipV2 } from './clips'
 import { ClipAnnotation, AnnotationTypes } from './annotations'
-import { UserTypes } from '../types'
-import { isEmpowered, isUserType } from '../utilities/parsers'
+import { isEmpowered } from '../utilities/parsers'
 
 export const mutateClipTags = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
-  let { taggedIn: startTags } = clip
-  let { tags: newTags, userTypes, channelName, messageId } = annotation
+  let { taggedIn } = clip
+  let { tags: newTags, by, channelName } = annotation
 
-  if (!startTags) {
+  if (!taggedIn) {
     clip.taggedIn = {}
-    startTags = clip.taggedIn
+    taggedIn = clip.taggedIn
   }
 
   if (newTags && newTags.length > 0) {
-    if (!startTags[channelName]) {
-      startTags[channelName] = {
-        overall: {
+    if (!taggedIn[channelName]) {
+      taggedIn[channelName] = {
           as: {
             tags: [],
-            countByTag: {},
-            in: []
+            byTag: {}
           }
         }
-      }
     }
       
     newTags.forEach(tag => {
-      startTags[channelName].overall.as.in.push(messageId)
+      
       // if the tag is new:
-      if (startTags[channelName].overall.as.tags.indexOf(tag) === -1) {
-        startTags[channelName].overall.as.tags.push(tag)
-        startTags[channelName].overall.as.countByTag[tag] = 1
-  
-        for (let userType in UserTypes) {
-          if (isUserType(userTypes, UserTypes[userType as keyof typeof UserTypes])) {
-            if (UserTypes[userType as keyof typeof UserTypes] !== UserTypes['broadcaster']) {
-              let userTypeKey = `by${userType.charAt(0).toUpperCase() + userType.slice(1)}s` as 'byUsers' | 'bySubs' | 'byVips' | 'byMods'
-              if (!startTags[channelName][userTypeKey]) {
-                startTags[channelName][userTypeKey] = {
-                  as: {
-                    tags: [tag],
-                    countByTag: {[tag]: 1},
-                    in: [messageId]
-                  }
-                }
-              } else {
-                startTags[channelName][userTypeKey]!.as.tags.push(tag)
-                startTags[channelName][userTypeKey]!.as.countByTag[tag] = 1
-                startTags[channelName][userTypeKey]!.as.in.push(messageId)
-              }
-            } else {
-              if (!startTags[channelName].byBroadcaster) {
-                startTags[channelName].byBroadcaster = {
-                  as: {
-                    tags: [tag],
-                    in: [messageId]
-                  }
-                }
-              } else {
-                startTags[channelName].byBroadcaster!.as.tags.push(tag)
-                startTags[channelName].byBroadcaster!.as.in.push(messageId)
-              }
-  
-            }
-          }
-        }
+      if (!taggedIn[channelName].as.byTag[tag]) {
+        taggedIn[channelName].as.tags.push(tag)
+        taggedIn[channelName].as.byTag[tag] = [by]
+
       } else { // if the tag is not new
-        startTags[channelName].overall.as.countByTag[tag]++
-        for (let userType in UserTypes) {
-          if (isUserType(userTypes, UserTypes[userType as keyof typeof UserTypes])) {
-            if (UserTypes[userType as keyof typeof UserTypes] !== UserTypes['broadcaster']) {
-              let userTypeKey = `by${userType.charAt(0).toUpperCase() + userType.slice(1)}s` as 'byUsers' | 'bySubs' | 'byVips' | 'byMods'
-              if (!startTags[channelName][userTypeKey]) {
-                startTags[channelName][userTypeKey] = {
-                  as: {
-                    tags: [],
-                    countByTag: {},
-                    in: [messageId]
-                  }
-                }
-              } else {
-                startTags[channelName][userTypeKey]!.as.in.push(messageId)
-              }
-              if (startTags[channelName][userTypeKey]!.as.tags.indexOf(tag) === -1) {
-                startTags[channelName][userTypeKey]!.as.tags.push(tag)
-                startTags[channelName][userTypeKey]!.as.countByTag[tag] = 1
-              } else {
-                startTags[channelName][userTypeKey]!.as.countByTag[tag]++
-              }
-            } else {
-              if (!startTags[channelName].byBroadcaster) {
-                startTags[channelName].byBroadcaster = {
-                  as: {
-                    tags: [],
-                    in: [messageId]
-                  }
-                }
-              } else {
-                startTags[channelName].byBroadcaster!.as.in.push(messageId)
-              }
-              if (startTags[channelName].byBroadcaster!.as.tags.indexOf(tag) === -1) {
-                startTags[channelName].byBroadcaster!.as.tags.push(tag)
-              }
-            }
-          }
-        }
+        taggedIn[channelName].as.byTag[tag].indexOf(by) === -1 && 
+          taggedIn[channelName].as.byTag[tag].push(by)
       }
     })
   }
 }
 
+export const revertClipTags = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
+  let { taggedIn: { [annotation.channelName]: { as: channelTags } } } = clip
+  let { tags: annotationTags, by } = annotation
+  
+  if (!annotationTags || annotationTags.length === 0) {
+    return
+  } else {
+    for (let i = 0; i < annotationTags.length; i++) {
+      let isLastTagger = channelTags.byTag[annotationTags[i]].length === 1
+      let tagIdx = channelTags.tags.indexOf(annotationTags[i])
+      if (isLastTagger && tagIdx > -1) {
+        channelTags.tags.splice(tagIdx, 1)
+      }
+      if (!isLastTagger) {
+        let byIdx = channelTags.byTag[annotationTags[i]].indexOf(by)
+        if (byIdx > -1) {
+          channelTags.byTag[annotationTags[i]].splice(byIdx, 1)
+        }
+      } else {
+        delete channelTags.byTag[annotationTags[i]]
+      }
+    }
+  }
+}
+
 export const mutateClipMeta = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
   let { metaedIn } = clip
-  let { meta, channelName, messageId, userTypes, by } = annotation
+  let { meta, channelName, by } = annotation
 
   if (!metaedIn) {
     clip.metaedIn = {}
@@ -122,33 +73,32 @@ export const mutateClipMeta = (clip: CaughtClipV2, annotation: ClipAnnotation) =
   if (meta) {
     if (!metaedIn[channelName]) {
       metaedIn[channelName] = {
-        by: {},
-        in: [messageId]
+        by: [by]
       }
     } else {
-      metaedIn[channelName].in.push(messageId)
+      metaedIn[channelName].by.indexOf(by) === -1 && metaedIn[channelName].by.push(by)
     }
-  
-    for (let userType in UserTypes) {
-      if (isUserType(userTypes, UserTypes[userType as keyof typeof UserTypes])) {
-        if (UserTypes[userType as keyof typeof UserTypes] !== UserTypes['broadcaster']) {
-          let userTypeKey = `${userType}s` as 'users' | 'subs' | 'vips' | 'mods'
-          if (!metaedIn[channelName].by[userTypeKey]) {
-            metaedIn[channelName].by[userTypeKey] = [by]
-          } else {
-            metaedIn[channelName].by[userTypeKey]!.push(by)
-          }
-        } else {
-          metaedIn[channelName].by.broadcaster = true
-        }
-      }
+  }
+}
+
+export const revertClipMeta = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
+  let { metaedIn: { [annotation.channelName]: { by: clipBy } }  } = clip
+  let { meta, by } = annotation
+
+  if (meta) {
+    let userIdx = clipBy.indexOf(by)
+    if (userIdx > -1) {
+      clipBy.splice(userIdx, 1)
+    }
+    if (clipBy.length === 0) {
+      delete clip.metaedIn[annotation.channelName]
     }
   }
 }
 
 export const mutateClipDrama = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
   let { dramaedIn } = clip
-  let { drama, channelName, messageId, userTypes, by } = annotation
+  let { drama, channelName, by } = annotation
 
   if (!dramaedIn) {
     clip.dramaedIn = {}
@@ -158,69 +108,49 @@ export const mutateClipDrama = (clip: CaughtClipV2, annotation: ClipAnnotation) 
   if (drama) {
     if (!dramaedIn[channelName]) {
       dramaedIn[channelName] = {
-        by: {},
-        in: [messageId]
+        by: [by]
       }
     } else {
-      dramaedIn[channelName].in.push(messageId)
-    }
-  
-    for (let userType in UserTypes) {
-      if (isUserType(userTypes, UserTypes[userType as keyof typeof UserTypes])) {
-        if (UserTypes[userType as keyof typeof UserTypes] !== UserTypes['broadcaster']) {
-          let userTypeKey = `${userType}s` as 'users' | 'subs' | 'vips' | 'mods'
-          if (!dramaedIn[channelName].by[userTypeKey]) {
-            dramaedIn[channelName].by[userTypeKey] = [by]
-          } else {
-            dramaedIn[channelName].by[userTypeKey]!.push(by)
-          }
-        } else {
-          dramaedIn[channelName].by.broadcaster = true
-        }
-      }
+      dramaedIn[channelName].by.indexOf(by) === -1 && dramaedIn[channelName].by.push(by)
     }
   }
 }
 
+export const revertClipDrama = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
+  let { dramaedIn: { [annotation.channelName]: { by: clipBy } }  } = clip
+  let { drama, by } = annotation
+
+  if (drama) {
+    let userIdx = clipBy.indexOf(by)
+    if (userIdx > -1) {
+      clipBy.splice(userIdx, 1)
+    }
+    if (clipBy.length === 0) {
+      delete clip.dramaedIn[annotation.channelName]
+    }
+  }
+}
 
 export function mutateClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnotation) {
-  let { channelName, by, annotationTypes, userTypes, messageId } = annotation
+  let { channelName, by, annotationTypes, userTypes } = annotation
         
   annotationTypes.forEach(type => {
     switch (type) {
       case AnnotationTypes['link']:
         
         if (!clip.postedBy[channelName]) {
-          clip.postedBy[channelName] = {}
-        }
-
-        for (let userType in UserTypes) {
-          if (UserTypes[userType as keyof typeof UserTypes] !== UserTypes['broadcaster']) {
-            if (isUserType(userTypes, UserTypes[userType as keyof typeof UserTypes])) {
-              if (clip.postedBy[channelName][`${userType}s` as keyof Omit<ClipPostedBy, 'broadcaster'>]) {
-                if (clip.postedBy[channelName][`${userType}s` as keyof Omit<ClipPostedBy, 'broadcaster'>]!.indexOf(by) === -1) {
-                  clip.postedBy[channelName][`${userType}s` as keyof Omit<ClipPostedBy, 'broadcaster'>]!.push(by)
-                }
-              } else {
-                clip.postedBy[channelName][`${userType}s` as keyof Omit<ClipPostedBy, 'broadcaster'>] = [by]
-              }
-            }
-          } else {
-            clip.postedBy[channelName].broadcaster = true
-          }
+          clip.postedBy[channelName] = []
         }
         break;
       case AnnotationTypes['veto']:
         if (isEmpowered(userTypes)) {
           if (!clip.vetoedIn[channelName]) {
             clip.vetoedIn[channelName] = {
-              by: [by],
-              in: [messageId]
+              by: [by]
             }
           } else {
             if (clip.vetoedIn.channelName.by.indexOf(by) === -1) {
               clip.vetoedIn.channelName.by.push(by)
-              clip.vetoedIn.channelName.in.push(messageId)
             }
           }
         }
@@ -253,6 +183,52 @@ export function mutateClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
         mutateClipTags(clip, annotation)
         mutateClipMeta(clip, annotation)
         mutateClipDrama(clip, annotation)
+        break;
+      default:
+        break;
+    }
+  })
+}
+
+export function revertClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnotation) {
+  let { channelName, by, annotationTypes } = annotation
+        
+  annotationTypes.forEach(type => {
+    switch (type) {
+      case AnnotationTypes['link']:
+        let { postedBy: { [channelName]: clipPostedBy } } = clip
+        if (clipPostedBy.length > 1) {
+          let userIdx = clipPostedBy.indexOf(by)
+          userIdx > -1 && clipPostedBy.splice(userIdx, 1)
+        } else {
+          delete clip.postedBy[channelName]
+        }
+        break;
+      case AnnotationTypes['veto']:
+        let { vetoedIn: { [channelName]: { by: channelVetos } } } = clip
+        if (channelVetos.length > 0) {
+          let userIdx = channelVetos.indexOf(by)
+          userIdx > -1 && channelVetos.splice(userIdx, 1)
+        }
+        break;
+      case AnnotationTypes['upvote']:
+        let { votes: { [channelName]: { up: ups } } } = clip
+        if (ups.length > 0) {
+          let userIdx = ups.indexOf(by)
+          userIdx > -1 && ups.splice(userIdx, 1)
+        }
+        break;
+      case AnnotationTypes['downvote']:
+        let { votes: { [channelName]: { down: downs }}} = clip
+        if (downs.length > 0) {
+          let userIdx = downs.indexOf(by)
+          userIdx > -1 && downs.splice(userIdx, 1)
+        }
+        break;
+      case AnnotationTypes['tag']:
+        revertClipTags(clip, annotation)
+        revertClipMeta(clip, annotation)
+        revertClipDrama(clip, annotation)
         break;
       default:
         break;

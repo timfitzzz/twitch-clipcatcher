@@ -1,30 +1,32 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TwitchClipV5 } from '../types'
 import { tagsReport } from '../utilities/parsers'
-import { annotationAdded, ClipAnnotation, FirstAnnotationAddedPayload } from './annotations'
-import { mutateClipByAnnotation } from './mutators'
+import { annotationAdded, annotationsReverted, AnnotationsRevertedPayload, ClipAnnotation, FirstAnnotationAddedPayload } from './annotations'
+import { mutateClipByAnnotation, revertClipByAnnotation } from './mutators'
 
-export interface ClipPostedBy {
-  broadcaster?: boolean,
-  mods?: string[],
-  vips?: string[],
-  subs?: string[],
-  users?: string[]
-}
+// export interface ClipPostedBy {
+//   broadcaster?: boolean,
+//   mods?: string[],
+//   vips?: string[],
+//   subs?: string[],
+//   users?: string[]
+// }
+
+export type UserName = string
+export type MessageId = string
 
 export interface CaughtClipV2 extends TwitchClipV5 {
   votes: {
     [channelName: string]: {
-      up: string[]
-      down: string[]
+      up: UserName[]
+      down: UserName[]
     }
   }
-  broadcasterName: string
+  broadcasterName: UserName
   startEpoch: number
   vetoedIn: {
     [channelName: string]: {
-      by: string[]
-      in: string[]
+      by: UserName[]
     }
   }
   vod: {
@@ -32,87 +34,72 @@ export interface CaughtClipV2 extends TwitchClipV5 {
     url: string,
     offset: number
   }
-  firstSeenAnnotation: string
+  firstSeenAnnotation: MessageId
   postedBy: {
-    [channelName: string]: ClipPostedBy
+    [channelName: string]: UserName[]
   }
   taggedIn: {
     [channelName: string]: {
-      overall: {
-        as: {
-          tags: string[],
-          countByTag: {
-            [tag: string]: number
-          }
-          in: string[]
+      // overall: {
+      as: {
+        tags: string[],
+        byTag: {
+          [tag: string]: UserName[]
         }
       }
-      byUsers?: {
-        as: {
-          tags: string[],
-          countByTag: {
-            [tag: string]: number
-          }
-          in: string[]
-        }
-      }
-      bySubs?: {
-        as: {
-          tags: string[],
-          countByTag: {
-            [tag: string]: number
-          }
-          in: string[]
-        }
-      }
-      byVips?: {
-        as: {
-          tags: string[],
-          countByTag: {
-            [tag: string]: number
-          }
-          in: string[]
-        }
-      }
-      byMods?: {
-        as: {
-          tags: string[],
-          countByTag: {
-            [tag: string]: number
-          }
-          in: string[]
-        }
-      }
-      byBroadcaster?: {
-        as: {
-          tags: string[]
-          in: string[]
-        }
-      }
+      // }
+      // byUsers?: {
+      //   as: {
+      //     tags: string[],
+      //     countByTag: {
+      //       [tag: string]: number
+      //     }
+      //     in: string[]
+      //   }
+      // }
+      // bySubs?: {
+      //   as: {
+      //     tags: string[],
+      //     countByTag: {
+      //       [tag: string]: number
+      //     }
+      //     in: string[]
+      //   }
+      // }
+      // byVips?: {
+      //   as: {
+      //     tags: string[],
+      //     countByTag: {
+      //       [tag: string]: number
+      //     }
+      //     in: string[]
+      //   }
+      // }
+      // byMods?: {
+      //   as: {
+      //     tags: string[],
+      //     countByTag: {
+      //       [tag: string]: number
+      //     }
+      //     in: string[]
+      //   }
+      // }
+      // byBroadcaster?: {
+      //   as: {
+      //     tags: string[]
+      //     in: string[]
+      //   }
+      // }
     }
   }
   metaedIn: {
     [channelName: string]: {
-      by: {
-        users?: string[]
-        subs?: string[]
-        vips?: string[]
-        mods?: string[]
-        broadcaster?: boolean
-      }
-      in: string[]
+      by: UserName[]
     }
   }
   dramaedIn: {
     [channelName: string]: {
-      by: {
-        users?: string[]
-        subs?: string[]
-        vips?: string[]
-        mods?: string[]
-        broadcaster?: boolean
-      }
-      in: string[]
+      by: UserName[]
     }
   }
 }
@@ -199,6 +186,7 @@ export interface ClipAddedPayloadV2 {
   channelName: string
   clip: CaughtClipV2
   messageId: string
+  userName: string
 }
 
 export interface ClipTaggedPayload {
@@ -248,6 +236,12 @@ export const clipsSlice = createSlice({
       let { clipSlug } = action.payload.annotation
       let clip = clips.clips[clipSlug]
       mutateClipByAnnotation(clip, action.payload.annotation)
+    })
+    builder.addCase(annotationsReverted.type, (clips, action: PayloadAction<AnnotationsRevertedPayload>) => {
+      for (let i = 0; i < action.payload.annotations.length; i++) {
+        let clip = clips.clips[action.payload.annotations[i].clipSlug]
+        revertClipByAnnotation(clip, action.payload.annotations[i])
+      }
     })
   }
 })

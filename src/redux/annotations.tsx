@@ -22,6 +22,8 @@ export interface ClipAnnotation {
   upvote?: boolean
   downvote?: boolean
   messageId: string
+  messageEpoch: number
+  reverted?: boolean
 }
 
 interface AnnotationsSliceState {
@@ -107,6 +109,10 @@ export interface FirstAnnotationAddedPayload {
   annotation: ClipAnnotation
 }
 
+export interface AnnotationsRevertedPayload {
+  annotations: ClipAnnotation[]
+}
+
 const initialState: AnnotationsSliceState = {
   annotations: {},
   annotationsByClip: {},
@@ -119,6 +125,13 @@ const annotationsSlice = createSlice({
   name: 'annotations',
   initialState,
   reducers: {
+    annotationsReverted(annotations, action: PayloadAction<AnnotationsRevertedPayload>) {
+      for (let i = 0; i < action.payload.annotations.length; i++) {
+        if (annotations.annotations[action.payload.annotations[i].messageId]) {
+          annotations.annotations[action.payload.annotations[i].messageId].reverted = true
+        }
+      }
+    },
     annotationAdded(annotations, action: PayloadAction<AnnotationAddedPayload>) {
       let { payload }: { payload: AnnotationAddedPayload } = action
       let { channelName, messageId, clipSlug, by } = payload.annotation
@@ -191,5 +204,5 @@ const annotationsSlice = createSlice({
   }
 })
 
-export const { annotationAdded, firstAnnotationAdded } = annotationsSlice.actions
+export const { annotationAdded, firstAnnotationAdded, annotationsReverted } = annotationsSlice.actions
 export default annotationsSlice.reducer

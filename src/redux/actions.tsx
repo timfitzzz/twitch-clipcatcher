@@ -62,6 +62,7 @@ export const intakeClip = createAsyncThunk<
       by: userName,
       userTypes,
       messageId,
+      messageEpoch: new Date().getTime(),
       ...tagReport
     }
 
@@ -95,8 +96,8 @@ export const intakeClip = createAsyncThunk<
           startEpoch: startEpoch || 0,
           firstSeenAnnotation: messageId,
           broadcasterName: clipMeta!.broadcaster!.name,
-          postedBy: { [channelName]: {} },
-          votes: { [channelName]: { up: [], down: [] }}
+          postedBy: { [channelName]: [userName] },
+          votes: { [channelName]: { up: [], down: [] }},
           // votes: { [channelName]: newAnnotation.upvote ? { up: [userName], down: [] } : newAnnotation.downvote ? { down: [userName], up: [] } : { up: [], down: [] } }
         }
         mutateClipByAnnotation(preProcessedClip, newAnnotation)
@@ -104,6 +105,7 @@ export const intakeClip = createAsyncThunk<
           channelName,
           clip: preProcessedClip,
           messageId,
+          userName
         }))
         dispatch(firstAnnotationAdded({
           annotation: newAnnotation
@@ -174,6 +176,7 @@ export const intakeReply = createAsyncThunk<
             by: userName,
             userTypes,
             messageId,
+            messageEpoch: new Date().getTime(),
             ...tagReport
           }
 
@@ -195,3 +198,95 @@ export const intakeReply = createAsyncThunk<
       
     }
   )
+
+  // export const messageRemoved = createAsyncThunk<
+  // {
+  //   result: string
+  // },
+  // {
+  //   messageId: string
+  // },
+  // { 
+  //   dispatch: AppDispatch
+  //   state: RootState
+  //   rejectValue: Error
+  // }>(
+  //   'messageRemoved',
+  //   async({messageId}, {getState, rejectWithValue, requestId, dispatch}) => {
+  //     let { annotations } = getState()
+  //     annotationReverted
+  //   }
+  // )
+
+
+  // export const userTimedOut = createAsyncThunk<
+  // {
+  //   result: string
+  // },
+  // {
+  //   channelName: string
+  //   userName: string
+
+  // },
+  // { 
+  //   dispatch: AppDispatch
+  //   state: RootState
+  //   rejectValue: Error
+  // }>(
+  //   'userTimedOut',
+  //   async({clipSlug, channelName, parentMessageId, messageId, words, userName, userTypes, getClipMeta, getVodEpoch}, { getState, rejectWithValue, requestId, dispatch}) => {
+  //     let { clips: { clips }, messages: { messages }} = getState()
+
+  //     let messageRecord = messages[parentMessageId]
+      
+  //     // handle possibility that this is all in reference to a brand new clip, in which case
+  //     // we want to switch to the regular intakeClip flow.
+  //     if (clipSlug && !clips[clipSlug]) {
+  //       dispatch(intakeClip({
+  //         channelName,
+  //         userName,
+  //         words,
+  //         clipSlug,
+  //         userTypes,
+  //         messageId,
+  //         getClipMeta,
+  //         getVodEpoch
+  //       }))
+  //       return { result: 'new clip found, forwarded to intakeclip'}
+  //     } else {
+  //       let parentClipSlug = messageRecord && clips[messageRecord] ? clips[messageRecord].slug : rejectWithValue(new Error('Not clip reply')) && null
+
+  //       if (clipSlug || parentClipSlug) {     // prefer clipSlug if there is a difference
+
+  //         let tagReport = parseTags(words)
+  //         let annotationTypes = getAnnotationTypes(tagReport, false)
+      
+  //         let newAnnotation: ClipAnnotation = {
+  //           annotationTypes,
+  //           clipSlug: (clipSlug || parentClipSlug)!,
+  //           channelName,
+  //           by: userName,
+  //           userTypes,
+  //           messageId,
+  //           messageEpoch: new Date().getTime(),
+  //           ...tagReport
+  //         }
+
+  //         dispatch(annotationAdded({
+  //           annotation: newAnnotation
+  //         }))
+    
+  //         return {
+  //           result: 'annotation saved'
+  //         }
+          
+  //       } else {
+  //         return {
+  //           result: 'no annotation found'
+  //         }
+  //       }
+  //     }
+      
+      
+  //   }
+  // )

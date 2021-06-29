@@ -7,6 +7,7 @@ import { useContextSelector } from 'use-context-selector';
 import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 import { useAppSelector } from '../../../hooks/reduxHooks';
 import VoteCount from '../../badges/VoteCount';
+import ClipStats from './ClipStats'
 // import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 
 
@@ -213,6 +214,7 @@ const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelNam
            {/* <Flex flexDirection={'row'}>
              <CatcherBadge type={'duration'} value={clip.duration.toString()}/>
            </Flex> */}
+          <ClipStats clipSlugs={[clipSlug]} channelName={channelName} />
          </Flex>
       </Flex>
     </Box>

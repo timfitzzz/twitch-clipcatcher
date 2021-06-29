@@ -125,6 +125,13 @@ const SingletonLoader = () => {
     })
   }, [chatClient, loggedIn, apiClient, getClipMeta, getVodEpoch])
 
+  // useEffect(() => {
+  //   if (chatClient) {
+  //     chatClient.onTimeout
+  //   }
+  // })
+
+
   return (<></>)
 
 }

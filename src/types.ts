@@ -215,6 +215,9 @@ export interface ICatcherChannel {
   clips: string[];
   sort: SortList
   filters: Filters
+  postersByClip: {
+    [clipSlug: string]: string[]
+  }
 }
 
 export enum UserTypes {

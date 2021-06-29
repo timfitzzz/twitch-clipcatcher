@@ -3,13 +3,15 @@ import channelsReducer from './channels'
 import clipsReducer from './clips'
 import messagesReducer from './messages'
 import annotationsReducer from './annotations'
+import usersReducer from './users'
 
 export const store = configureStore({
   reducer: {
     channels: channelsReducer,
     clips: clipsReducer,
     messages: messagesReducer,
-    annotations: annotationsReducer
+    annotations: annotationsReducer,
+    users: usersReducer
   }
 });
 

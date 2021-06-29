@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { CaughtClip, defaultFilters, defaultSort, ICatcherChannel } from '../types'
-import { clipAdded, ClipAddedPayloadV2 } from './clips'
+import { annotationAdded, annotationsReverted, AnnotationAddedPayload, AnnotationsRevertedPayload, firstAnnotationAdded, FirstAnnotationAddedPayload, AnnotationTypes } from './annotations'
 
 export interface ChannelsSliceState {
   [channelName: string]: ICatcherChannel
@@ -32,7 +32,8 @@ export function initChannelState(channelName: string): ICatcherChannel {
     scanning: true,
     clips: [],
     sort: defaultSort,
-    filters: defaultFilters
+    filters: defaultFilters,
+    postersByClip: {}
   };
 }
 
@@ -77,8 +78,41 @@ const channelsSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(clipAdded.type, (channels, action: PayloadAction<ClipAddedPayloadV2>) => {
-      channels[action.payload.channelName].clips.push(action.payload.clip.slug)
+    builder.addCase(firstAnnotationAdded.type, (channels, action: PayloadAction<FirstAnnotationAddedPayload>) => {
+      let { channelName, clipSlug, by } = action.payload.annotation
+      channels[channelName].clips.push(clipSlug)
+      channels[channelName].postersByClip[clipSlug] = [by]
+    })
+    builder.addCase(annotationAdded.type, (channels, action: PayloadAction<AnnotationAddedPayload>) => {
+      let { channelName, clipSlug, by, annotationTypes } = action.payload.annotation
+      if (annotationTypes.indexOf(AnnotationTypes['link']) > -1) {
+        if (!channels[channelName].postersByClip[clipSlug]) {
+          channels[channelName].clips.push(clipSlug)
+          channels[channelName].postersByClip[clipSlug] = [by]
+        } else if (channels[channelName].postersByClip[clipSlug].indexOf(by) === -1) {
+          channels[channelName].postersByClip[clipSlug].push(by)  
+        }
+      }
+    })
+    builder.addCase(annotationsReverted.type, (channels, action: PayloadAction<AnnotationsRevertedPayload>) => {
+      for (let i = 0; i < action.payload.annotations.length; i++) {
+        let { annotationTypes, clipSlug, channelName, by } = action.payload.annotations[i]
+        let channel = channels[channelName]
+        if (annotationTypes.indexOf(AnnotationTypes['link']) > -1) {
+          if (channel.postersByClip[clipSlug] && channel.postersByClip[clipSlug].length > 1) {
+            let userIdx = channel.postersByClip[clipSlug].indexOf(by)
+            if (userIdx > -1) {
+              channel.postersByClip[clipSlug].splice(userIdx, 1)
+            }
+          } else {
+            delete channel.postersByClip[clipSlug]
+            let clipIdx = channel.clips.indexOf(clipSlug)
+            if (clipIdx > -1) {
+              channel.clips.splice(clipIdx, 1)
+            }
+          }
+        }
+      }
     })
   }
 })

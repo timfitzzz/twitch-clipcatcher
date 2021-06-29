@@ -1,6 +1,5 @@
 import { TwitchPrivateMessage } from "twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage"
 import { AnnotationTypes } from "../redux/annotations"
-import { ClipPostedBy } from "../redux/clips"
 import { UserTypes } from "../types"
 
 export const parseUserType = (userInfo: TwitchPrivateMessage ['userInfo'], sub: 0 | 1): UserTypes[] => {
@@ -59,35 +58,35 @@ export const userTypeReport = (types: UserTypes[]) => {
   }
 }
 
-export const addUserTypes = (userName: string, postedBy: ClipPostedBy = {}, types: UserTypes[]) => {
-  let index = 0;
+// export const addUserTypes = (userName: string, postedBy: ClipPostedBy = {}, types: UserTypes[]) => {
+//   let index = 0;
 
-  function applyType(type: UserTypes) {
-    switch (type) {
-      case UserTypes['broadcaster']:
-        postedBy.broadcaster = true;
-        break;
-      case UserTypes['mod']:
-        postedBy.mods = postedBy.mods ? [...postedBy.mods, userName] : [userName]
-        break;
-      case UserTypes['vip']:
-        postedBy.vips = postedBy.vips ? [...postedBy.vips, userName] : [userName]
-        break;
-      case UserTypes['sub']:
-        postedBy.subs = postedBy.subs ? [...postedBy.subs, userName] : [userName]
-        break;
-      case UserTypes['user']:
-        postedBy.users = postedBy.users ? [...postedBy.users, userName] : [userName]
-        break;
-      default:
-        break;
-    }
-  }
+//   function applyType(type: UserTypes) {
+//     switch (type) {
+//       case UserTypes['broadcaster']:
+//         postedBy.broadcaster = true;
+//         break;
+//       case UserTypes['mod']:
+//         postedBy.mods = postedBy.mods ? [...postedBy.mods, userName] : [userName]
+//         break;
+//       case UserTypes['vip']:
+//         postedBy.vips = postedBy.vips ? [...postedBy.vips, userName] : [userName]
+//         break;
+//       case UserTypes['sub']:
+//         postedBy.subs = postedBy.subs ? [...postedBy.subs, userName] : [userName]
+//         break;
+//       case UserTypes['user']:
+//         postedBy.users = postedBy.users ? [...postedBy.users, userName] : [userName]
+//         break;
+//       default:
+//         break;
+//     }
+//   }
 
-  while (index < types.length) {
-    applyType(types[index])
-    index++
-  }
+//   while (index < types.length) {
+//     applyType(types[index])
+//     index++
+//   }
   
-  return postedBy
-}
+//   return postedBy
+// }
