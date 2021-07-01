@@ -1,8 +1,10 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit"
+import { ApiClient, HelixUser } from "twitch/lib"
 import { TwitchClipV5, UserTypes } from '../types'
+import { fetchUserInfo, retryClipEpochs, UpdatedClipEpoch } from "../utilities/apiMethods"
 import { getAnnotationTypes, parseTags } from "../utilities/parsers"
 import { annotationAdded, ClipAnnotation, firstAnnotationAdded } from "./annotations"
-import { clipAdded, CaughtClipV2 } from "./clips"
+import { CaughtClipV2 } from "./clips"
 import { mutateClipByAnnotation } from "./mutators"
 import { AppDispatch, RootState } from "./store"
 
@@ -18,7 +20,17 @@ import { AppDispatch, RootState } from "./store"
 // mod commands:
 // the following tags are special if sent by a mod or the channel owner: block, meta, drama
 
+export interface ClipAddedPayloadV2 { 
+  channelName: string
+  clip: CaughtClipV2
+  messageId: string
+  userName: string
+}
 
+
+export const clipAdded = createAction('clipAdded', (payload: ClipAddedPayloadV2) => {
+  return {payload}
+})
 
 
 
@@ -96,7 +108,7 @@ export const intakeClip = createAsyncThunk<
           startEpoch: startEpoch || 0,
           firstSeenAnnotation: messageId,
           broadcasterName: clipMeta!.broadcaster!.name,
-          postedBy: { [channelName]: [userName] },
+          postedBy: {},
           votes: { [channelName]: { up: [], down: [] }},
           // votes: { [channelName]: newAnnotation.upvote ? { up: [userName], down: [] } : newAnnotation.downvote ? { down: [userName], up: [] } : { up: [], down: [] } }
         }
@@ -199,6 +211,41 @@ export const intakeReply = createAsyncThunk<
     }
   )
 
+  export const clipEpochsRetry = createAsyncThunk<
+  UpdatedClipEpoch[],
+  {
+    clipSlugs: string[],
+    apiClient: ApiClient
+  },
+  {
+    dispatch: AppDispatch
+    state: RootState
+    rejectValue: Error
+  }>(
+    'clipEpochsRetry',
+    async({clipSlugs, apiClient}, {getState, rejectWithValue, requestId, dispatch}) => {
+      return await retryClipEpochs(clipSlugs, apiClient)
+    }
+  )
+
+
+export const getUserInfo = createAsyncThunk<
+  HelixUser | null,
+{
+  userName: string,
+  apiClient: ApiClient
+},
+{
+  dispatch: AppDispatch
+  state: RootState
+  rejectValue: Error
+}>(
+  'getUserInfo',
+  async({userName, apiClient}, { getState, rejectWithValue, requestId, dispatch}) => {
+    return await fetchUserInfo(userName, apiClient)
+  }
+)
+  
   // export const messageRemoved = createAsyncThunk<
   // {
   //   result: string

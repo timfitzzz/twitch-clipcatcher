@@ -8,6 +8,7 @@ import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 import { useAppSelector } from '../../../hooks/reduxHooks';
 import VoteCount from '../../badges/VoteCount';
 import ClipStats from './ClipStats'
+import Delay from '../../badges/WhenAgoBadge';
 // import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 
 
@@ -31,6 +32,7 @@ const ClipTitle = styled.span`
   font-size: 17px;
   color: white;
   font-weight: bold;
+  text-shadow: -1px 1px 1px black;
 `
 
 const ClipThumbContainer = styled.div`
@@ -160,10 +162,7 @@ const ClipOverlayLowerRight = styled(Flex).attrs(p => ({
 //   type: 'trusted'
 // }))``
 
-const ClipOverlayWhenAgoBadge = styled(CatcherBadge).attrs(p => ({
-  ...p,
-  type: 'whenago'
-}))`
+const ClipOverlayWhenAgoBadge = styled(Delay)`
   margin-top: auto;
   margin-bottom: 4px;
 `
@@ -180,6 +179,7 @@ const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelNam
            <ClipThumb src={clip.thumbnails.small} />
            <ClipOverlay flexDirection={'column'} justifyContent={'space-between'}>
               <Flex flexDirection={'row'} height={'100%'}>
+              <ClipControlsContainer onClick={(e) => playClip && playClip(clip)}/>  
                 <ClipOverlayLeft>
                   <ClipOverlayUpperLeft>
                     <ClipOverlayStreamerBadge value={clip.broadcaster.name}/>
@@ -192,19 +192,18 @@ const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelNam
                 </ClipOverlayLeft>
                 <ClipOverlayRight>
                   <ClipOverlayUpperRight>
-                    <ClipOverlayFrogCountBadge upvotes={clip.votes[channelName].up} downvotes={clip.votes[channelName].down}/>
+                    <ClipOverlayFrogCountBadge clipSlug={clipSlug} channelName={channelName}/>
                     <ClipOverlayViewCountBadge value={clip.views}/>
                   </ClipOverlayUpperRight>
                   <ClipOverlayLowerRight>
                     {/* <ClipOverlayTrustedBadge value={`${clip.postedBy[channelName].mods ? true : false} ${clip.postedBy[channelName].vips ? true : false} ${clip.postedBy[channelName].broadcaster ? true : false}`}/>               */}
-                    <ClipOverlayWhenAgoBadge value={clip.startEpoch}/>
+                    <ClipOverlayWhenAgoBadge clipSlug={clipSlug} />
                     <ClipOverlayDurationBadge value={clip.duration.toString()}/>
                   </ClipOverlayLowerRight>
                </ClipOverlayRight>
              </Flex>
            </ClipOverlay>
-           <ClipControlsContainer onClick={(e) => playClip && playClip(clip)}>
-            </ClipControlsContainer>
+
          </ClipThumbContainer>
          <Flex flexDirection={'column'}>
            {/* <Flex flexDirection={'row'}>

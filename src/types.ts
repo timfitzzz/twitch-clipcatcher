@@ -24,6 +24,7 @@ export interface TwitchClipV5 {
   vod: {
     id: string
     url: string
+    offset: number
   }
   game: string
   language: string
@@ -53,11 +54,6 @@ export interface CaughtClip extends TwitchClipV5 {
   postedByVip?: boolean
   gtarpFlair?: string[]
   startEpoch?: number
-  vod: {
-    id: string,
-    url: string,
-    offset: number
-  }
 }
 
 // export interface CaughtClipV2 extends TwitchClipV5 {

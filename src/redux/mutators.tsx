@@ -137,9 +137,12 @@ export function mutateClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
   annotationTypes.forEach(type => {
     switch (type) {
       case AnnotationTypes['link']:
-        
         if (!clip.postedBy[channelName]) {
-          clip.postedBy[channelName] = []
+          clip.postedBy[channelName] = [by]
+        } else {
+          if (clip.postedBy[channelName].indexOf(by) === -1) {
+            clip.postedBy[channelName].push(by)
+          }
         }
         break;
       case AnnotationTypes['veto']:
@@ -149,8 +152,8 @@ export function mutateClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
               by: [by]
             }
           } else {
-            if (clip.vetoedIn.channelName.by.indexOf(by) === -1) {
-              clip.vetoedIn.channelName.by.push(by)
+            if (clip.vetoedIn[channelName].by.indexOf(by) === -1) {
+              clip.vetoedIn[channelName].by.push(by)
             }
           }
         }

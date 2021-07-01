@@ -17,6 +17,7 @@ import { parseUserType } from '../utilities/parsers';
 // }
 
 let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+-{1}[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+)/g;
+let wordsRegExp: RegExp = /(?:@)+|(?:\?.*=.*)+/gm
 
 const SingletonLoader = () => {
 
@@ -25,6 +26,8 @@ const SingletonLoader = () => {
   const apiClient = useApiClient()
   const { chatClient, loggedIn } = useChatClient()
   const [currentMessageListener, setCurrentMessageListener] = useState<Listener | null>(null)
+  // const [currentUpdateSchedulerId, setCurrentUpdateSchedulerId] = useState<number | null>(null)
+
   const dispatch = useAppDispatch()
   // const channelsToScan = useAppSelector(state => Object.getOwnPropertyNames(state.channels).filter(channelName => state.channels[channelName].scanning), shallowEqual)
 
@@ -50,12 +53,12 @@ const SingletonLoader = () => {
   } : null, [apiClient])
 
   // use msg.tags.get('${tagName}') to discover these
-//   {"reply-parent-display-name" => "yolson_13"}
-// 10: {"reply-parent-msg-body" => "but I enjoyed the rp"}
-// 11: {"reply-parent-msg-id" => "e6f55087-a031-456c-8657-9c9f74d1015a"}
-// 12: {"reply-parent-user-id" => "273265751"}
-// 13: {"reply-parent-user-login" => "y
-// 15: {"subscriber" => "0"}
+  //   {"reply-parent-display-name" => "yolson_13"}
+  // 10: {"reply-parent-msg-body" => "but I enjoyed the rp"}
+  // 11: {"reply-parent-msg-id" => "e6f55087-a031-456c-8657-9c9f74d1015a"}
+  // 12: {"reply-parent-user-id" => "273265751"}
+  // 13: {"reply-parent-user-login" => "y
+  // 15: {"subscriber" => "0"}
 
 
   useEffect(() => {
@@ -77,7 +80,7 @@ const SingletonLoader = () => {
           if (clipResult && clipResult.groups) {
             words = messageText.replace(clipResult[0].toString(), "").toLocaleLowerCase().split(" ")
           } else {
-            words = messageText.toLocaleLowerCase().split(" ")
+            words = messageText.toLocaleLowerCase().split(" ").filter(word => word.length > 2 && wordsRegExp.test(word))
           }
           let sub = msg.tags.get('subscriber')
 
@@ -125,6 +128,7 @@ const SingletonLoader = () => {
     })
   }, [chatClient, loggedIn, apiClient, getClipMeta, getVodEpoch])
 
+  // SCHEDULE PERIODIC UPDATES
   // useEffect(() => {
   //   if (chatClient) {
   //     chatClient.onTimeout

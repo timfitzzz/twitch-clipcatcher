@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TwitchClipV5 } from '../types'
+import { UpdatedClipEpoch } from '../utilities/apiMethods'
 import { tagsReport } from '../utilities/parsers'
+import { clipEpochsRetry, clipAdded, ClipAddedPayloadV2 } from './actions'
 import { annotationAdded, annotationsReverted, AnnotationsRevertedPayload, ClipAnnotation, FirstAnnotationAddedPayload } from './annotations'
 import { mutateClipByAnnotation, revertClipByAnnotation } from './mutators'
 
@@ -166,8 +168,9 @@ interface ClipsSliceState {
   favoriteClips: string[]
   hiddenClips: string[]
   watchedClips: string[]
-  watchingClip: string | null,
+  watchingClip: string | null
   playlist: string[]
+  clipsToRetryEpoch: string[]
 }
 
 const initialState: ClipsSliceState = {
@@ -179,15 +182,10 @@ const initialState: ClipsSliceState = {
   hiddenClips: [],
   watchedClips: [],
   watchingClip: null,
-  playlist: []
+  playlist: [],
+  clipsToRetryEpoch: []
 }
 
-export interface ClipAddedPayloadV2 { 
-  channelName: string
-  clip: CaughtClipV2
-  messageId: string
-  userName: string
-}
 
 export interface ClipTaggedPayload {
   clipSlug: string
@@ -211,27 +209,30 @@ export interface ClipsTruthUpdatedPayload {
   updates: ClipUpdate[]
 }
 
+export interface ClipsEpochsUpdatedPayload {
+  updates: UpdatedClipEpoch[]
+}
+
+
+
 export const clipsSlice = createSlice({ 
   name: 'clips',
   initialState,
   reducers: {
-    clipAdded(clips, action: PayloadAction<ClipAddedPayloadV2>) {
+    // clipAdded(clips, action: PayloadAction<ClipAddedPayloadV2>) {
+    //   clips.clips[action.payload.clip.slug] = action.payload.clip
+    //   insertEpoch(clips.clipsByStartEpoch, action.payload.clip.startEpoch || 0, action.payload.clip.slug, clips.clips)
+    //   insertStream(clips.clipsByStream, action.payload.clip.broadcasterName, action.payload.clip.slug, clips.clips)
+    //   insertDuration(clips.clipsByDuration, action.payload.clip.duration, action.payload.clip.slug, clips.clips)
+    // }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(clipAdded, (clips, action: PayloadAction<ClipAddedPayloadV2>) => {
       clips.clips[action.payload.clip.slug] = action.payload.clip
       insertEpoch(clips.clipsByStartEpoch, action.payload.clip.startEpoch || 0, action.payload.clip.slug, clips.clips)
       insertStream(clips.clipsByStream, action.payload.clip.broadcasterName, action.payload.clip.slug, clips.clips)
       insertDuration(clips.clipsByDuration, action.payload.clip.duration, action.payload.clip.slug, clips.clips)
-    },
-    clipsTruthUpdated(clips, action: PayloadAction<ClipsTruthUpdatedPayload>) {
-      action.payload.updates.forEach(update => {
-        if (update.notFound) {
-          delete clips.clips[update.clipSlug]
-        } else if (update.viewCount) {
-          clips.clips[update.clipSlug].views = update.viewCount
-        }
-      })
-    }
-  },
-  extraReducers: (builder) => {
+    })
     builder.addCase(annotationAdded.type, (clips, action: PayloadAction<FirstAnnotationAddedPayload>) => {
       let { clipSlug } = action.payload.annotation
       let clip = clips.clips[clipSlug]
@@ -243,8 +244,13 @@ export const clipsSlice = createSlice({
         revertClipByAnnotation(clip, action.payload.annotations[i])
       }
     })
+    builder.addCase(clipEpochsRetry.fulfilled, (clips, action: PayloadAction<UpdatedClipEpoch[]>) => {
+      action.payload.forEach(update => {
+        if (update.startEpoch) {
+          clips.clips[update.clipSlug].startEpoch = update.startEpoch
+        }})
+    })
   }
 })
 
-export const { clipAdded, clipsTruthUpdated } = clipsSlice.actions;
 export default clipsSlice.reducer

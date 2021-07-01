@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { UserTypes } from '../types'
 import { annotationAdded, AnnotationAddedPayload, firstAnnotationAdded, FirstAnnotationAddedPayload } from './annotations'
-import { clipAdded, ClipAddedPayloadV2 } from './clips'
+import { clipAdded, ClipAddedPayloadV2 } from './actions'
 
 interface ChatUser {
   userName: string
@@ -27,7 +27,7 @@ const usersSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
-    builder.addCase(clipAdded.type, (users, action: PayloadAction<ClipAddedPayloadV2>) => {
+    builder.addCase(clipAdded, (users, action: PayloadAction<ClipAddedPayloadV2>) => {
       let { userName, channelName } = action.payload
       if (!users.users[userName]) {
         users.users[userName] = {

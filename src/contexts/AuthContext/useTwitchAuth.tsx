@@ -21,6 +21,8 @@ const useTwitchAuth = () => {
     }
   }, [isAuth, getUser])
 
+  console.log(user)
+
   useEffect(() => {
     if (user) {
       // console.log(`setting auth provider with token: ` + user.access_token)

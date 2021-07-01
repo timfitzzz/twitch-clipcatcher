@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { annotationAdded, AnnotationAddedPayload } from './annotations'
-import { clipAdded } from './clips'
-import { ClipAddedPayloadV2 } from './clips'
+import { clipAdded, ClipAddedPayloadV2 } from './actions'
 
 interface Event {
   startEpoch: number

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { annotationAdded, AnnotationAddedPayload } from './annotations'
-import { clipAdded } from './clips'
-import { ClipAddedPayloadV2 } from './clips'
+import { clipAdded, ClipAddedPayloadV2 } from './actions'
 
 interface MessagesSliceState {
   messages: {
@@ -27,7 +26,7 @@ const messagesSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(clipAdded.type, (messages, action: PayloadAction<ClipAddedPayloadV2 >) => {
+    builder.addCase(clipAdded, (messages, action: PayloadAction<ClipAddedPayloadV2 >) => {
       messages.messages[action.payload.messageId] = action.payload.clip.slug
 
     })

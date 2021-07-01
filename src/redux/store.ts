@@ -4,6 +4,7 @@ import clipsReducer from './clips'
 import messagesReducer from './messages'
 import annotationsReducer from './annotations'
 import usersReducer from './users'
+import settingsReducer from './settings'
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     clips: clipsReducer,
     messages: messagesReducer,
     annotations: annotationsReducer,
-    users: usersReducer
+    users: usersReducer,
+    settings: settingsReducer
   }
 });
 

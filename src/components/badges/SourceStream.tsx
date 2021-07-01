@@ -13,7 +13,7 @@ const SourceStreamBadge = styled(Flex)<{charCount: number}>`
   color: white;
   border-radius: 8px;
   font-size: 16px;
-  padding: 4px;
+  padding: 0px 4px 4px 4px;
   width: fit-content;
   margin-top: 4px;
   margin-bottom: auto;
@@ -28,7 +28,7 @@ const SourceStreamBadge = styled(Flex)<{charCount: number}>`
   }
 
   span {
-    padding-top: 0px;
+    padding-top: 2px;
     margin-top: -2px;
     font-weight: bold;
   }

@@ -1,6 +1,7 @@
 // import React from 'react'
 import styled from 'styled-components'
 import { Button, Flex } from 'rendition'
+import { SectionTitle } from '../../typography/SectionTitle'
 // import { StyledIcon } from '@styled-icons/styled-icon'
 
 export * from './OptionsPanel'
@@ -30,18 +31,8 @@ export const OptionsPanelSection = styled(Flex)`
   justify-content: center;
 `
 
-export const OptionsPanelSectionTitle = styled.h5<{isActive: boolean}>`
-  text-transform: uppercase;
+export const OptionsPanelSectionTitle = styled(SectionTitle)<{isActive: boolean}>`
   color: ${p => p.isActive ? p.theme.colors.secondary.dark : 'white'};
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-block-start: auto;
-  margin-block-end: auto;
-  margin-inline-start: auto;
-  margin-inline-end: auto;
-  font-weight: 700;
-  line-height: 1em;
-
 `
 
 export const FlatterButton = styled(Button)`

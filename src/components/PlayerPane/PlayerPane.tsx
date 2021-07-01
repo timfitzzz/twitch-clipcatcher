@@ -16,6 +16,12 @@ interface ClipEmbedOptions {
   title: string
 }
 
+const PlayerContainer = styled(Box)<{inUse: boolean}>`
+
+  background-image: linear-gradient(black, ${p => p.theme.colors.gray.dark});
+
+`
+
 const parentString = process.env.REACT_APP_VERCEL_ENV === 'production' 
                       ? "clipstime.manapool.nyc" 
                       : process.env.REACT_APP_VERCEL_ENV === 'preview'
@@ -54,9 +60,9 @@ const PlayerPane = ({className}: { className?: string }) => {
   }, [currentClip, playing, renderPlayer])
 
   return (
-    <Box className={className}>
+    <PlayerContainer className={className} inUse={currentClip ? true : false}>
       {playerFrame}
-    </Box>
+    </PlayerContainer>
   )
 
 }
