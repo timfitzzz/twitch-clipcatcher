@@ -82,15 +82,15 @@ export interface CaughtClip extends TwitchClipV5 {
 // }
 
 
-export interface ChannelClip {
-  postedBy: {
-    userId: TwitchPrivateMessage['userInfo']['userId']
-    userName: TwitchPrivateMessage['userInfo']['userName']
-    isMod: boolean
-    isVip: boolean
-    isBroadcaster: boolean
-  }[]
-}
+// export interface ChannelClip {
+//   postedBy: {
+//     userId: TwitchPrivateMessage['userInfo']['userId']
+//     userName: TwitchPrivateMessage['userInfo']['userName']
+//     isMod: boolean
+//     isVip: boolean
+//     isBroadcaster: boolean
+//   }[]
+// }
 
 export interface OIDCUserData {
   id_token: string

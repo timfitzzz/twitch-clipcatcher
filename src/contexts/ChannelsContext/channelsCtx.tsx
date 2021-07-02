@@ -52,7 +52,7 @@ const ChannelsContextProvider = ({
     channelsState.channels[channelName].clips.forEach((foundClip, index) => {
       // console.log(clip.slug, foundClip.slug)
       if (clip.slug === foundClip.slug) {
-        console.log(`clip ${clip.slug} exists, adding new poster: `, clip.postedBy[0].userName)
+        // console.log(`clip ${clip.slug} exists, adding new poster: `, clip.postedBy[0].userName)
         clipExists = index;
         channelsDispatch({
           type: ChannelActions.UPDATE_CLIP_POSTED_BY,
@@ -62,7 +62,7 @@ const ChannelsContextProvider = ({
     });
 
     if (clipExists === -1) {
-      console.log(`clip ${clip.slug} does not exist, adding new`)
+      // console.log(`clip ${clip.slug} does not exist, adding new`)
       channelsDispatch({
         type: ChannelActions.ADD_CLIP,
         payload: [channelName, clip],

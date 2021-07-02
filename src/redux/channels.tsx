@@ -9,7 +9,7 @@ export interface ChannelsSliceState {
 const initialState: ChannelsSliceState = {}
 
 type ChannelAddedPayload = string
-type ChannelRemovedPayload = string
+export type ChannelRemovedPayload = string
 type ScanningStartedPayload = string
 type ScanningStoppedPayload = string
 type ChannelClearedPayload = string

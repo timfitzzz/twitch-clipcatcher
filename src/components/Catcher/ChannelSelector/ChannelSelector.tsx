@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Flex } from 'rendition';
 
 import Tab from './Tab';
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
+import { channelChanged } from '../../../redux/settings';
 
 const AddIcon = styled(Add)`
   width: 18px;
@@ -27,20 +29,20 @@ const ChannelSelectorTabs = styled(Flex).attrs(p => ({
 `;
 
 export const ReusableChannelSelector = ({
-  className,
   channelNames,
-  currentChannelName,
-  setAddPanelVisible,
-  addPanelSelected,
-  handleChannelChange,
+  className
 }: {
-  setAddPanelVisible: (showPanel: boolean) => void;
-  addPanelSelected: boolean;
-  handleChannelChange: (channelName: string) => void;
-  className?: string;
   channelNames: string[];
-  currentChannelName: string | null;
+  className?: string;
 }) => {
+
+  const currentChannel = useAppSelector(state => state.settings.currentChannel)
+  const dispatch = useAppDispatch()
+
+  const changeChannel = (channelName: string | -1) => {
+    dispatch(channelChanged({newChannel: channelName}))
+  }
+
 
   return (
     <ChannelSelectorTabs>
@@ -48,16 +50,16 @@ export const ReusableChannelSelector = ({
         <Flex flexDirection={'row-reverse'} justifyContent={"flex-end"} flexWrap={"wrap"}>
           {channelNames.map((channelName) => (
             <Tab
-              onClick={() => { setAddPanelVisible(false); handleChannelChange(channelName) }}
+              onClick={() => { changeChannel(channelName) }}
               title={channelName}
-              current={!addPanelSelected && channelName === currentChannelName}
+              current={channelName === currentChannel}
               key={channelName+'tab'}
             />
           ))}
           <Tab
-            onClick={() => setAddPanelVisible(true)}
+            onClick={() => changeChannel(-1)}
             icon={AddIcon}
-            current={addPanelSelected === true}
+            current={currentChannel === -1}
             key={'addPanelTab'}
           />
         </Flex>

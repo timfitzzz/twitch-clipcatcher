@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rendition'
 import { useAppSelector } from '../../hooks/reduxHooks'
@@ -21,9 +21,9 @@ const ChannelContainer = styled(Flex).attrs(p => ({
 const Catcher = () => {
 
   const channelNames = useAppSelector(state => Object.getOwnPropertyNames(state.channels))
-  const [currentChannel, setCurrentChannel] = useState<string | null>(null)
+  const currentChannel = useAppSelector(state => state.settings.currentChannel)
   const displayOrder = useMemo(() => {
-    if (currentChannel) {
+    if (currentChannel && typeof currentChannel === 'string') {
       let newOrder = channelNames.filter(name => name !== currentChannel)
       newOrder.push(currentChannel)
       return newOrder
@@ -32,29 +32,23 @@ const Catcher = () => {
     }
   }, [channelNames, currentChannel])
 
-  const handleChannelChange = (channelName: string) => {
-    setCurrentChannel(channelName)
-  }
-
-  let [addPanelVisible, setAddPanelVisible] = useState<boolean>(true)
-
   // let channelNames = useContextSelector(ChannelsContext, (c) => Object.getOwnPropertyNames(c.channels))
   // let channelsDispatch = useContextSelector(ChannelsContext, (c) => c.channelsDispatch)
   // let channelNames = useMemo(() => Object.getOwnPropertyNames(channels), [channels])
 
   return (
     <>
-      <ChannelSelector setAddPanelVisible={setAddPanelVisible} addPanelSelected={addPanelVisible} channelNames={displayOrder} currentChannelName={currentChannel} handleChannelChange={handleChannelChange}/>
+      <ChannelSelector channelNames={displayOrder}/>
       <ChannelContainer>
         {channelNames.length > 0 &&
           channelNames.map((channelName) => (
             <Channel
               channelName={channelName}
               key={'channel' + channelName}
-              hidden={currentChannel === channelName && !addPanelVisible ? false : true}
+              hidden={!(currentChannel === channelName)}
             />
           ))}
-        { addPanelVisible ? (
+        { currentChannel === -1 ? (
           <AddChannelForm />
         ) : (
           <></>

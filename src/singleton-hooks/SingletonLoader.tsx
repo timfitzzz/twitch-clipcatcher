@@ -80,8 +80,9 @@ const SingletonLoader = () => {
           if (clipResult && clipResult.groups) {
             words = messageText.replace(clipResult[0].toString(), "").toLocaleLowerCase().split(" ")
           } else {
-            words = messageText.toLocaleLowerCase().split(" ").filter(word => word.length > 2 && wordsRegExp.test(word))
+            words = messageText.toLocaleLowerCase().split(" ")
           }
+          words = words.filter(word => word.length > 2 && !wordsRegExp.test(word))
           let sub = msg.tags.get('subscriber')
 
           if (replyParentId) {

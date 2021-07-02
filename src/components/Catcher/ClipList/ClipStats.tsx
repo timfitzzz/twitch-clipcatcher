@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Box } from 'rendition'
-import { TagsPanel } from './TagsPanel'
+import TagsPanel from './TagsPanel'
 
 const StatsPanelContainer = styled(Box)`
   border-color: ${p => p.theme.colors.primary.main};
@@ -15,7 +15,6 @@ const StatsPanelContainer = styled(Box)`
   display: flex;
   padding: 4px;
   margin-right: 4px;
-  width: 75px;
 `
 
 // const UserPip = styled(Frog)<{ userType: UserTypes, linker: boolean }>`

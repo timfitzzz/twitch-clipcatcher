@@ -230,7 +230,7 @@ export const intakeReply = createAsyncThunk<
 
 
 export const getUserInfo = createAsyncThunk<
-  HelixUser | null,
+  Pick<HelixUser, 'name' | 'profilePictureUrl'> | null,
 {
   userName: string,
   apiClient: ApiClient

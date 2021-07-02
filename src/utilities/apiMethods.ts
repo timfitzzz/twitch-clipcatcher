@@ -16,7 +16,7 @@ export const getClipMeta = async (clipSlug: string, apiClient: ApiClient): Promi
 export const getClipEpoch = async (vodId: string, offset: number, apiClient: ApiClient): Promise<number | null> => {
   return apiClient.helix.videos.getVideoById(vodId).then((video) => {
     if (video) {
-      return video.creationDate.getTime() + offset
+      return video.creationDate.getTime() + offset * 1000
     } else {
       return null
     }
@@ -59,6 +59,7 @@ export const retryClipEpoch = async (clipSlug: string, apiClient: ApiClient): Pr
 
   return getClipMeta(clipSlug, apiClient).then(clipMeta => {
     if (clipMeta.vod) {
+      // console.log(clipMeta.vod)
       return getClipEpoch(clipMeta.vod.id, clipMeta.vod.offset, apiClient).then(epoch => epoch ? {
         clipSlug,
         startEpoch: epoch
@@ -90,6 +91,6 @@ export const retryClipEpochs = async (clipSlugs: string[], apiClient: ApiClient)
   return Promise.all(promises)
 }
 
-export const fetchUserInfo = async (userName: string, apiClient: ApiClient): Promise<HelixUser | null> => {
-  return apiClient.helix.users.getUserByName(userName)
+export const fetchUserInfo = async (userName: string, apiClient: ApiClient): Promise<Pick<HelixUser, 'name' | 'profilePictureUrl'> | null> => {
+  return apiClient.helix.users.getUserByName(userName).then(userInfo => userInfo ? { name: userInfo.name, profilePictureUrl: userInfo.profilePictureUrl } : null)
 }
