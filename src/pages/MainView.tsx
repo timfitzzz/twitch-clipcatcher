@@ -6,6 +6,7 @@ import AuthCard from '../components/AuthPanel/AuthCard'
 import Catcher from '../components/Catcher/Catcher'
 import PlayerPane from '../components/PlayerPane/PlayerPane'
 import styled from 'styled-components'
+import IntroPanel from '../components/IntroPanel'
 
 const MainViewContainer = styled(Flex)`
   height: 100%;
@@ -29,17 +30,17 @@ const MainViewDivider = styled(Divider)`
 
 const MainView = () => {
 
-  let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated)
+  let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated ? c.isAuthenticated() : false)
 
   return (
     <MainViewContainer flexDirection={"row"}>
       <MainViewSideColumn flexDirection={"column"}>
         <AuthCard />
         <MainViewDivider />
-        { isAuthenticated && isAuthenticated() ? (
+        { isAuthenticated ? (
           <Catcher />
         ) : (
-          <span>not logged in</span>
+          <IntroPanel/>
         )}
       </MainViewSideColumn>
       <PlayerPane/>

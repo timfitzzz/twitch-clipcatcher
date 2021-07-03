@@ -13,6 +13,7 @@ import HelpButton from './HelpButton'
 const AuthBarContainer = styled(Flex).attrs(p => ({
   flexDirection: 'row'
 }))`
+
   padding-top: 8px;
   padding-bottom: 8px;
   background-color: ${p => p.theme.colors.quartenary.semilight};
@@ -25,6 +26,7 @@ const TitleLogo = styled(TitleImage)`
   padding-left: 8px;
   path {
     stroke: ${p => p.theme.colors.secondary.main};
+    stroke-width: 8px;
   }
 `
 

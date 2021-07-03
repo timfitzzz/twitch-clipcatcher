@@ -10,8 +10,8 @@ import { channelCleared } from '../../../redux/channels';
 import SortSetter from './SortSetter';
 import StatsPanel from './StatsPanel';
 import CloseChannelButton from './CloseChannelButton';
-import FilterSetter from './FilterSetter';
-import ModerationFilter from './ModerationFilter';
+// import FilterSetter from './FilterSetter';
+// import ModerationFilter from './ModerationFilter';
 
 
 // const OptionsPanelTitle = styled.h4`
@@ -60,14 +60,14 @@ const Options = ({
           </OptionsPanelSection>
           <CloseChannelButton channelName={channelName}/>
         </OptionsPanelRow>
-        <OptionsPanelRow>
+        {/* <OptionsPanelRow>
           <OptionsPanelSection>
             <FilterSetter channelName={channelName}/>
           </OptionsPanelSection>
           <OptionsPanelSection>
             <ModerationFilter channelName={channelName} />
           </OptionsPanelSection>
-        </OptionsPanelRow>
+        </OptionsPanelRow> */}
         <OptionsPanelRow>
           <OptionsPanelSection>
             <SortSetter channelName={channelName}/>

@@ -106,57 +106,57 @@ export interface CaughtClipV2 extends TwitchClipV5 {
   }
 }
 
-function recursiveSearch<key extends keyof CaughtClipV2>(
-  targetArray: string[], 
-  referenceObject: { [key: string]: CaughtClipV2 }, 
-  referenceProp: key,
-  targetValue: CaughtClipV2[key],
-  left: number = 0, 
-  right: number = targetArray.length - 1
-  ): number {
+// function recursiveSearch<key extends keyof CaughtClipV2>(
+//   targetArray: string[], 
+//   referenceObject: { [key: string]: CaughtClipV2 }, 
+//   referenceProp: key,
+//   targetValue: CaughtClipV2[key],
+//   left: number = 0, 
+//   right: number = targetArray.length - 1
+//   ): number {
 
-  // console.log(left, right, targetArray.length)
+//   // console.log(left, right, targetArray.length)
 
-  if (targetArray.length === 0 || left >= right) {
-    return left
-  }
+//   if (targetArray.length === 0 || left >= right) {
+//     return left
+//   }
 
-  let mid = left + Math.floor(right - left / 2)
+//   let mid = left + Math.floor(right - left / 2)
 
-  if (referenceObject[targetArray[mid]][referenceProp] === targetValue) {
-    return mid
-  } else {
-    if (typeof targetValue === 'number') {
-      if (referenceObject[targetArray[mid]][referenceProp] > targetValue) {
-        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid-1)
-      } else {
-        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid+1, right)
-      }
-    } else {
-      if ((referenceObject[targetArray[mid]][referenceProp] as string).localeCompare(targetValue as string) < 0 ) {
-        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid-1)
-      } else {
-        return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid+1, right)
-      }
-    }
-  }
-}
+//   if (referenceObject[targetArray[mid]][referenceProp] === targetValue) {
+//     return mid
+//   } else {
+//     if (typeof targetValue === 'number') {
+//       if (referenceObject[targetArray[mid]][referenceProp] > targetValue) {
+//         return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid-1)
+//       } else {
+//         return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid+1, right)
+//       }
+//     } else {
+//       if ((referenceObject[targetArray[mid]][referenceProp] as string).localeCompare(targetValue as string) < 0 ) {
+//         return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid-1)
+//       } else {
+//         return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid+1, right)
+//       }
+//     }
+//   }
+// }
 
 
-const insertEpoch = (clipsByStartEpoch: string[], startEpoch: number, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
-  const newIndex = recursiveSearch(clipsByStartEpoch, clips, 'startEpoch', startEpoch)
-  return clipsByStartEpoch.splice(newIndex, 0, clipSlug)
-}
+// const insertEpoch = (clipsByStartEpoch: string[], startEpoch: number, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
+//   const newIndex = recursiveSearch(clipsByStartEpoch, clips, 'startEpoch', startEpoch)
+//   return clipsByStartEpoch.splice(newIndex, 0, clipSlug)
+// }
 
-const insertStream = (clipsByStream: string[], broadcasterName: string, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
-  const newIndex = recursiveSearch(clipsByStream, clips, 'broadcasterName', broadcasterName)
-  return clipsByStream.splice(newIndex, 0, clipSlug)
-}
+// const insertStream = (clipsByStream: string[], broadcasterName: string, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
+//   const newIndex = recursiveSearch(clipsByStream, clips, 'broadcasterName', broadcasterName)
+//   return clipsByStream.splice(newIndex, 0, clipSlug)
+// }
 
-const insertDuration = (clipsByDuration: string[], duration: number, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
-  const newIndex = recursiveSearch(clipsByDuration, clips, 'duration', duration)
-  return clipsByDuration.splice(newIndex, 0, clipSlug)
-}
+// const insertDuration = (clipsByDuration: string[], duration: number, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
+//   const newIndex = recursiveSearch(clipsByDuration, clips, 'duration', duration)
+//   return clipsByDuration.splice(newIndex, 0, clipSlug)
+// }
 
 interface ClipsSliceState {
   clips: {
@@ -229,9 +229,9 @@ export const clipsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(clipAdded, (clips, action: PayloadAction<ClipAddedPayloadV2>) => {
       clips.clips[action.payload.clip.slug] = action.payload.clip
-      insertEpoch(clips.clipsByStartEpoch, action.payload.clip.startEpoch || 0, action.payload.clip.slug, clips.clips)
-      insertStream(clips.clipsByStream, action.payload.clip.broadcasterName, action.payload.clip.slug, clips.clips)
-      insertDuration(clips.clipsByDuration, action.payload.clip.duration, action.payload.clip.slug, clips.clips)
+      // insertEpoch(clips.clipsByStartEpoch, action.payload.clip.startEpoch || 0, action.payload.clip.slug, clips.clips)
+      // insertStream(clips.clipsByStream, action.payload.clip.broadcasterName, action.payload.clip.slug, clips.clips)
+      // insertDuration(clips.clipsByDuration, action.payload.clip.duration, action.payload.clip.slug, clips.clips)
     })
     builder.addCase(annotationAdded.type, (clips, action: PayloadAction<FirstAnnotationAddedPayload>) => {
       let { clipSlug } = action.payload.annotation

@@ -194,12 +194,11 @@ export const AuthButton = () => {
       ) : (
         <InactiveTwitchLoginIcon onClick={logIn}/>
       )}
-      { !loggedIn ? (
-          <LoginIndicatorLayer onClick={logIn}/>
-      ) : (<></>)}
       { loggedIn ? (
           <LogoutIndicatorLayer onClick={logout}/>
-      ) : (<></>)}
+      ) : ( 
+          <LoginIndicatorLayer onClick={logIn}/>
+      )}
     </AuthButtonCard>
   )
 }

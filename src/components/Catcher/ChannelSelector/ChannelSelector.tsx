@@ -37,7 +37,7 @@ const ChannelSelectorTabsContainer = styled(Flex).attrs(p => ({
 }))`
 
   width: 100%;
-  background-color: ${p => p.theme.colors.quartenary.semilight};
+  background-color: ${p => p.theme.colors.gray.semilight};
 
   padding-top: 8px;
 

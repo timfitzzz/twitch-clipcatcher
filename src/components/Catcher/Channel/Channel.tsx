@@ -26,6 +26,4 @@ const Channel = styled(({channelName, hidden}: {channelName: string, hidden?: bo
   border: 4px solid ${p => p.theme.colors.primary.semilight};
 `
 
-Channel.whyDidYouRender = true
-
 export default Channel

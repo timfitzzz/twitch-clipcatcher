@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import Clip from './Clip'
 import {OptionsPanel} from '../OptionsPanel'
 import useClips from '../../../hooks/useClips'
+import NoClips from './NoClips'
 
 
 
@@ -107,6 +108,9 @@ const ClipList = ({channelName, scanning}: {channelName: string, scanning: boole
       </Flex> */}
       <ClipsContainer flexDirection={"column"}>
         { clips && clips.map((clip, idx) => <Clip key={clip+channelName+idx} clipSlug={clip} channelName={channelName}/>)}
+        { clips && clips.length === 0 ? (
+          <NoClips/>
+        ) : (<></>)}
       </ClipsContainer>
     </ClipListContainer>
   )
