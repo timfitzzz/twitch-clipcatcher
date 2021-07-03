@@ -30,6 +30,6 @@ export const IDENTITY_CONFIG: ExtendedOidcClientSettings  = {
   }
 }
 
-// export const METADATA_OIDC: OidcMetadata = {
-//   token_endpoint:  https://id.twitch.tv/oauth2/.well-known/openid-configuration
-// }
+export const METADATA_OIDC: any = {
+  revocation_endpoint:  'https://id.twitch.tv/oauth2/revoke'
+}

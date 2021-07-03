@@ -1,65 +1,21 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useContextSelector } from 'use-context-selector'
-
-import { Card, Flex } from 'rendition'
-import { AuthContext } from '../../contexts/AuthContext'
+import { Flex } from 'rendition'
 import TitleImage from './TitleImage'
-import { useAppSelector } from '../../hooks/reduxHooks'
-import {Settings} from '@styled-icons/feather/Settings'
-import {HelpCircle} from '@styled-icons/feather/HelpCircle'
+// import {Settings} from '@styled-icons/feather/Settings'
+import { AuthButton } from './AuthButton'
+import HelpButton from './HelpButton'
 
-const ButtonCard = styled(Card).attrs(p => ({
-  ...p,
-  small: true
-}))`
-  > div {
-    > div {
-      display: flex;
-    }
-    display: flex;
-  }
-  display: flex;
-  flex-direction: column;
-  margin-right: 0px;
-  margin-left: 4px;
-  padding: 8px;
-
-  &:last-of-type {
-    margin-right: 8px;
-  }
-  
-`
-
-const FirstButtonCard = styled(Card).attrs(p => ({
-  ...p,
-  small: true
-}))`
-> div {
-  > div {
-    display: flex;
-  }
-  display: flex;
-}
-display: flex;
-flex-direction: column;
-margin-right: 0px;
-margin-left: auto;
-padding: 8px;
-`
-
-const SettingsIcon = styled(Settings)`
-  width: 40px
-`
-
-const HelpCircleIcon = styled(HelpCircle)`
-  width: 40px;
-`
+// const SettingsIcon = styled(Settings)`
+//   width: 40px
+// `
 
 const AuthBarContainer = styled(Flex).attrs(p => ({
   flexDirection: 'row'
 }))`
-  margin-top: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background-color: ${p => p.theme.colors.quartenary.semilight};
 `
 
 const TitleLogo = styled(TitleImage)`
@@ -67,32 +23,21 @@ const TitleLogo = styled(TitleImage)`
   margin-top: auto;
   margin-bottom: auto;
   padding-left: 8px;
+  path {
+    stroke: ${p => p.theme.colors.secondary.main};
+  }
 `
 
-const TwitchUserIcon = styled.img`
-  width: 40px;
-`
 
 const AuthCard = () => {
 
-  let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated)
-  let user = useAppSelector(state => state.settings.user)
-
   return <AuthBarContainer>
             <TitleLogo/>
-            <FirstButtonCard>
+            {/* <FirstButtonCard>
               <SettingsIcon/>
-            </FirstButtonCard>
-            <ButtonCard>
-              <HelpCircleIcon/>
-            </ButtonCard>
-            <ButtonCard>
-              { isAuthenticated && isAuthenticated() && user && user.userName && user.profilePicUrl ? (
-                <TwitchUserIcon src={user.profilePicUrl}/>
-              ) : (
-                <span>not logged in</span>
-              )}
-          </ButtonCard>
+            </FirstButtonCard> */}
+            <HelpButton/>
+            <AuthButton/>
          </AuthBarContainer>
 
 }

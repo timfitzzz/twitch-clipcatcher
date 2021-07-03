@@ -20,6 +20,28 @@ const AddIcon = styled(Add)`
   }
 `
 
+const ChannelSelectorTabContainer = styled(Flex).attrs(p => ({
+  ...p,
+  flexDirection: "row-reverse",
+  justifyContent: "flex-end",
+  flexWrap: "wrap"
+}))`
+
+
+
+
+`
+const ChannelSelectorTabsContainer = styled(Flex).attrs(p => ({
+  ...p,
+  flexDirection: "row"
+}))`
+
+  width: 100%;
+  background-color: ${p => p.theme.colors.quartenary.semilight};
+
+  padding-top: 8px;
+
+`
 const ChannelSelectorTabs = styled(Flex).attrs(p => ({
   ...p,
   flexDirection: 'row'
@@ -46,8 +68,8 @@ export const ReusableChannelSelector = ({
 
   return (
     <ChannelSelectorTabs>
-      <Flex flexDirection={'row'} width={'100%'}>
-        <Flex flexDirection={'row-reverse'} justifyContent={"flex-end"} flexWrap={"wrap"}>
+      <ChannelSelectorTabsContainer>
+        <ChannelSelectorTabContainer>
           {channelNames.map((channelName) => (
             <Tab
               onClick={() => { changeChannel(channelName) }}
@@ -62,8 +84,8 @@ export const ReusableChannelSelector = ({
             current={currentChannel === -1}
             key={'addPanelTab'}
           />
-        </Flex>
-      </Flex>
+        </ChannelSelectorTabContainer>
+      </ChannelSelectorTabsContainer>
 
     </ChannelSelectorTabs>
   );

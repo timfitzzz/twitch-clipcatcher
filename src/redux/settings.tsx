@@ -27,6 +27,9 @@ const settingsSlice = createSlice({
   reducers: {
     channelChanged(settings, action: PayloadAction<ChannelChangedPayload>) {
       settings.currentChannel = action.payload.newChannel
+    },
+    userLoggedOut(settings, action: PayloadAction<undefined>) {
+      delete settings.user
     }
   },
   extraReducers: (builder) => {
@@ -52,5 +55,5 @@ const settingsSlice = createSlice({
   }
 })
 
-export const { channelChanged } = settingsSlice.actions
+export const { channelChanged, userLoggedOut } = settingsSlice.actions
 export default settingsSlice.reducer

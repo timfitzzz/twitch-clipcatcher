@@ -1,4 +1,4 @@
-import { IDENTITY_CONFIG } from './authConst'
+import { IDENTITY_CONFIG, METADATA_OIDC } from './authConst'
 import { UserManager, WebStorageStateStore, Log, IDTokenClaims } from 'oidc-client'
 import { OIDCUserData } from '../../types';
 
@@ -11,11 +11,13 @@ export default class AuthService {
     this.clientId = IDENTITY_CONFIG.client_id || '0000'
     this.UserManager = new UserManager({
       ...IDENTITY_CONFIG,
+      revokeAccessTokenOnSignout: true,
+      metadataSeed: METADATA_OIDC,
       userStore: new WebStorageStateStore({ store: window.sessionStorage })
     });
     // Logger
     Log.logger = console;
-    Log.level = Log.INFO;
+    Log.level = Log.DEBUG;
     this.UserManager.events.addUserLoaded((user) => {
       if (window.location.href.indexOf("signin-oidc") !== -1) {
         this.navigateToScreen();
@@ -93,10 +95,17 @@ export default class AuthService {
   };
 
   logout = () => {
-      this.UserManager.signoutRedirect({
-          id_token_hint: localStorage.getItem("id_token")
-      });
-      this.UserManager.clearStaleState();
+      // let oidcInfo = sessionStorage.getItem(`oidc.user:${process.env.REACT_APP_TWITCH_AUTHORITY || 'https://id.twitch.tv/oauth2/.well-known/openid-configuration'}:${process.env.REACT_APP_TWITCH_CLIENT_ID || ''}`)
+      // let token = oidcInfo ? JSON.parse(oidcInfo).access_token : ""
+      // console.log(oidcInfo)
+      // this.UserManager.signoutRedirect({
+      //     id_token_hint: false,
+      //     extraQueryParams: {
+      //       clientId: IDENTITY_CONFIG.client_id,
+      //       token
+      //     }
+      // });
+      return this.UserManager.revokeAccessToken().then(result => sessionStorage.clear());
   };
 
   signoutRedirectCallback = () => {

@@ -20,6 +20,13 @@ const MainViewSideColumn = styled(Flex)`
   height: 100%;
 `
 
+const MainViewDivider = styled(Divider)`
+  margin-top: 0px;
+  border-color: ${p => p.theme.colors.quartenary.light};
+  border-width: 2px;
+  margin-bottom: 2px;
+`
+
 const MainView = () => {
 
   let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated)
@@ -28,7 +35,7 @@ const MainView = () => {
     <MainViewContainer flexDirection={"row"}>
       <MainViewSideColumn flexDirection={"column"}>
         <AuthCard />
-        <Divider />
+        <MainViewDivider />
         { isAuthenticated && isAuthenticated() ? (
           <Catcher />
         ) : (

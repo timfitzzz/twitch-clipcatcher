@@ -112,6 +112,12 @@ declare module 'react' {
   }
 }
 
+declare module 'oidc-client' {
+  interface OidcClientSettings {
+    metadataSeed?: any
+  }
+}
+
 export enum SortTypes {
   frogscount,
   views,

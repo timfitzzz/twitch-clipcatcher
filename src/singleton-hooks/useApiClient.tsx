@@ -20,6 +20,7 @@ const useApiClientImpl = () => {
 
   const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
   const user = useContextSelector(AuthContext, (c) => c.user)
+  const isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated)
   const userInfo = useAppSelector(state => state.settings.user)
   const loadingUser = useAppSelector(state => state.settings.userLoading)
   const dispatch = useAppDispatch() 
@@ -35,10 +36,10 @@ const useApiClientImpl = () => {
 
 
   useEffect(() => {
-    if (user && user.profile.preferred_username && !userInfo && apiClient && !loadingUser) {
+    if (isAuthenticated && isAuthenticated() && user && user.profile.preferred_username && !userInfo && apiClient && !loadingUser) {
       dispatch(getUserInfo({ userName: user.profile.preferred_username, apiClient: apiClient}))
     }
-  }, [userInfo, loadingUser, apiClient, dispatch, user])
+  }, [userInfo, loadingUser, apiClient, dispatch, user, isAuthenticated])
 
   return apiClient
 
