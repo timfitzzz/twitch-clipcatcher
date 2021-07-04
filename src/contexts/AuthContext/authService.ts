@@ -17,7 +17,6 @@ export default class AuthService {
     });
     // Logger
     Log.logger = console;
-    Log.level = Log.DEBUG;
     this.UserManager.events.addUserLoaded((user) => {
       if (window.location.href.indexOf("signin-oidc") !== -1) {
         this.navigateToScreen();

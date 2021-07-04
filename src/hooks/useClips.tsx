@@ -18,16 +18,6 @@ const useClips = ({channelName}: { channelName: string}): string[] => {
     [SortTypes['streamername']]: (clip: CaughtClipV2) => clip.broadcasterName.toLocaleLowerCase()
   }), [channelName])
 
-  // const filtersTable = useMemo(() => ({
-  //   meta: 
-  // }))
-  
-  // let applyFilters = useCallback(() => (clipId: string) => {
-  //   for (i = 0; i < filters.length; i++) {
-  //     if ()
-  //   }
-  // })
-
   let lexSort = useCallback(() => (clipAId: string, clipBId: string): number => {
     function getSortResult(sort: Sort) {
       return sort.active 

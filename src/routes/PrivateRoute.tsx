@@ -12,9 +12,9 @@ type PrivateRouteProps = {
 export const PrivateRoute: React.FunctionComponent<PrivateRouteProps> = ({ component, ...rest }: { component: ElementType<any> }) => {
 
   const Component = component
-  const isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated)
+  const isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated ? c.isAuthenticated() : false)
   const signinRedirect = useContextSelector(AuthContext, (c) => c.signinRedirect)
 
   return <Route {...rest} render={(props: any) => 
-      isAuthenticated && isAuthenticated() && Component ? <Component {...props} /> : (function () {signinRedirect!(); return <Spinner show/>}()) }/>
+      isAuthenticated && Component ? <Component {...props} /> : (function () {signinRedirect!(); return <Spinner show/>}()) }/>
 }
