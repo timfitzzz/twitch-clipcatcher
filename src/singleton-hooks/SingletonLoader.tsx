@@ -16,7 +16,7 @@ import { parseUserType } from '../utilities/parsers';
 //   if ()
 // }
 
-let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+-{1}[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+)/g;
+let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[a-zA-Z0-9~!@#$%^&*()_\-=+/.:;',]+)/g;
 let wordsRegExp: RegExp = /(?:@)+|(?:\?.*=.*)+/gm
 
 const SingletonLoader = () => {
