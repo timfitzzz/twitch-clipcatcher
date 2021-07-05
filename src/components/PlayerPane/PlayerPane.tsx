@@ -39,7 +39,7 @@ const PlayerPane = ({className}: { className?: string }) => {
     let { autoplay, muted, title, ...rest } = props;
     // console.log(rest)
     return (
-      <iframe title={title} {...rest}/>
+      <iframe allowFullScreen title={title} {...rest}/>
     )
 
   }, [])
