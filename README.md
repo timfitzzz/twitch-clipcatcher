@@ -2,15 +2,26 @@
 
 ClipsTime! is a single-page web application intended to enhance the experience of watching Twitch clips for streamers, viewers, and moderators.
 
+### TOC:
+* [How to Use](#how-to-use)
+* [Chat Commands](#chat-commands)
+  * [Submit a Clip (All Chatters)](#submit-a-clip-all-chatters)
+  * [Upvote or Downvote a clip (All Chatters)](#upvote-or-downvote-a-clip-all-chatters)
+  * [Tag a clip (All chatters)](#tag-a-clip-all-chatters)
+  * [Mark a clip as Meta or Drama (All chatters, kind of)](#mark-a-clip-as-meta-or-drama-all-chatters-kind-of)
+  * [Veto a clip (Mods and Broadcasters only)](#veto-a-clip-mods-and-broadcasters-only)
+  * [Veto another user’s message (clip links, tags, etc):](#veto-another-users-message-clip-links-tags-etc)
+* [Develop ClipsTime!](#develop-clipstime)
+
 ## How to use
 
-1. **Access the ClipsTime! interface** -- the current version is available [here at https://clipstime.manapool.nyc](https://clipstime.manapool.nyc) or deploy it yourself using the development instructions below.
+1. **Access the ClipsTime! interface** -- the current version is available [here at https://clipstime.manapool.nyc](https://clipstime.manapool.nyc), or deploy it yourself using the development instructions below.
 2. **Log in with Twitch.** (A quick note on permissions: Although the authentication message will ask for permission to view your email, ClipsTime! is never aware of it, and neither are its developers. Additionally, it will request permission to read and write chat messages on your behalf. At present, it only uses these permissions to read chat messages and never writes them; in the future, broadcasters and moderators will be able to access the chat API using the GUI.)
-3. **Add a channel to collect activity from.** using the "add channel" box. Now, as clips and related messages are posted, the activity will be reflected in the ClipsTime! interface.
+3. **Add a channel to collect activity from** using the "add channel" box. Now, as clips and related messages are posted, the activity will be reflected in the ClipsTime! interface.
 
-For more on how users, moderators, and broadcasters can take advantage of ClipsTime! by tagging, voting on, and taking moderation actions on clips posted in chat, please read on for a breakdown of the chat API.
+For more on how users, moderators, and broadcasters can take advantage of ClipsTime! by tagging, voting on, and taking moderation actions on clips posted in chat, please read on for a breakdown of available chat commands.
 
-## Chat API
+## Chat Commands
 
 ClipsTime! revolves around Twitch chat. As such, all of its functionality can be accessed via chat commands. Likewise, like Twitch Chat, it operates in a real-time basis and only knows what's happened in chat during the time that it's been open. ClipsTime! also supports moderation actions -- if moderators remove a single message or time a user out and remove all their recent messages, ClipsTime! will forget about their recent clips and commands.
 
@@ -18,9 +29,9 @@ When ClipsTime! is recording chat activity, a channel's users can interact with 
 
 ### Submit a Clip (All Chatters)
 
-To submit a clip, all chatters can simply post a link in chat. This should be the full URL, in either of the common forms ("https://clips.twitch.tv/[__clip slug__]" or "https://www.twitch.tv/[__broadcaster__]/[__clip slug__]").
+To submit a clip, all chatters can simply post a link in chat. This should be the full URL, in either of the common forms ("https://clips.twitch.tv/*clip-slug*" or "https://www.twitch.tv/*broadcaster*/*clip-slug*").
 
-### Upvote / Downvote a clip (All Chatters)
+### Upvote or Downvote a clip (All Chatters)
 
 To upvote or downvote a clip, a user can:
 * reply to a message containing the clip with "+1" or "-1"
@@ -54,7 +65,7 @@ To VETO a clip, a mod or channel owner can:
 
 Moderators can completely remove the effects of a user's message from the ClipsTime! display by deleting that message or timing that user out in chat.
 
-### Develop ClipsTime!
+## Develop ClipsTime!
 
 Anybody can download ClipsTime! and run it locally on their computers with full functionality, provided they have node.js 14+ and git. You will, however, need to supply a Twitch Client ID provided by the [Twitch dev console](https://dev.twitch.tv/console/apps). (Make sure to configure the application's OAuth redirect URL as 'https://localhost:3000/signin-oidc').
 
