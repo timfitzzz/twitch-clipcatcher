@@ -4,7 +4,7 @@ import useApiClient from './useApiClient'
 import useChatClient from './useChatClient'
 import { Listener } from '@d-fischer/typed-event-emitter'
 import { useAppDispatch } from '../hooks/reduxHooks';
-import { intakeClip, intakeReply } from '../redux/actions';
+import { intakeClip, intakeReply, messageRemoved, userTimedOut } from '../redux/actions';
 import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore';
 import { TwitchApiCallType } from 'twitch/lib'
 import { parseUserType } from '../utilities/parsers';
@@ -19,6 +19,11 @@ import { parseUserType } from '../utilities/parsers';
 let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[-a-zA-Z0-9~!@#$%^&*()_=+/.:;',]+)/g;
 let wordsRegExp: RegExp = /(?:@)+|(?:\?.*=.*)+/gm
 
+interface ModerationListeners {
+  onMessageRemove?: Listener
+  onTimeout?: Listener
+}
+
 const SingletonLoader = () => {
 
   // console.log('rerendering singleton loader')
@@ -26,6 +31,7 @@ const SingletonLoader = () => {
   const apiClient = useApiClient()
   const { chatClient, loggedIn } = useChatClient()
   const [currentMessageListener, setCurrentMessageListener] = useState<Listener | null>(null)
+  const [currentModerationListeners, setCurrentModerationListeners] = useState<ModerationListeners>({})
   // const [currentUpdateSchedulerId, setCurrentUpdateSchedulerId] = useState<number | null>(null)
 
   const dispatch = useAppDispatch()
@@ -135,6 +141,46 @@ const SingletonLoader = () => {
   //     chatClient.onTimeout
   //   }
   // })
+
+  // schedule listeners for moderation actions
+  useEffect(() => {
+    let oldListeners = currentModerationListeners
+    let newListeners: ModerationListeners = {}
+
+    if (chatClient && loggedIn) {
+      newListeners.onMessageRemove = chatClient.onMessageRemove((_channel, messageId) => {
+        console.log('onmessageremove: ', _channel, messageId)
+        dispatch(messageRemoved({ messageId }))
+      })
+
+      if (oldListeners.onMessageRemove) {
+        chatClient.removeListener(oldListeners.onMessageRemove.event, oldListeners.onMessageRemove.listener)
+      }
+
+      newListeners.onTimeout = chatClient.onTimeout((channel, user) => {
+        console.log('ontimeout: ', channel, user)
+        let channelName = channel.substr(1, channel.length);
+        dispatch(userTimedOut({channelName, userName: user }))
+      })
+
+      if (oldListeners.onTimeout) {
+        chatClient.removeListener(oldListeners.onTimeout.event, oldListeners.onTimeout.event)
+      }
+    }
+
+    setCurrentModerationListeners(newListeners)
+
+    return (() => {
+      if (chatClient && currentModerationListeners) {
+        if (currentModerationListeners.onMessageRemove) {
+          chatClient.removeListener(currentModerationListeners.onMessageRemove.event, currentModerationListeners.onMessageRemove.listener)
+        }
+        if (currentModerationListeners.onTimeout) {
+          chatClient.removeListener(currentModerationListeners.onTimeout.event, currentModerationListeners.onTimeout.listener)
+        }
+      }
+    })
+  }, [chatClient, loggedIn])
 
 
   return (<></>)

@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# ClipsTime!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ClipsTime! is a single-page web application intended to enhance the experience of watching Twitch clips for streamers, viewers, and moderators.
+
+Essentially, it's a
 
 ## Available Scripts
 

@@ -128,7 +128,23 @@ const annotationsSlice = createSlice({
     annotationsReverted(annotations, action: PayloadAction<AnnotationsRevertedPayload>) {
       for (let i = 0; i < action.payload.annotations.length; i++) {
         if (annotations.annotations[action.payload.annotations[i].messageId]) {
+          let { channelName, clipSlug, messageId, by } = annotations.annotations[action.payload.annotations[i].messageId]
           annotations.annotations[action.payload.annotations[i].messageId].reverted = true
+          
+          let annotationsByChannelIdx = annotations.annotationsByChannel[channelName].indexOf(messageId)
+          if (annotationsByChannelIdx > -1) {
+            annotations.annotationsByChannel[channelName].splice(annotationsByChannelIdx, 1)
+          }
+
+          let annotationsByClipIdx = annotations.annotationsByClip[clipSlug][channelName].indexOf(messageId)
+          if (annotationsByClipIdx > -1) {
+            annotations.annotationsByClip[clipSlug][channelName].splice(annotationsByClipIdx, 1)
+          }
+
+          let annotationsByUserIdx = annotations.annotationsByUser[by][clipSlug].indexOf(messageId)
+          if (annotationsByUserIdx > -1) {
+            annotations.annotationsByUser[by][clipSlug].splice(annotationsByUserIdx, 1)
+          }
         }
       }
     },

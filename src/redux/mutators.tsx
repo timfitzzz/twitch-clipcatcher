@@ -37,12 +37,12 @@ export const mutateClipTags = (clip: CaughtClipV2, annotation: ClipAnnotation) =
 }
 
 export const revertClipTags = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
-  let { taggedIn: { [annotation.channelName]: { as: channelTags } } } = clip
   let { tags: annotationTags, by } = annotation
   
   if (!annotationTags || annotationTags.length === 0) {
     return
   } else {
+    let { taggedIn: { [annotation.channelName]: { as: channelTags } } } = clip
     for (let i = 0; i < annotationTags.length; i++) {
       let isLastTagger = channelTags.byTag[annotationTags[i]].length === 1
       let tagIdx = channelTags.tags.indexOf(annotationTags[i])
@@ -82,10 +82,10 @@ export const mutateClipMeta = (clip: CaughtClipV2, annotation: ClipAnnotation) =
 }
 
 export const revertClipMeta = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
-  let { metaedIn: { [annotation.channelName]: { by: clipBy } }  } = clip
   let { meta, by } = annotation
 
   if (meta) {
+    let { metaedIn: { [annotation.channelName]: { by: clipBy } }  } = clip
     let userIdx = clipBy.indexOf(by)
     if (userIdx > -1) {
       clipBy.splice(userIdx, 1)
@@ -117,10 +117,10 @@ export const mutateClipDrama = (clip: CaughtClipV2, annotation: ClipAnnotation) 
 }
 
 export const revertClipDrama = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
-  let { dramaedIn: { [annotation.channelName]: { by: clipBy } }  } = clip
   let { drama, by } = annotation
 
   if (drama) {
+    let { dramaedIn: { [annotation.channelName]: { by: clipBy } }  } = clip
     let userIdx = clipBy.indexOf(by)
     if (userIdx > -1) {
       clipBy.splice(userIdx, 1)
@@ -205,6 +205,7 @@ export function revertClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
           userIdx > -1 && clipPostedBy.splice(userIdx, 1)
         } else {
           delete clip.postedBy[channelName]
+          // channel.clips.splice(channel.clips.indexOf(annotation.clipSlug)) -- happening in channelsSlice
         }
         break;
       case AnnotationTypes['veto']:
@@ -212,6 +213,8 @@ export function revertClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
         if (channelVetos.length > 0) {
           let userIdx = channelVetos.indexOf(by)
           userIdx > -1 && channelVetos.splice(userIdx, 1)
+        } else {
+          delete clip.vetoedIn[channelName]
         }
         break;
       case AnnotationTypes['upvote']:

@@ -3,7 +3,7 @@ import { ApiClient, HelixUser } from "twitch/lib"
 import { TwitchClipV5, UserTypes } from '../types'
 import { fetchUserInfo, retryClipEpochs, UpdatedClipEpoch } from "../utilities/apiMethods"
 import { getAnnotationTypes, parseTags } from "../utilities/parsers"
-import { annotationAdded, ClipAnnotation, firstAnnotationAdded } from "./annotations"
+import { annotationAdded, annotationsReverted, ClipAnnotation, firstAnnotationAdded } from "./annotations"
 import { CaughtClipV2 } from "./clips"
 import { mutateClipByAnnotation } from "./mutators"
 import { AppDispatch, RootState } from "./store"
@@ -247,24 +247,78 @@ export const getUserInfo = createAsyncThunk<
 )
 
 
-  // export const messageRemoved = createAsyncThunk<
-  // {
-  //   result: string
-  // },
-  // {
-  //   messageId: string
-  // },
-  // { 
-  //   dispatch: AppDispatch
-  //   state: RootState
-  //   rejectValue: Error
-  // }>(
-  //   'messageRemoved',
-  //   async({messageId}, {getState, rejectWithValue, requestId, dispatch}) => {
-  //     let { annotations } = getState()
-  //     annotationReverted
-  //   }
-  // )
+export const messageRemoved = createAsyncThunk<
+string,
+{
+  messageId: string
+},
+{ 
+  dispatch: AppDispatch
+  state: RootState
+  rejectValue: Error
+}>(
+  'messageRemoved',
+  async({messageId}, {getState, rejectWithValue, requestId, dispatch}) => {
+    let { annotations } = getState()
+    let annotationToRevert = annotations.annotations[messageId]
+
+    if (annotationToRevert) {
+      // revertClipByAnnotation(clips.clips[annotationToRevert.clipSlug], annotationToRevert)
+      dispatch(annotationsReverted({annotations: [annotationToRevert]}))
+      return "successfully reverted annotation for removed message id " + messageId
+    } else {
+      return "no annotation found for removed message with id " + messageId
+    }
+  }
+)
+
+// userTimedOut -- to be used when the chat client event "onTimeout"
+// occurs (a user is timed out, which has a secondary effect of wiping
+// some quantity of their previous messages). therefore we'll 
+// respond to this event by reverting any impact this user's 
+// annotations have had.
+
+export const userTimedOut = createAsyncThunk<
+  string,
+  {
+    channelName: string,
+    userName: string
+  },
+  {
+    dispatch: AppDispatch,
+    state: RootState
+  }>(
+    'userTimedOut',
+    async ({channelName, userName}, { dispatch, getState }) => {
+      let { annotations } = getState()
+
+      // for this we'll use the annotations.annotationsByUser
+      // record. unfortunately, it indexes them by clipSlug, and 
+      // not by channelName. a future optimization would be to add
+      // an index by channelName.
+
+      let { [userName]: userAnnotations } = annotations.annotationsByUser
+
+      if (userAnnotations) {
+        let userAnnotationsForChannel: string[] = []
+
+        Object.getOwnPropertyNames(userAnnotations).forEach(
+          (clipSlug: string) => userAnnotations[clipSlug].forEach(
+              (annotationId: string) => {
+                if (annotations.annotations[annotationId].channelName === channelName) {
+                  userAnnotationsForChannel.push(annotationId)
+                }
+              })
+          )
+        userAnnotationsForChannel.forEach(messageId => dispatch(messageRemoved({messageId})))
+        return `removed ${userAnnotationsForChannel.length} annotations for ${userName} in ${channelName}`
+      } else {
+        return `no annotations found for channel ${channelName} by user ${userName}`
+      }
+
+    }
+  )
+
 
 
   // export const userTimedOut = createAsyncThunk<
