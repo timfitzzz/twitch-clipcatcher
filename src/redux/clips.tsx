@@ -26,7 +26,7 @@ export interface CaughtClipV2 extends TwitchClipV5 {
   }
   broadcasterName: UserName
   startEpoch: number
-  vetoedIn: {
+  vetoedIn?: {
     [channelName: string]: {
       by: UserName[]
     }
@@ -94,12 +94,12 @@ export interface CaughtClipV2 extends TwitchClipV5 {
       // }
     }
   }
-  metaedIn: {
+  metaedIn?: {
     [channelName: string]: {
       by: UserName[]
     }
   }
-  dramaedIn: {
+  dramaedIn?: {
     [channelName: string]: {
       by: UserName[]
     }

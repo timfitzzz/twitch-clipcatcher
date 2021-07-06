@@ -26,7 +26,7 @@ export const parseTags = (words: string[]): tagsReport => ({
   veto: words.indexOf('veto') > -1,
   meta: words.indexOf('meta') > -1,
   drama: words.indexOf('drama') > -1,
-  tags: words.filter(tag => tag.length >= 4 && tag !== "veto" && tag !== 'drama' && tag !== 'meta')
+  tags: words.filter(tag => tag.length >= 3 && tag !== "veto" && tag !== 'drama' && tag !== 'meta')
 })
 
 export const getAnnotationTypes = (tagReport: tagsReport, hasLink: boolean): AnnotationTypes[] => {

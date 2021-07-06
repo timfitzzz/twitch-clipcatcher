@@ -88,7 +88,13 @@ const SingletonLoader = () => {
           } else {
             words = messageText.toLocaleLowerCase().split(" ")
           }
-          words = words.filter(word => word.length > 2 && !wordsRegExp.test(word))
+          wordsRegExp.lastIndex = 0;
+          console.log('potential words: ', words)
+          words = words.filter(word => 
+            word === "+1" ||
+            word === "-1" ||
+            (word.length > 2 && !wordsRegExp.exec(word)))
+          console.log('approved words: ', words)
           let sub = msg.tags.get('subscriber')
 
           if (replyParentId) {

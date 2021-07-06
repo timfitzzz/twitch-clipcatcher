@@ -84,7 +84,7 @@ export const mutateClipMeta = (clip: CaughtClipV2, annotation: ClipAnnotation) =
 export const revertClipMeta = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
   let { meta, by } = annotation
 
-  if (meta) {
+  if (meta && clip.metaedIn && clip.metaedIn[annotation.channelName]) {
     let { metaedIn: { [annotation.channelName]: { by: clipBy } }  } = clip
     let userIdx = clipBy.indexOf(by)
     if (userIdx > -1) {
@@ -92,6 +92,9 @@ export const revertClipMeta = (clip: CaughtClipV2, annotation: ClipAnnotation) =
     }
     if (clipBy.length === 0) {
       delete clip.metaedIn[annotation.channelName]
+      if (Object.getOwnPropertyNames(clip.metaedIn).length === 0) {
+        delete clip.metaedIn
+      }
     }
   }
 }
@@ -119,7 +122,7 @@ export const mutateClipDrama = (clip: CaughtClipV2, annotation: ClipAnnotation) 
 export const revertClipDrama = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
   let { drama, by } = annotation
 
-  if (drama) {
+  if (drama && clip.dramaedIn && clip.dramaedIn[annotation.channelName]) {
     let { dramaedIn: { [annotation.channelName]: { by: clipBy } }  } = clip
     let userIdx = clipBy.indexOf(by)
     if (userIdx > -1) {
@@ -127,6 +130,9 @@ export const revertClipDrama = (clip: CaughtClipV2, annotation: ClipAnnotation) 
     }
     if (clipBy.length === 0) {
       delete clip.dramaedIn[annotation.channelName]
+      if (Object.getOwnPropertyNames(clip.dramaedIn).length === 0) {
+        delete clip.dramaedIn
+      }
     }
   }
 }
@@ -147,6 +153,9 @@ export function mutateClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
         break;
       case AnnotationTypes['veto']:
         if (isEmpowered(userTypes)) {
+          if (!clip.vetoedIn) {
+            clip.vetoedIn = {}
+          }
           if (!clip.vetoedIn[channelName]) {
             clip.vetoedIn[channelName] = {
               by: [by]
@@ -209,12 +218,17 @@ export function revertClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
         }
         break;
       case AnnotationTypes['veto']:
-        let { vetoedIn: { [channelName]: { by: channelVetos } } } = clip
-        if (channelVetos.length > 0) {
-          let userIdx = channelVetos.indexOf(by)
-          userIdx > -1 && channelVetos.splice(userIdx, 1)
-        } else {
-          delete clip.vetoedIn[channelName]
+        if (clip.vetoedIn) {
+          let { vetoedIn: { [channelName]: { by: channelVetos } } } = clip
+          if (channelVetos.length > 1) {
+            let userIdx = channelVetos.indexOf(by)
+            userIdx > -1 && channelVetos.splice(userIdx, 1)
+          } else {
+            delete clip.vetoedIn[channelName]
+            if (Object.getOwnPropertyNames(clip.vetoedIn).length === 0) {
+              delete clip.vetoedIn
+            }
+          }
         }
         break;
       case AnnotationTypes['upvote']:
