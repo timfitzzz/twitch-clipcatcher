@@ -29,29 +29,29 @@ export const IntroPanel = () => {
       <IntroCard>
         <Heading.h2>ClipsTime!</Heading.h2>
         <Heading.h4>Watch clips with your chat -- but only the good ones.</Heading.h4>
-        <Txt.p>
-          <List>
-            <Txt>
-              <Txt.span bold={true}>Browse, sort, and play Twitch clips</Txt.span> linked in Twitch chat
-            </Txt>
-            <Txt>
-              <Txt.span bold={true}>Avoid exposure to unwanted content</Txt.span> (DMCA, drama, meta) with the help of chat moderators and users
-            </Txt>
-            <Txt>
-              <Txt.span bold={true}>Know which clips are from the same moments</Txt.span> in real time
-            </Txt>
-            <Txt>
-              <Txt.span bold={true}>Runs in your browser using your Twitch account</Txt.span> -- no third-party server or data collection
-            </Txt>
-            <Txt>
-              <Txt.span bold={true}>No Ads for streamers or chat moderators</Txt.span> -- ever
-            </Txt>
-          </List>
-        </Txt.p>
-        <Heading.h5>Who made this?</Heading.h5>
-        <Txt.p>
-          Manapool Engineering a.k.a. Tim Fitzgerald, a GTARP viewer and engineer who noticed streamers and their chats frequently running into issues sharing and watching clips together. He's currently looking for full-time employment, and you can hire him!
-        </Txt.p>
+        <Txt.p>Many streamers and their communities exchange Twitch clips every day, but quality control and safety issues often arise. ClipsTime! is here to help solve them.</Txt.p>
+        <List>
+          <Txt>
+            <Txt.span bold={true}>Browse, sort, and play Twitch clips</Txt.span> linked in Twitch chat
+          </Txt>
+          <Txt>
+            <Txt.span bold={true}>Avoid exposure to unwanted content</Txt.span> (DMCA, drama, meta) with the help of chat moderators and users
+          </Txt>
+          <Txt>
+            <Txt.span bold={true}>Know which clips are from the same moments</Txt.span> in real time
+          </Txt>
+          <Txt>
+            <Txt.span bold={true}>Runs in your browser using your Twitch account</Txt.span> -- no third-party server or data collection
+          </Txt>
+          <Txt>
+            <Txt.span bold={true}>No Ads for streamers or chat moderators</Txt.span> -- ever
+          </Txt>
+        </List>
+      </IntroCard>
+      <IntroCard>
+        <Txt.span>
+          <Txt.span bold={true}>Brought to you by Manapool Engineering,</Txt.span> a.k.a. Tim Fitzgerald, who noticed streamers and their chats frequently running into issues sharing and watching clips together. He's currently looking for full-time employment, and you can hire him!
+        </Txt.span>
       </IntroCard>
     </IntroPanelContainer>
   )
