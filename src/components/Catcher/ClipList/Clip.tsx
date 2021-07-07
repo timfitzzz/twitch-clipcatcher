@@ -9,6 +9,7 @@ import { useAppSelector } from '../../../hooks/reduxHooks';
 import VoteCount from '../../badges/VoteCount';
 import ClipStats from './ClipStats'
 import Delay from '../../badges/WhenAgoBadge';
+import SpecialBadge from '../../badges/SpecialBadge';
 // import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 
 
@@ -183,6 +184,10 @@ const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelNam
                 <ClipOverlayLeft>
                   <ClipOverlayUpperLeft>
                     <ClipOverlayStreamerBadge value={clip.broadcaster.name}/>
+                    <Flex flexDirection={'row'}>
+                      <SpecialBadge type={'meta'} clipSlugs={[clip.slug]} channelName={channelName}/>
+                      <SpecialBadge type={'drama'} clipSlugs={[clip.slug]} channelName={channelName}/>
+                    </Flex>
                   </ClipOverlayUpperLeft>
                   <ClipOverlayLowerLeft>
                     <ClipTitleContainer>
