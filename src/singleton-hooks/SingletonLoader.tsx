@@ -89,12 +89,10 @@ const SingletonLoader = () => {
             words = messageText.toLocaleLowerCase().split(" ")
           }
           wordsRegExp.lastIndex = 0;
-          console.log('potential words: ', words)
           words = words.filter(word => 
             word === "+1" ||
             word === "-1" ||
             (word.length > 2 && !wordsRegExp.exec(word)))
-          console.log('approved words: ', words)
           let sub = msg.tags.get('subscriber')
 
           if (replyParentId) {
@@ -155,7 +153,6 @@ const SingletonLoader = () => {
 
     if (chatClient && loggedIn) {
       newListeners.onMessageRemove = chatClient.onMessageRemove((_channel, messageId) => {
-        console.log('onmessageremove: ', _channel, messageId)
         dispatch(messageRemoved({ messageId }))
       })
 
@@ -164,7 +161,6 @@ const SingletonLoader = () => {
       }
 
       newListeners.onTimeout = chatClient.onTimeout((channel, user) => {
-        console.log('ontimeout: ', channel, user)
         let channelName = channel.substr(1, channel.length);
         dispatch(userTimedOut({channelName, userName: user }))
       })

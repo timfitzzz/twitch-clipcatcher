@@ -86,8 +86,8 @@ const FrogPile = styled(({userTypes, className}: { userTypes: UserTypes[], class
 
 const VoteCount = ({channelName, clipSlug, className}: {channelName: string, clipSlug: string, className?: string}) => {
 
-  let upVotes = useAppSelector(state => state.clips.clips[clipSlug].votes[channelName].up)
-  let downVotes = useAppSelector(state => state.clips.clips[clipSlug].votes[channelName].down)
+  let upVotes = useAppSelector(state => state.clips.clips[clipSlug].votes[channelName] ? state.clips.clips[clipSlug].votes[channelName].up : [])
+  let downVotes = useAppSelector(state => state.clips.clips[clipSlug].votes[channelName] ? state.clips.clips[clipSlug].votes[channelName].down : [])
   let upUserTypes = useAppSelector(state => upVotes.reduce(
       (aggTypes, userName) => {
         let maxUserType = Math.max(...state.users.users[userName].userTypes[channelName])
