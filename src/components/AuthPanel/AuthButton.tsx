@@ -185,8 +185,6 @@ export const AuthButton = () => {
 
   let loggedIn = useMemo(() => isAuthenticated ? isAuthenticated() : false, [isAuthenticated])
 
-  console.log('rendering authbutton, loggedIn? ', loggedIn)
-
   return (
     <AuthButtonCard>
       { loggedIn && user && user.profilePicUrl ? (

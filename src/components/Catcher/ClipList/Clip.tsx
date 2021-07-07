@@ -10,6 +10,7 @@ import VoteCount from '../../badges/VoteCount';
 import ClipStats from './ClipStats'
 import Delay from '../../badges/WhenAgoBadge';
 import SpecialBadge from '../../badges/SpecialBadge';
+import PlayButton from './PlayButton';
 // import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 
 
@@ -81,7 +82,6 @@ const ClipOverlayStreamerBadge = styled(CatcherBadge).attrs((p) => ({
   margin-top: 0;
   margin-left: 0;
   margin-right: auto;
-  
 
 `
 
@@ -168,42 +168,68 @@ const ClipOverlayWhenAgoBadge = styled(Delay)`
   margin-bottom: 4px;
 `
 
+// const ClipVetoOverlay = styled.div`
+//   height: 100%;
+//   width: 100%;
+//   position: absolute;
+//   background: rgba(125,125,125,0.8);
+//   z-index: 50;
+//   display: flex;
+
+//   span {
+//     position: relative;
+//     display: flex;
+//     margin: auto;
+//     font-size: 48px;
+//     color: ${p => p}
+//   }
+// `
+
 const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelName: string, className?: string}) => {
 
-  let clip = useAppSelector(s => s.clips.clips[clipSlug])
+  let { small: smallThumb } = useAppSelector(s => s.clips.clips[clipSlug].thumbnails)
+  let { name: broadcasterName } = useAppSelector(s => s.clips.clips[clipSlug].broadcaster)
+  let title = useAppSelector(s => s.clips.clips[clipSlug].title)
+  let views = useAppSelector(s => s.clips.clips[clipSlug].views)
+  let duration = useAppSelector(s => s.clips.clips[clipSlug].duration)
+
   let playClip = useContextSelector(PlayerContext, (c) => c.playClip)
 
   return (
     <Box className={className}>
       <Flex flexDirection={'row'}>
          <ClipThumbContainer>
-           <ClipThumb src={clip.thumbnails.small} />
+          {/* {clip.vetoedIn && (clip.vetoedIn[channelName] ? true : false) && (
+            <ClipVetoOverlay><span>VETOED</span></ClipVetoOverlay>
+          )} */}
+           <ClipThumb src={smallThumb} />
            <ClipOverlay flexDirection={'column'} justifyContent={'space-between'}>
               <Flex flexDirection={'row'} height={'100%'}>
-              <ClipControlsContainer onClick={(e) => playClip && playClip(clip)}/>  
+              <PlayButton channelName={channelName} clipSlug={clipSlug} />
+              <ClipControlsContainer onClick={(e) => playClip && playClip(clipSlug)}/>  
                 <ClipOverlayLeft>
                   <ClipOverlayUpperLeft>
-                    <ClipOverlayStreamerBadge value={clip.broadcaster.name}/>
+                    <ClipOverlayStreamerBadge value={broadcasterName}/>
                     <Flex flexDirection={'row'}>
-                      <SpecialBadge type={'meta'} clipSlugs={[clip.slug]} channelName={channelName}/>
-                      <SpecialBadge type={'drama'} clipSlugs={[clip.slug]} channelName={channelName}/>
+                      <SpecialBadge type={'meta'} clipSlugs={[clipSlug]} channelName={channelName}/>
+                      <SpecialBadge type={'drama'} clipSlugs={[clipSlug]} channelName={channelName}/>
                     </Flex>
                   </ClipOverlayUpperLeft>
                   <ClipOverlayLowerLeft>
                     <ClipTitleContainer>
-                      <ClipTitle>{clip.title}</ClipTitle>
+                      <ClipTitle>{title}</ClipTitle>
                     </ClipTitleContainer>
                   </ClipOverlayLowerLeft>
                 </ClipOverlayLeft>
                 <ClipOverlayRight>
                   <ClipOverlayUpperRight>
                     <ClipOverlayFrogCountBadge clipSlug={clipSlug} channelName={channelName}/>
-                    <ClipOverlayViewCountBadge value={clip.views}/>
+                    <ClipOverlayViewCountBadge value={views}/>
                   </ClipOverlayUpperRight>
                   <ClipOverlayLowerRight>
                     {/* <ClipOverlayTrustedBadge value={`${clip.postedBy[channelName].mods ? true : false} ${clip.postedBy[channelName].vips ? true : false} ${clip.postedBy[channelName].broadcaster ? true : false}`}/>               */}
                     <ClipOverlayWhenAgoBadge clipSlug={clipSlug} />
-                    <ClipOverlayDurationBadge value={clip.duration.toString()}/>
+                    <ClipOverlayDurationBadge value={duration.toString()}/>
                   </ClipOverlayLowerRight>
                </ClipOverlayRight>
              </Flex>

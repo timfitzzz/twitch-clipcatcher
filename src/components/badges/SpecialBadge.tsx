@@ -40,12 +40,14 @@ const SpecialText = styled(({type, specialState, className}: { type: 'drama' | '
             stroke: ${theme.colors.warning.main};
             stroke-width: 1px;
             stroke-linejoin: round;
+            text-shadow: -1px 1px 0.5px black;
           `
         case SpecialState.yes:
           return `
             fill: ${theme.colors.danger.main};
             stroke-width: 2px;
             stroke: ${theme.colors.danger.main};
+            text-shadow: -1px 1px 0.5px black;
           `
         default:
           return `

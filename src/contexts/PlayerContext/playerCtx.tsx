@@ -1,16 +1,15 @@
 import React, { ReactChild, ReactChildren, useState } from 'react';
 import { createContext } from 'use-context-selector';
-import { TwitchClipV5 } from '../../types';
 
 export interface IPlayerContext {
-  currentClip: TwitchClipV5 | null;
-  playlist: TwitchClipV5[];
+  currentClip: { currentClipId: string } | null;
+  playlist: string[];
   playlistPosition: number;
   autoplay: boolean;
   playing: boolean;
-  addClipToPlaylist: (clip: TwitchClipV5) => void;
+  addClipToPlaylist: (clipId: string) => void;
   removeClipFromPlaylist: (clipNumber: number) => void;
-  playClip: (clip: TwitchClipV5) => void
+  playClip: (clipId: string) => void
   toggleAutoplay: () => void;
   playPlaylist: (startingIndex: number) => void;
   playCurrentClip: () => void;
@@ -31,13 +30,13 @@ const PlayerContextProvider = ({
 }: {
   children?: ReactChild | ReactChildren;
 }) => {
-  const [currentClip, setCurrentClip] = useState<TwitchClipV5 | null>(null);
+  const [currentClip, setCurrentClip] = useState<{ currentClipId: string } | null>(null);
   const [playing, setPlaying] = useState<boolean>();
-  const [playlist, setPlaylist] = useState<TwitchClipV5[]>([]);
+  const [playlist, setPlaylist] = useState<string[]>([]);
   const [playlistPosition /*, _setPlaylistPosition*/] = useState<number>(0);
   const [autoplay, setAutoplay] = useState<boolean>(false);
 
-  function addClipToPlaylist(clip: TwitchClipV5) {
+  function addClipToPlaylist(clip: string) {
     setPlaylist([...playlist, clip]);
   }
 
@@ -51,7 +50,7 @@ const PlayerContextProvider = ({
 
   function playPlaylist(startingIndex: number) {
     if (playlist[startingIndex]) {
-      setCurrentClip(playlist[startingIndex]);
+      setCurrentClip({currentClipId: playlist[startingIndex]});
       setPlaying(true);
     }
   }
@@ -68,8 +67,9 @@ const PlayerContextProvider = ({
     }
   }
 
-  function playClip(clip: TwitchClipV5) {
-    setCurrentClip(clip)
+  function playClip(clipId: string) {
+    console.log(playing, currentClip)
+    setCurrentClip({ currentClipId: clipId })
     setPlaying(true)
   }
 
