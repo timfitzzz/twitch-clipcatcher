@@ -4,6 +4,8 @@ import { Box } from 'rendition'
 import styled from 'styled-components'
 import { PlayerContext } from '../../contexts/PlayerContext/playerCtx'
 import { useAppSelector } from '../../hooks/reduxHooks'
+import { AuthContext } from '../../contexts/AuthContext'
+import IntroPanel from '../infopanels/IntroPanel'
 
 interface ClipEmbedOptions {
   src: string
@@ -19,7 +21,7 @@ interface ClipEmbedOptions {
 
 const PlayerContainer = styled(Box)<{inUse: boolean}>`
 
-  background-image: linear-gradient(black, ${p => p.theme.colors.gray.dark});
+  background-image: linear-gradient(black, 90%, ${p => p.theme.colors.primary.semilight});
 
 `
 
@@ -31,6 +33,8 @@ const parentString = process.env.REACT_APP_VERCEL_ENV === 'production'
 
 const PlayerPane = ({className}: { className?: string }) => {
 
+  
+  let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated ? c.isAuthenticated() : false)
   let currentClipObject = useContextSelector(PlayerContext, (c) => c.currentClip)
   let currentClipId = useMemo(() => currentClipObject?.currentClipId, [currentClipObject])
   let embed_url = useAppSelector(s => currentClipId && s.clips.clips[currentClipId] ? s.clips.clips[currentClipId].embed_url : null)
@@ -45,7 +49,6 @@ const PlayerPane = ({className}: { className?: string }) => {
     return (
       <iframe key={Math.random()} allowFullScreen title={title} {...rest}/>
     )
-
   }, [])
 
   useEffect(() => {
@@ -66,7 +69,7 @@ const PlayerPane = ({className}: { className?: string }) => {
 
   return (
     <PlayerContainer className={className} inUse={embed_url ? true : false}>
-      {playerFrame}
+      { !isAuthenticated ? <IntroPanel/> : playerFrame }
     </PlayerContainer>
   )
 

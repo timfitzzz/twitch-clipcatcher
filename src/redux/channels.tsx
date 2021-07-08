@@ -98,7 +98,7 @@ const channelsSlice = createSlice({
       for (let i = 0; i < action.payload.annotations.length; i++) {
         let { annotationTypes, clipSlug, channelName, by } = action.payload.annotations[i]
         let channel = channels[channelName]
-        if (annotationTypes.indexOf(AnnotationTypes['link']) > -1) {
+        if (!action.payload.otherLinkRemains && annotationTypes.indexOf(AnnotationTypes['link']) > -1) {
           if (channel.postersByClip[clipSlug] && channel.postersByClip[clipSlug].length > 1) {
             let userIdx = channel.postersByClip[clipSlug].indexOf(by)
             if (userIdx > -1) {

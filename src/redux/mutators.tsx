@@ -202,19 +202,24 @@ export function mutateClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
   })
 }
 
-export function revertClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnotation) {
+export function revertClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnotation, otherLinkRemains: boolean) {
   let { channelName, by, annotationTypes } = annotation
-        
+  
+
   annotationTypes.forEach(type => {
     switch (type) {
       case AnnotationTypes['link']:
         let { postedBy: { [channelName]: clipPostedBy } } = clip
-        if (clipPostedBy.length > 1) {
-          let userIdx = clipPostedBy.indexOf(by)
-          userIdx > -1 && clipPostedBy.splice(userIdx, 1)
-        } else {
-          delete clip.postedBy[channelName]
-          // channel.clips.splice(channel.clips.indexOf(annotation.clipSlug)) -- happening in channelsSlice
+
+        // if there's no prior link to this clip by this user, revert this one if appropriate.
+        if (!otherLinkRemains) {
+          if (clipPostedBy.length > 1) {
+            let userIdx = clipPostedBy.indexOf(by)
+            userIdx > -1 && clipPostedBy.splice(userIdx, 1)
+          } else {
+            delete clip.postedBy[channelName]
+            // channel.clips.splice(channel.clips.indexOf(annotation.clipSlug)) -- happening in channelsSlice
+          }
         }
         break;
       case AnnotationTypes['veto']:
@@ -232,10 +237,12 @@ export function revertClipByAnnotation(clip: CaughtClipV2, annotation: ClipAnnot
         }
         break;
       case AnnotationTypes['upvote']:
-        let { votes: { [channelName]: { up: ups } } } = clip
-        if (ups.length > 0) {
-          let userIdx = ups.indexOf(by)
-          userIdx > -1 && ups.splice(userIdx, 1)
+        if (!otherLinkRemains) {
+          let { votes: { [channelName]: { up: ups } } } = clip
+          if (ups.length > 0) {
+            let userIdx = ups.indexOf(by)
+            userIdx > -1 && ups.splice(userIdx, 1)
+          }
         }
         break;
       case AnnotationTypes['downvote']:

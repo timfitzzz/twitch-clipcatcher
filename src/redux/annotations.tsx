@@ -111,6 +111,7 @@ export interface FirstAnnotationAddedPayload {
 
 export interface AnnotationsRevertedPayload {
   annotations: ClipAnnotation[]
+  otherLinkRemains: boolean
 }
 
 const initialState: AnnotationsSliceState = {

@@ -201,7 +201,6 @@ const PlayButton = ({
   let stopPlaying = useContextSelector(PlayerContext, (c) => c.stopPlaying)
 
   const handlePlayClick = () => {
-    console.log('handling player click')
     if (vetoed && !vetoOverridden) {
       setVetoOverridden(true)
       setTimeout(() => {

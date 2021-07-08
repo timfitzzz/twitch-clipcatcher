@@ -261,10 +261,22 @@ string,
   async({messageId}, {getState, rejectWithValue, requestId, dispatch}) => {
     let { annotations } = getState()
     let annotationToRevert = annotations.annotations[messageId]
+    let { by, clipSlug } = annotationToRevert
+    let prevUserAnnotations = annotations.annotationsByUser[by][clipSlug].map(messageId => annotations.annotations[messageId])
 
     if (annotationToRevert) {
+
+      // we need to determine whether there's a previous link annotation for this clip
+      // to decide whether a link or upvote should be reversed.
+      let otherLinkRemains: boolean = prevUserAnnotations.filter(prevAnnotation => 
+        prevAnnotation.channelName === annotationToRevert.channelName
+        && prevAnnotation.annotationTypes[0] === 0
+        && prevAnnotation.messageId !== annotationToRevert.messageId
+      ).length > 0
+
+
       // revertClipByAnnotation(clips.clips[annotationToRevert.clipSlug], annotationToRevert)
-      dispatch(annotationsReverted({annotations: [annotationToRevert]}))
+      dispatch(annotationsReverted({annotations: [annotationToRevert], otherLinkRemains}))
       return "successfully reverted annotation for removed message id " + messageId
     } else {
       return "no annotation found for removed message with id " + messageId

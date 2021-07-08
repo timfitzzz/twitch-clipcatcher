@@ -68,7 +68,6 @@ const PlayerContextProvider = ({
   }
 
   function playClip(clipId: string) {
-    console.log(playing, currentClip)
     setCurrentClip({ currentClipId: clipId })
     setPlaying(true)
   }

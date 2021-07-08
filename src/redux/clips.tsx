@@ -241,7 +241,7 @@ export const clipsSlice = createSlice({
     builder.addCase(annotationsReverted.type, (clips, action: PayloadAction<AnnotationsRevertedPayload>) => {
       for (let i = 0; i < action.payload.annotations.length; i++) {
         let clip = clips.clips[action.payload.annotations[i].clipSlug]
-        revertClipByAnnotation(clip, action.payload.annotations[i])
+        revertClipByAnnotation(clip, action.payload.annotations[i], action.payload.otherLinkRemains)
       }
     })
     builder.addCase(clipEpochsRetry.fulfilled, (clips, action: PayloadAction<UpdatedClipEpoch[]>) => {

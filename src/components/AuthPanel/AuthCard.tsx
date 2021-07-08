@@ -19,7 +19,7 @@ const AuthBarContainer = styled(Flex).attrs(p => ({
   background-color: ${p => p.theme.colors.quartenary.semilight};
 `
 
-const TitleLogo = styled(TitleImage)`
+export const TitleLogo = styled(TitleImage)`
   height: 40px;
   margin-top: auto;
   margin-bottom: auto;

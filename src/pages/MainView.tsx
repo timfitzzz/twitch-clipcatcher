@@ -6,7 +6,7 @@ import AuthCard from '../components/AuthPanel/AuthCard'
 import Catcher from '../components/Catcher/Catcher'
 import PlayerPane from '../components/PlayerPane/PlayerPane'
 import styled from 'styled-components'
-import IntroPanel from '../components/IntroPanel'
+import LoggedOutConsolePanel from '../components/LoggedOutConsolePanel'
 
 const MainViewContainer = styled(Flex)`
   height: 100%;
@@ -40,7 +40,7 @@ const MainView = () => {
         { isAuthenticated ? (
           <Catcher />
         ) : (
-          <IntroPanel/>
+          <LoggedOutConsolePanel/>
         )}
       </MainViewSideColumn>
       <PlayerPane/>
