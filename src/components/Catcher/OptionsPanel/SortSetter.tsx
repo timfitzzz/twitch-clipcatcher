@@ -157,11 +157,11 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
   
           const hoverClientX = (clientOffset as XYCoord).x - hoverBoundingRect.left
   
-          if (dragIndex < hoverIndex && hoverClientX < hoverMiddleX) {
+          if (dragIndex < hoverIndex && hoverClientX < (hoverMiddleX - 10)) {
             return
           }
 
-          if (dragIndex > hoverIndex && hoverClientX > hoverMiddleX) {
+          if (dragIndex > hoverIndex && hoverClientX > (hoverMiddleX + 10)) {
             return
           }
 
