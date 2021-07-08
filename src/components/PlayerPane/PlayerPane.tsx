@@ -52,7 +52,6 @@ const PlayerPane = ({className}: { className?: string }) => {
   }, [])
 
   useEffect(() => {
-    console.log('rerunning playerpane useffect')
     if (embed_url && tracking_id) {
       let player = renderPlayer({
         src: embed_url + `&autoplay=true&muted=false&parent=${parentString}&allowfullscreen=true`,
