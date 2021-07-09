@@ -21,7 +21,10 @@ const LargerRecordingButton = styled(RecordingButton)`
   margin-bottom: auto;
 `
 
-const ClearIcon = styled(DeleteForever)`
+const ClearIcon = styled(DeleteForever).attrs((p) => ({
+  ...p,
+  viewBox: '0 0 20 21'
+}))`
   height: 29px;
   margin-top: -1.5px;
   margin-bottom: auto;
@@ -29,7 +32,6 @@ const ClearIcon = styled(DeleteForever)`
   fill: ${p => p.theme.colors.warning.light};
   width: 29px;
   cursor: pointer;
-  view-box: 0 0 20 21;
 
   &:hover {
     fill: red;

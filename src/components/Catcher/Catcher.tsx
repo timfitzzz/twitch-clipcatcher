@@ -7,6 +7,7 @@ import { useAppSelector } from '../../hooks/reduxHooks'
 import ChannelSelector from './ChannelSelector/ChannelSelector'
 import AddChannelForm from './ChannelSelector/AddChannel';
 import Channel from './Channel/Channel';
+import { shallowEqual } from 'react-redux'
 
 
 const ChannelContainer = styled(Flex).attrs(p => ({
@@ -20,7 +21,7 @@ const ChannelContainer = styled(Flex).attrs(p => ({
 
 const Catcher = () => {
 
-  const channelNames = useAppSelector(state => Object.getOwnPropertyNames(state.channels))
+  const channelNames = useAppSelector(state => Object.getOwnPropertyNames(state.channels), shallowEqual)
   const currentChannel = useAppSelector(state => state.settings.currentChannel)
   const displayOrder = useMemo(() => {
     if (currentChannel && typeof currentChannel === 'string') {

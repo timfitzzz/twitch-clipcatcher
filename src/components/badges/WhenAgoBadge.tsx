@@ -85,11 +85,11 @@ const Delay = ({className, clipSlug}: { className?: string, clipSlug: string }) 
   const dispatch = useAppDispatch()
   const startEpoch = useAppSelector(state => state.clips.clips[clipSlug].startEpoch)
   const createdAt = useAppSelector(state => new Date(state.clips.clips[clipSlug].created_at).getTime())
-  const delayText = useMemo(() => (timeAgo 
-                                    ? startEpoch === 0 
-                                      ? timeAgo.format(createdAt, 'mini')
-                                      : timeAgo.format(startEpoch, 'mini')
-                                    : ""), [startEpoch, createdAt, timeAgo])
+  const delayText = timeAgo 
+                    ? startEpoch === 0 
+                      ? timeAgo.format(createdAt, 'mini')
+                      : timeAgo.format(startEpoch, 'mini')
+                    : ""
 
   const retryDelay = useMemo(() => () => {
     if (startEpoch === 0 && apiClient) {
@@ -98,7 +98,6 @@ const Delay = ({className, clipSlug}: { className?: string, clipSlug: string }) 
   }, [clipSlug, apiClient, startEpoch, dispatch])
 
   useEffect(() => {
-
     let interval: number = window.setTimeout(() => setRedrawInterval(interval), 60000)
     
     return (() => {
