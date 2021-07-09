@@ -13,6 +13,8 @@ export type ChannelRemovedPayload = string
 type ScanningStartedPayload = string
 type ScanningStoppedPayload = string
 type ChannelClearedPayload = string
+type ChannelUpdatesHeldPayload = string
+type ChannelUpdatesReleasedPayload = string
 export type ClipAddedPayload = [streamName: string, clip: CaughtClip, messageId: string]
 
 interface SortMovedPayload {
@@ -30,6 +32,7 @@ export function initChannelState(channelName: string): ICatcherChannel {
   return {
     name: channelName,
     scanning: true,
+    holdUpdates: false,
     clips: [],
     sort: defaultSort,
     filters: defaultFilters,
@@ -42,6 +45,12 @@ const channelsSlice = createSlice({
   name: 'channels',
   initialState,
   reducers: {
+    channelUpdatesHeld(channels, action: PayloadAction<ChannelUpdatesHeldPayload>) {
+      channels[action.payload].holdUpdates = true
+    },
+    channelUpdatesReleased(channels, action: PayloadAction<ChannelUpdatesReleasedPayload>) {
+      channels[action.payload].holdUpdates = false
+    },
     channelAdded(channels, action: PayloadAction<ChannelAddedPayload>) {
       channels[action.payload] = initChannelState(action.payload)
     },
@@ -117,5 +126,5 @@ const channelsSlice = createSlice({
   }
 })
 
-export const { channelAdded, channelRemoved, scanningStarted, scanningStopped, channelCleared, sortMoved, sortToggled } = channelsSlice.actions;
+export const { channelAdded, channelRemoved, scanningStarted, scanningStopped, channelCleared, sortMoved, sortToggled, channelUpdatesHeld, channelUpdatesReleased } = channelsSlice.actions;
 export default channelsSlice.reducer

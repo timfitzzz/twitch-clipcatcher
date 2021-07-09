@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { shallowEqual } from 'react-redux'
 import styled from 'styled-components'
 import { useAppSelector } from '../../../hooks/reduxHooks'
+import useUpdateLock from '../../../hooks/useUpdateLock'
 import { SectionTitle } from '../../typography/SectionTitle'
 
 
@@ -48,17 +49,19 @@ export const TagsPanel = ({channelName, clipSlugs, className}: { channelName: st
   let leadingTagCount = useMemo(() => tags.tags.reduce((counter, tag) => tags.byTag[tag].length > counter ? tags.byTag[tag].length : counter, 0), [tags])
   let tagElements = useMemo(() => tags.tags.map(tag => <Tag key={tag+channelName+clipSlugs[0]} taggers={tags.byTag[tag]} scale={leadingTagCount > 1 ? tags.byTag[tag].length / leadingTagCount : undefined}>{tag} </Tag>), [channelName, clipSlugs, tags, leadingTagCount])
 
+  let displayTagElements = useUpdateLock(tagElements, channelName)
+
   return (
     <div className={className}>
       <SectionTitle>tags</SectionTitle>
       <div>
         { tagsExpanded ? (
-          <>{tagElements}</>
+          <>{displayTagElements}</>
         ) : (
           <>
-            {tagElements.slice(0, 10)}
-            { tagElements.length > 10 ? (
-              <div style={{fontSize: 12}} onClick={(e) => setTagsExpanded(true)}>...({tagElements.length - 10})</div>
+            {displayTagElements.slice(0, 10)}
+            { displayTagElements.length > 10 ? (
+              <div style={{fontSize: 12}} onClick={(e) => setTagsExpanded(true)}>...({displayTagElements.length - 10})</div>
             ):(<></>)}
           </>
         )}

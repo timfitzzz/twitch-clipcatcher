@@ -1,37 +1,43 @@
-// import React from 'react'
-import { Badge, Flex } from 'rendition'
+import React from 'react'
 import styled from 'styled-components'
+import { useAppSelector } from '../../hooks/reduxHooks'
 
-const ClipsCountBadge = styled(Badge)<{inverted?: boolean}>`
-padding-left: 4px;
-padding-right: 4px;
-margin-left: 4px;
-margin-right: 4px;
-margin-top: auto;
-margin-bottom: auto;
-line-height: 14px;
-padding-top: 1px;
-padding-bottom: 1px;
+const ClipsCount = ({channelName, className, inverted}: {channelName: string, className?: string, inverted?: boolean}) => {
 
-${p => p.inverted && `
-  color: ${p.theme.colors.primary.dark};
-  background-color: white;
-  font-size: 17px;
-  line-height: 13px;
-  padding-right: 2px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-`}
+  const clipsCount = useAppSelector(state => state.channels[channelName].clips.length)
 
-`
-
-const ClipsCount = ({className, value, inverted}: {className?: string, inverted?: boolean, value: string | number}) => (
-  <Flex flexDirection={'row'} className={className}>
-    <ClipsCountBadge inverted={inverted}>{value.toString()}</ClipsCountBadge>
-  </Flex>
-)
+  return (
+  <div className={className}>
+    <span>{clipsCount}</span>
+  </div>
+  )
+}
+  
 
 export default styled(ClipsCount)`
+  display: flex;
+  flex-direction: row;
+  line-height: 1.5;
+  box-sizing: border-box;
 
+  > span {
+    display: inline-block;
+    padding: 1px 4px;
+    margin: auto 4px;
+    line-height: 14px;
+    color: ${({theme}) => theme.colors.primary.main};
+    color: rgb(0, 113, 113);
+    background-color: #c7ffff;
 
+    border-radius: 1em;
+    font-size: 12px;
+
+    ${p => p.inverted && `
+      
+      background-color: #c7ffff;
+      // line-height: 13px;
+      // padding-right: 2px;
+      // padding-top: 0px;
+      // padding-bottom: 0px;
+    `}
 `

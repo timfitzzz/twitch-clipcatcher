@@ -2,57 +2,24 @@ import React from 'react'
 // import { useContextSelector } from 'use-context-selector'
 import styled from 'styled-components';
 import { Box, Flex } from 'rendition';
-import { CatcherBadge } from '../../badges/CatcherBadge';
-import { useContextSelector } from 'use-context-selector';
-import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
-import { useAppSelector } from '../../../hooks/reduxHooks';
-import VoteCount from '../../badges/VoteCount';
+
+// clip components
 import ClipStats from './ClipStats'
-import Delay from '../../badges/WhenAgoBadge';
-import SpecialBadge from '../../badges/SpecialBadge';
 import PlayButton from './PlayButton';
-// import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
+import ClipThumb from './ClipThumb';
+import ClipTitle from './ClipTitle';
 
-
-const ClipThumb = styled.img`
-  height: 147px;
-  width: 260px;
-`
-
-const ClipTitleContainer = styled(Box)`
-  margin-bottom: 4px;
-  margin-top: auto;
-  line-height: 16px;
-  padding-left: 4px;
-`
-
-const ClipTitle = styled.span`
-  margin-top: auto;
-  margin-bottom: auto;
-  text-align: left;
-  overflow-wrap: anywhere;
-  font-size: 17px;
-  color: white;
-  font-weight: bold;
-  text-shadow: -1px 1px 1px black;
-`
+// badges
+import StreamerBadge from '../../badges/StreamerBadge';
+import SpecialBadge from '../../badges/SpecialBadge';
+import Delay from '../../badges/WhenAgoBadge';
+import VoteCount from '../../badges/VoteCount';
+import ViewCountBadge from '../../badges/ViewCountBadge';
+import ClipDurationBadge from '../../badges/ClipDurationBadge';
 
 const ClipThumbContainer = styled.div`
   position:relative;
   display: inline-block;
-`
-
-const ClipControlsContainer = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  box-sizing: border-box;
-  height: 147px;
-  width: 260px;
 `
 
 const ClipOverlay = styled(Flex)`
@@ -70,43 +37,8 @@ const ClipOverlay = styled(Flex)`
   width: 260px;
 `
 
-// const PlayPauseButton = styled.div`
-
-
-// `
-
-const ClipOverlayStreamerBadge = styled(CatcherBadge).attrs((p) => ({
-  ...p,
-  type: 'streamer'
-}))`
-  margin-top: 0;
-  margin-left: 0;
-  margin-right: auto;
-
-`
-
-const ClipOverlayDurationBadge = styled(CatcherBadge).attrs((p) => ({
-  ...p,
-  type: 'duration'
-}))`
-  margin-right: 0;
-  margin-left: auto;
-  margin-top: 0px;
-  margin-bottom: 4px;
-`
-
 const ClipOverlayFrogCountBadge = styled(VoteCount)`
-  margin-right: 0;
-  margin-left: auto;
-  margin-top: 4px;
-  margin-bottom: auto;
-`
-
-const ClipOverlayViewCountBadge = styled(CatcherBadge).attrs((p) => ({
-  ...p,
-  type: 'viewCount'
-}))`
-  margin-right: 0;
+  margin-right: 4px;
   margin-left: auto;
   margin-top: 4px;
   margin-bottom: auto;
@@ -145,7 +77,8 @@ const ClipOverlayUpperRight = styled(Box)`
 const ClipOverlayLowerLeft = styled(Flex).attrs(p => ({
   ...p,
   flexDirection: 'column',
-  justifyContent: 'bottom'
+  justifyContent: 'flex-end',
+  alignItems: 'flex-start'
 }))`
   height: 50%;
 `
@@ -153,97 +86,53 @@ const ClipOverlayLowerLeft = styled(Flex).attrs(p => ({
 const ClipOverlayLowerRight = styled(Flex).attrs(p => ({
   ...p,
   flexDirection: 'column',
-  justifyContent: 'bottom'
+  justifyContent: 'flex-end',
+  alignItems: 'flex-end'
 }))`
   height: 50%;
 `
-
-// const ClipOverlayTrustedBadge = styled(CatcherBadge).attrs(p => ({
-//   ...p,
-//   type: 'trusted'
-// }))``
 
 const ClipOverlayWhenAgoBadge = styled(Delay)`
   margin-top: auto;
   margin-bottom: 4px;
 `
 
-// const ClipVetoOverlay = styled.div`
-//   height: 100%;
-//   width: 100%;
-//   position: absolute;
-//   background: rgba(125,125,125,0.8);
-//   z-index: 50;
-//   display: flex;
-
-//   span {
-//     position: relative;
-//     display: flex;
-//     margin: auto;
-//     font-size: 48px;
-//     color: ${p => p}
-//   }
-// `
-
 const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelName: string, className?: string}) => {
-
-  let { small: smallThumb } = useAppSelector(s => s.clips.clips[clipSlug].thumbnails)
-  let { name: broadcasterName } = useAppSelector(s => s.clips.clips[clipSlug].broadcaster)
-  let title = useAppSelector(s => s.clips.clips[clipSlug].title)
-  let views = useAppSelector(s => s.clips.clips[clipSlug].views)
-  let duration = useAppSelector(s => s.clips.clips[clipSlug].duration)
-
-  let playClip = useContextSelector(PlayerContext, (c) => c.playClip)
 
   return (
     <Box className={className}>
       <Flex flexDirection={'row'}>
          <ClipThumbContainer>
-          {/* {clip.vetoedIn && (clip.vetoedIn[channelName] ? true : false) && (
-            <ClipVetoOverlay><span>VETOED</span></ClipVetoOverlay>
-          )} */}
-           <ClipThumb src={smallThumb} />
+           <ClipThumb clipSlug={clipSlug} />
            <ClipOverlay flexDirection={'column'} justifyContent={'space-between'}>
               <Flex flexDirection={'row'} height={'100%'}>
-              <PlayButton channelName={channelName} clipSlug={clipSlug} />
-              <ClipControlsContainer onClick={(e) => playClip && playClip(clipSlug)}/>  
+                <PlayButton channelName={channelName} clipSlug={clipSlug} />
                 <ClipOverlayLeft>
                   <ClipOverlayUpperLeft>
-                    <ClipOverlayStreamerBadge value={broadcasterName}/>
+                    <StreamerBadge clipSlug={clipSlug}/>
                     <Flex flexDirection={'row'}>
                       <SpecialBadge type={'meta'} clipSlugs={[clipSlug]} channelName={channelName}/>
                       <SpecialBadge type={'drama'} clipSlugs={[clipSlug]} channelName={channelName}/>
                     </Flex>
                   </ClipOverlayUpperLeft>
                   <ClipOverlayLowerLeft>
-                    <ClipTitleContainer>
-                      <ClipTitle>{title}</ClipTitle>
-                    </ClipTitleContainer>
+                      <ClipTitle clipSlug={clipSlug}/>
                   </ClipOverlayLowerLeft>
                 </ClipOverlayLeft>
                 <ClipOverlayRight>
                   <ClipOverlayUpperRight>
                     <ClipOverlayFrogCountBadge clipSlug={clipSlug} channelName={channelName}/>
-                    <ClipOverlayViewCountBadge value={views}/>
+                    <ViewCountBadge clipSlug={clipSlug}/>
                   </ClipOverlayUpperRight>
                   <ClipOverlayLowerRight>
-                    {/* <ClipOverlayTrustedBadge value={`${clip.postedBy[channelName].mods ? true : false} ${clip.postedBy[channelName].vips ? true : false} ${clip.postedBy[channelName].broadcaster ? true : false}`}/>               */}
                     <ClipOverlayWhenAgoBadge clipSlug={clipSlug} />
-                    <ClipOverlayDurationBadge value={duration.toString()}/>
+                    <ClipDurationBadge clipSlug={clipSlug}/>
                   </ClipOverlayLowerRight>
                </ClipOverlayRight>
              </Flex>
            </ClipOverlay>
-
          </ClipThumbContainer>
          <Flex flexDirection={'column'}>
-           {/* <Flex flexDirection={'row'}>
-             <CatcherBadge type={'streamer'} value={clip.broadcaster.name}/>
-             <ClipTitle>{clip.title}</ClipTitle>
-           </Flex> */}
-           {/* <Flex flexDirection={'row'}>
-             <CatcherBadge type={'duration'} value={clip.duration.toString()}/>
-           </Flex> */}
           <ClipStats clipSlugs={[clipSlug]} channelName={channelName} />
          </Flex>
       </Flex>

@@ -7,6 +7,7 @@ import { useAppSelector } from '../../hooks/reduxHooks'
 import { UserTypes } from '../../types'
 import { UserPip } from './UserPip'
 import FrogStats from '../popovers/FrogStats'
+import useUpdateLock from '../../hooks/useUpdateLock'
 
 const VoteCountBadge = styled(Flex)`
   padding-left: 4px;
@@ -86,6 +87,7 @@ const FrogPile = styled(({userTypes, className}: { userTypes: UserTypes[], class
 
 const VoteCount = ({channelName, clipSlug, className}: {channelName: string, clipSlug: string, className?: string}) => {
 
+  // get votes + user types
   let upVotes = useAppSelector(state => state.clips.clips[clipSlug].votes[channelName] ? state.clips.clips[clipSlug].votes[channelName].up : [])
   let downVotes = useAppSelector(state => state.clips.clips[clipSlug].votes[channelName] ? state.clips.clips[clipSlug].votes[channelName].down : [])
   let upUserTypes = useAppSelector(state => upVotes.reduce(
@@ -110,7 +112,14 @@ const VoteCount = ({channelName, clipSlug, className}: {channelName: string, cli
           return aggTypes.indexOf(userType) === -1
         }
       })), [] as UserTypes[]), shallowEqual)
+
+  // only use new votes + usertypes if channel update lock is disabled
+  let displayUpVotes = useUpdateLock(upVotes, channelName)
+  let displayDownVotes = useUpdateLock(downVotes, channelName)
+  let displayUpUserTypes = useUpdateLock(upUserTypes, channelName)
+  let displayDownUserTypes = useUpdateLock(downUserTypes, channelName)
   
+  // set up popover
   let popoverTarget = useRef<HTMLDivElement>(null)
   let [showPopover, setShowPopover] = React.useState<any>(false)
   
@@ -128,7 +137,7 @@ const VoteCount = ({channelName, clipSlug, className}: {channelName: string, cli
             <FrogStats channelName={channelName} clipSlugs={[clipSlug]}/>
           </Popover>
         )}
-      <span id='total'>{upVotes.length-downVotes.length}</span><FrogPile userTypes={upUserTypes.sort()}/><FrogPile userTypes={downUserTypes}/>
+      <span id='total'>{displayUpVotes.length-displayDownVotes.length}</span><FrogPile userTypes={displayUpUserTypes.sort()}/><FrogPile userTypes={displayDownUserTypes}/>
     </VoteCountBadge>
   )
 }

@@ -4,17 +4,18 @@ import { PauseIcon } from './PauseIcon'
 import styled from 'styled-components'
 
 const RecordingButtonContainer = styled.div<{recording: boolean}>`
-  width: 18px;
-  height: 18px;
-  margin-right: 4px;
+  width: 30px;
+  height: 30px;
+  margin-left: 4px;
   margin-top: auto;
   margin-bottom: auto;
   > svg {
-    height: 17px;
-    width: 17px;
+    height: 30px;
+    width: 30px;
     position: absolute;
     margin-top: auto;
     margin-bottom: auto;
+    cursor: pointer;
   }
 
   &:hover {

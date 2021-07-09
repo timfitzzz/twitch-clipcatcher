@@ -16,30 +16,29 @@ const CountText = styled.span`
 `
 export const ReusableCount = ({channelName, className}: { channelName: string, className?: string}) => {
 
-const scanCountRef = useRef<HTMLSpanElement | null>(null)
+  const scanCountRef = useRef<HTMLSpanElement | null>(null)
 
-useEffect(() => {
+  useEffect(() => {
+    MessageCountStore.registerCallback(channelName, (count: number) => {
+      let countSpan = scanCountRef.current
+      if (countSpan) {
+        countSpan.innerHTML = `${abbreviateNumber(count)}`
+      }
+    })
 
-  MessageCountStore.registerCallback(channelName, (count: number) => {
-    let countSpan = scanCountRef.current
-    if (countSpan) {
-      countSpan.innerHTML = `${abbreviateNumber(count)}`
-    }
-  })
+    return (() => {
+      MessageCountStore.clearCallback(channelName)
+    })
+  },[channelName])
 
-  return (() => {
-    MessageCountStore.clearCallback(channelName)
-  })
-
-},[channelName])
-
-return (
-  <CountBadge className={className}>
-    <CountText ref={scanCountRef}>
-    0
-    </CountText>
-  </CountBadge>
-)
+  
+  return (
+    <CountBadge className={className}>
+      <CountText ref={scanCountRef}>
+      0
+      </CountText>
+    </CountBadge>
+  )
 }
 
 const MessageCount = styled(ReusableCount)`

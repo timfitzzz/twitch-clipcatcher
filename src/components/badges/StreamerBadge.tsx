@@ -2,8 +2,9 @@ import { Twitch } from '@styled-icons/feather/Twitch'
 import React from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'
+import { useAppSelector } from '../../hooks/reduxHooks'
 
-const SourceStreamBadge = styled(Flex)<{charCount: number}>`
+const StreamerBadgeContainer = styled(Flex)<{charCount: number}>`
   padding-left: 8px;
   padding-right: 8px;
   margin-left: 4px;
@@ -51,14 +52,21 @@ const SourceStreamBadge = styled(Flex)<{charCount: number}>`
 
 `
 
-const SourceStream = ({className, value}: {className?: string, value: string | number}) => (
-    <SourceStreamBadge flexDirection={"row"} className={className} charCount={value.toString().length}>
-      <Twitch viewBox={'0 0 24 24'}/><span>{value.toString()}</span>
-    </SourceStreamBadge>
-)
+const StreamerBadge = ({clipSlug, className}: {clipSlug: string, className?: string}) => {
 
-export default styled(SourceStream)`
+  let { name } = useAppSelector(s => s.clips.clips[clipSlug].broadcaster)
 
+  return ( 
+    <StreamerBadgeContainer flexDirection={"row"} className={className} charCount={name.length}>
+      <Twitch viewBox={'0 0 24 24'}/><span>{name}</span>
+    </StreamerBadgeContainer>
+  )
 
+}
+    
 
+export default styled(StreamerBadge)`
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-right: auto;
 `

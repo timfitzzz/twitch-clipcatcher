@@ -4,22 +4,43 @@ import { Unlock } from '@styled-icons/fa-solid/Unlock'
 import styled from 'styled-components'
 
 const LockButtonContainer = styled.div<{locked: boolean}>`
-  width: 18px;
-  height: 18px;
-  margin-right: 4px;
+  width: 25px;
+  height: 25px;
+  margin-left: 4px;
   margin-top: auto;
   margin-bottom: auto;
   > svg {
-    height: 17px;
-    width: 17px;
+    height: 25px;
+    width: 25px;
     position: absolute;
     margin-top: auto;
     margin-bottom: auto;
+    cursor: pointer;
+
+    ${p => p.locked && `
+      
+      > path {
+        fill: #e80404;
+        animation: lockblink 1s cubic-bezier(.5, 1, 1, 1) infinite alternate;
+      }
+    `}
+
+    @keyframes lockblink {
+      from {
+          fill: gold;
+      }
+      to {
+          fill: ${p => p.theme.colors.text.main};
+      }
+    }
   }
 
   &:hover {
     svg {
       color: gold;
+      > path {
+        animation: none;
+      }
     }
     ${p => p.locked ? `
       #pauseicon {
@@ -58,6 +79,9 @@ const LockButtonContainer = styled.div<{locked: boolean}>`
       }
     }
   `}
+
+  
+
 `
 
 export const LockButton = ({locked, toggleLock, className}: {locked: boolean, toggleLock: () => void, className?: string }) => {

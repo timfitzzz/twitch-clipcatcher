@@ -212,9 +212,10 @@ export const defaultSort: SortList = [{
 
 
 export interface ICatcherChannel {
-  name: string;
-  scanning: boolean;
-  clips: string[];
+  name: string
+  scanning: boolean
+  holdUpdates: boolean
+  clips: string[]
   sort: SortList
   filters: Filters
   postersByClip: {

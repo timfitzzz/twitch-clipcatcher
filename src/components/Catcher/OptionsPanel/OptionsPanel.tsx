@@ -10,35 +10,13 @@ import { channelCleared } from '../../../redux/channels';
 import SortSetter from './SortSetter';
 import StatsPanel from './StatsPanel';
 import CloseChannelButton from './CloseChannelButton';
-// import FilterSetter from './FilterSetter';
-// import ModerationFilter from './ModerationFilter';
-
-
-// const OptionsPanelTitle = styled.h4`
-//   margin-top: 2px;
-//   margin-bottom: 2px;
-//   font-size: 18px;
-//   flex-grow: 0;
-// `
 
 const Options = ({
-  locked,
-  toggleDisplayLock,
   channelName,
-  // clipCount,
-  // scanning,
-  // filters,
-  // setFilter,
   className
 }: {
-  locked: boolean
-  toggleDisplayLock: () => void
-  className?: string
   channelName: string
-  // clipCount: number
-  // scanning: boolean
-  // setFilter: (filterName: keyof Filters) => void
-  // filters: Filters
+  className?: string
 }) => {
 
   const dispatch = useAppDispatch()
@@ -46,28 +24,18 @@ const Options = ({
     dispatch(channelCleared(channelName))
   }
 
-
   return (
     <OptionsPanelContainer className={className}>
       <DndProvider backend={HTML5Backend}>
         <OptionsPanelRow>
           <OptionsPanelSection>
-            <CollectionControls channelName={channelName} locked={locked} toggleDisplayLock={toggleDisplayLock} resetChannel={resetChannel}/>
-            {/* <OptionsPanelTitle>{channelName}</OptionsPanelTitle> */}
+            <CollectionControls channelName={channelName} resetChannel={resetChannel}/>
           </OptionsPanelSection>
           <OptionsPanelSection>
             <StatsPanel channelName={channelName}/>
           </OptionsPanelSection>
           <CloseChannelButton channelName={channelName}/>
         </OptionsPanelRow>
-        {/* <OptionsPanelRow>
-          <OptionsPanelSection>
-            <FilterSetter channelName={channelName}/>
-          </OptionsPanelSection>
-          <OptionsPanelSection>
-            <ModerationFilter channelName={channelName} />
-          </OptionsPanelSection>
-        </OptionsPanelRow> */}
         <OptionsPanelRow>
           <OptionsPanelSection>
             <SortSetter channelName={channelName}/>

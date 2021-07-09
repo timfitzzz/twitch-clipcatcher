@@ -2,7 +2,7 @@ import React from 'react'
 import { DeleteForever } from '@styled-icons/material/DeleteForever'
 import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
-import { scanningStarted, scanningStopped } from '../../../redux/channels'
+import { channelUpdatesHeld, channelUpdatesReleased, scanningStarted, scanningStopped } from '../../../redux/channels'
 import { OptionsPanelSectionTitle } from '.'
 import { RecordingButton } from '../../badges/RecordingButton'
 import { LockButton } from '../../badges/LockButton'
@@ -21,32 +21,25 @@ const LargerRecordingButton = styled(RecordingButton)`
   margin-bottom: auto;
 `
 
-const LargerLockButton = styled(LockButton)`
-  height: 24px;
-  width: 24px;
-  svg {
-    height: 24px;
-    width: 24px;
-  }
-
-`
-
 const ClearIcon = styled(DeleteForever)`
-  height: 30px;
-  margin-top: auto;
+  height: 29px;
+  margin-top: -1.5px;
   margin-bottom: auto;
   margin-right: 0px;
   fill: ${p => p.theme.colors.warning.light};
-  width: 30px;
+  width: 29px;
+  cursor: pointer;
+  view-box: 0 0 20 21;
 
   &:hover {
     fill: red;
   }
 `
 
-const ReusableCollectionControls = ({locked, toggleDisplayLock, channelName, className, resetChannel}: {locked: boolean, toggleDisplayLock: () => void, channelName: string, resetChannel: () => void, className?: string}) => {
+const ReusableCollectionControls = ({channelName, className, resetChannel}: {channelName: string, resetChannel: () => void, className?: string}) => {
 
   const scanning = useAppSelector(state => state.channels[channelName].scanning)
+  const holdUpdates = useAppSelector(state => state.channels[channelName].holdUpdates)
   const dispatch = useAppDispatch()
 
   const toggleScanning = () => {
@@ -56,6 +49,14 @@ const ReusableCollectionControls = ({locked, toggleDisplayLock, channelName, cla
       dispatch(scanningStarted(channelName))
     }
   }
+
+  const toggleUpdateHold = () => {
+    if (holdUpdates) {
+      dispatch(channelUpdatesReleased(channelName))
+    } else {
+      dispatch(channelUpdatesHeld(channelName))
+    }
+  }
   
   return (
     <div className={className}>
@@ -63,11 +64,8 @@ const ReusableCollectionControls = ({locked, toggleDisplayLock, channelName, cla
         ctrl
       </OptionsPanelSectionTitle>
       <LargerRecordingButton recording={scanning} toggleRecording={toggleScanning} />
-      <LargerLockButton locked={locked} toggleLock={toggleDisplayLock}/>
+      <LockButton locked={holdUpdates} toggleLock={toggleUpdateHold}/>
       <ClearIcon onClick={() => resetChannel()}/>
-      {/* <RecordingIcon onClick={() => scanning ? null : toggleScanning()} scanning={scanning}/>
-      <PauseIcon scanning={scanning} onClick={() => scanning ? toggleScanning() : null}/> */}
-
     </div>
   )
 

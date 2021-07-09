@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Flex, Box } from 'rendition'
-import { CatcherBadge } from '../../badges/CatcherBadge'
+import ClipsCount from '../../badges/ClipsCount'
 import { RecordingIcon } from '../../badges/RecordingIcon'
 import { useAppSelector } from '../../../hooks/reduxHooks'
 
@@ -71,18 +71,10 @@ const SteadyRecordingIcon = styled(RecordingIcon)<{fade?: boolean}>`
 
 const Tab = ({title, hidden, onClick, icon, current, className}: {title?: string, icon?: React.FC, hidden?: boolean, clipsCount?: number, scanning?: boolean, onClick: () => void, newClips?: boolean, current: boolean, className?: string}) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_lastAcknowledgedCount, setLastAcknowledgedCount ] = useState<number>(0)
 
-  const clipsCount = useAppSelector(state => icon || !title ? undefined : state.channels[title].clips.length)
   const scanning = useAppSelector(state => icon || !title ? undefined: state.channels[title].scanning)
 
   const Icon = icon ? icon : null
-
-  useEffect(() => {
-    if (current) {
-      setLastAcknowledgedCount(clipsCount || 0)
-    }
-  }, [current, clipsCount])
 
   return (
     <TabBox hidden={hidden} className={className} current={current} onClick={onClick} buttonOnly={icon ? true : false }>
@@ -95,9 +87,9 @@ const Tab = ({title, hidden, onClick, icon, current, className}: {title?: string
         { typeof scanning !== 'undefined' && scanning !== false ? (
           <SteadyRecordingIcon fade={!current} scanning={false}/>
         ) : (<></>)}
-        { typeof clipsCount !== 'undefined' ? (
-          <CatcherBadge type={'clips'} value={clipsCount || 0}/>
-        ) : (<></>)}
+        { typeof title !== 'undefined' && (
+          <ClipsCount channelName={title} inverted={current}/>
+        )}
       </Flex>
     </TabBox>
   )
