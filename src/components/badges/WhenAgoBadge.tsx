@@ -98,13 +98,21 @@ const Delay = ({className, clipSlug}: { className?: string, clipSlug: string }) 
   }, [clipSlug, apiClient, startEpoch, dispatch])
 
   useEffect(() => {
-    let interval: number = window.setTimeout(() => setRedrawInterval(interval), 60000)
+    let interval: number = window.setTimeout(() => {
+      if (startEpoch === 0) {
+        let now = (new Date()).getTime()
+        if (createdAt < now - 2*60000 && createdAt > now - 5*60000 ) {
+          retryDelay()
+        }
+      }
+        setRedrawInterval(interval)
+    }, 60000)
     
     return (() => {
       window.clearTimeout(interval)
     })
 
-  }, [redrawInterval])
+  }, [redrawInterval, createdAt, retryDelay, startEpoch])
 
   return (
     <DelayBadge flexDirection={"row"} className={className}>
