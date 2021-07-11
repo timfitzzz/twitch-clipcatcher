@@ -66,10 +66,10 @@ const VoteCountBadge = styled(Flex)`
 // <span id='subtotals'>({upvotes.length}/{downvotes.length})</span>
 
 const StackerFrog = styled(UserPip)<{index: number}>`
-  position: absolute;
-  // margin-left: -7px;
-  top: 7px;
-  right: ${p => 8 + p.index * 4}px;
+  // position: absolute;
+  // // margin-left: -7px;
+  // top: 7px;
+  // right: ${p => 8 + p.index * 4}px;
 `
 
 const FrogPile = styled(({userTypes, className}: { userTypes: UserTypes[], className?: string}) => {

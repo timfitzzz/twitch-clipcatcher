@@ -16,7 +16,10 @@ import { parseUserType } from '../utilities/parsers';
 //   if ()
 // }
 
-let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[-a-zA-Z0-9~!@#$%^&*()_=+/.:;',]+)/g;
+// 7/10: adding {6,} to specify that clip name will be at least 6 characters, to avoid falsely matching channelname/clips
+// 7/10: removing . from capture group to avoid confusion if user adds period to end of link (end of sentence) under assumption
+//       that probably there's not going to be a period in a clip url
+let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[-a-zA-Z0-9~!@#$%^&*()_=+/:;',]{6,})/g;
 let wordsRegExp: RegExp = /(?:@)+|(?:\?.*=.*)+/gm
 
 interface ModerationListeners {

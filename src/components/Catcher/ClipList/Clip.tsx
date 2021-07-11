@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Box, Flex } from 'rendition';
 
 // clip components
-import ClipStats from './ClipStats'
 import PlayButton from './PlayButton';
 import ClipThumb from './ClipThumb';
 import ClipTitle from './ClipTitle';
@@ -12,10 +11,9 @@ import ClipTitle from './ClipTitle';
 // badges
 import StreamerBadge from '../../badges/StreamerBadge';
 import SpecialBadge from '../../badges/SpecialBadge';
-import Delay from '../../badges/WhenAgoBadge';
-import VoteCount from '../../badges/VoteCount';
-import ViewCountBadge from '../../badges/ViewCountBadge';
-import ClipDurationBadge from '../../badges/ClipDurationBadge';
+import ClipUpperRightOverlay from './ClipUpperRightOverlay';
+import ClipLowerRightOverlay from './ClipLowerRightOverlay';
+
 
 const ClipThumbContainer = styled.div`
   position:relative;
@@ -35,13 +33,6 @@ const ClipOverlay = styled(Flex)`
   display: flex;
   height: 147px;
   width: 260px;
-`
-
-const ClipOverlayFrogCountBadge = styled(VoteCount)`
-  margin-right: 4px;
-  margin-left: auto;
-  margin-top: 4px;
-  margin-bottom: auto;
 `
 
 const ClipOverlayRight = styled(Flex).attrs(p => ({
@@ -69,11 +60,6 @@ const ClipOverlayUpperLeft = styled(Box)`
 
 `
 
-const ClipOverlayUpperRight = styled(Box)`
-  height: 50%;
-
-`
-
 const ClipOverlayLowerLeft = styled(Flex).attrs(p => ({
   ...p,
   flexDirection: 'column',
@@ -81,20 +67,6 @@ const ClipOverlayLowerLeft = styled(Flex).attrs(p => ({
   alignItems: 'flex-start'
 }))`
   height: 50%;
-`
-
-const ClipOverlayLowerRight = styled(Flex).attrs(p => ({
-  ...p,
-  flexDirection: 'column',
-  justifyContent: 'flex-end',
-  alignItems: 'flex-end'
-}))`
-  height: 50%;
-`
-
-const ClipOverlayWhenAgoBadge = styled(Delay)`
-  margin-top: auto;
-  margin-bottom: 4px;
 `
 
 const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelName: string, className?: string}) => {
@@ -120,21 +92,12 @@ const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelNam
                   </ClipOverlayLowerLeft>
                 </ClipOverlayLeft>
                 <ClipOverlayRight>
-                  <ClipOverlayUpperRight>
-                    <ClipOverlayFrogCountBadge clipSlug={clipSlug} channelName={channelName}/>
-                    <ViewCountBadge clipSlug={clipSlug}/>
-                  </ClipOverlayUpperRight>
-                  <ClipOverlayLowerRight>
-                    <ClipOverlayWhenAgoBadge clipSlug={clipSlug} />
-                    <ClipDurationBadge clipSlug={clipSlug}/>
-                  </ClipOverlayLowerRight>
+                  <ClipUpperRightOverlay clipSlug={clipSlug} channelName={channelName}/>
+                  <ClipLowerRightOverlay clipSlug={clipSlug} channelName={channelName}/>
                </ClipOverlayRight>
              </Flex>
            </ClipOverlay>
          </ClipThumbContainer>
-         <Flex flexDirection={'column'}>
-          <ClipStats clipSlugs={[clipSlug]} channelName={channelName} />
-         </Flex>
       </Flex>
     </Box>
   )

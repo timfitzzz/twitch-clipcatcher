@@ -18,9 +18,10 @@ export default styled(DurationBadge)`
   
   display: flex;
   flex-direction: row;
-  margin: 0px 4px 4px 4px;
+  margin: 4px 4px 4px auto;
   padding: 0px 4px;
   width: fit-content;
+  align-self: flex-end;
 
   line-height: 14px;
   color: ${p => p.theme.colors.secondary.dark};
