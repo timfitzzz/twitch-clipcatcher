@@ -33,17 +33,21 @@ const PipContainer = styled.div<{ userType: UserTypes }>`
 
   svg {
 
-    margin-top: -8px;
+    margin-top: auto;
+    margin-bottom: auto;
+    box-sizing: border-box;
+    vertical-align: unset;
+    padding-left: 1px;
+    padding-right: 1px;
 
     ${p => {
       return {
         [UserTypes['broadcaster']]: `
 
+
         `,
         [UserTypes['mod']]: `
           color: white;
-          height: 14px;
-          padding: 1px;
         `,
         [UserTypes['vip']]: `
         `,
@@ -86,12 +90,14 @@ export const UserPip = styled(({userName, channelName, className}: { userName: s
   return <DifferentiatedUserPip userType={maxUserType} className={className}/>
 })`
 
+  // box-sizing: border-box;
+  // height: 14px;
+  // width: 16px;
+  // margin-top: auto;
+  // margin-bottom: auto;
+  // border-radius: 2px;
+  // svg {
 
-height: 14px;
-width 14px;
-border-radius: 2px;
-svg {
-  margin-top: 0px;
-}
+  // }
 
 `

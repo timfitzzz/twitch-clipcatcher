@@ -6,6 +6,31 @@ import {UserPip} from '../badges/UserPip'
 import { SectionTitle } from '../typography/SectionTitle'
 import { Popover } from 'rendition'
 
+const VoteStatsUserPip = styled(UserPip)`
+
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 0px;
+    height: 16px;
+    border-radius: 2px;
+
+    svg {
+      margin-left: 0px;
+      margin-right: 0px;
+      height: 16px;
+      width: 16px;
+      padding: 0px 1px;
+      margin-top: auto
+      margin-bottom: auto;
+      box-sizing: border-box;
+  
+    }
+
+
+  
+
+`
+
 const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target: HTMLDivElement, clipSlugs: string[], channelName: string, className?: string}) => {
 
   let upVoters = useAppSelector(state => clipSlugs.reduce(
@@ -65,10 +90,10 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
         )} */}
         {upVoters.length > 0 && (
           <div id={'sectiondiv'}>
-            <SectionTitle>upvoted by {upVoters.length}:</SectionTitle>
+            <SectionTitle>{upVoters.length} upvote{upVoters.length !== 1 && `s`}:</SectionTitle>
             { upVoters.map(userName => (
               <div>
-                <UserPip userName={userName} channelName={channelName}/>
+                <VoteStatsUserPip userName={userName} channelName={channelName}/>
                 <span>
                   {userName}
                 </span>
@@ -78,10 +103,10 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
         )}
         {downVoters.length > 0 && (
           <div id={'sectiondiv'}>
-            <SectionTitle>downvoted by {downVoters.length}:</SectionTitle>
+            <SectionTitle>{downVoters.length} downvote{downVoters.length !== 1 && 's'}:</SectionTitle>
             { downVoters.map(userName => (
               <div>
-                <UserPip userName={userName} channelName={channelName}/>
+                <VoteStatsUserPip userName={userName} channelName={channelName}/>
                 <span>
                   {userName}
                 </span>
@@ -123,11 +148,5 @@ export default styled(VoteStatsPopover)`
     }
   }
 
-  div {
-    padding: 0px;
-    svg {
-      margin-top: -3px;
-    }
-  }
 
 `

@@ -229,9 +229,6 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
     }
 
     cursor: move;
-
-
-
 `
 
 const SorterPlusOrMinus = styled(PlusOrMinusIcon)`
