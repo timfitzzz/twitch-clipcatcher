@@ -46,22 +46,18 @@ const NodeStemContainer = styled(Flex).attrs(p => ({
 const NodeAndMaybeStem = styled(({ className, index }: { index: number, className?: string}) => (
   <div className={className} draggable={false}><div className={'index'}>{index}</div><div className={'arrow'}></div></div>
 ))`
-  // margin-top: 19px;
-  height: 27px;
+  height: 30px;
   overflow: show;
   border: 2px solid ${p => p.theme.colors.quartenary.dark};
   background-color: ${p => p.theme.colors.quartenary.dark};
-  // border-bottom: 2px solid white;
   box-sizing: border-box;
-  width: 27px;
+  width: 30px;
   margin-top: auto;
   margin-bottom: auto;
-  margin-left: 6px;
+  margin-left: 18px;
   margin-right: auto;
-  padding-top: 1px;
-  padding-left: 1px;
   position: relative;
-  border-radius: 50%;
+  border-radius: 4px;
 
   .arrow {
     width: 0;
@@ -69,13 +65,13 @@ const NodeAndMaybeStem = styled(({ className, index }: { index: number, classNam
     top: 0;
     margin: auto;
     bottom: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
     border-top-left-radius: -20px;
     border-bottom-left-radius: -20px;
-    border-left: 6px solid ${p => p.theme.colors.quartenary.dark};
+    border-left: 13px solid ${p => p.theme.colors.quartenary.dark};
     position: absolute;
-    right: -7px;
+    right: -14px;
   }
 
   .index {
@@ -84,7 +80,7 @@ const NodeAndMaybeStem = styled(({ className, index }: { index: number, classNam
     width: 100%;
     text-align: center;
     font-size: 36px;
-    line-height: 18px;
+    line-height: 24px;
     font-weight: bold;
     color: ${p => p.theme.colors.gray.main};
   }
@@ -92,7 +88,7 @@ const NodeAndMaybeStem = styled(({ className, index }: { index: number, classNam
   &:first-of-type {
     padding-left: 0;
     margin-left: 8px;
-    width: 27px;
+    width: 30px;
   }
 
   &:last-of-type {
@@ -124,7 +120,7 @@ const DraggableIconsContainer = styled(Flex).attrs(p => ({
   flexDirection: 'row'
 }))`
   height: 30px;
-  margin-left: 7px;
+  margin-left: 8px;
 `
 
 const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channelName, children }: { onClick?: (e: React.MouseEvent) => void, children?: JSX.Element, channelName: string, id: SortTypes, index: number, moveIcon: (dragIndex: number, hoverIndex: number, channelName: string) => void, className?: string}) => {
@@ -202,15 +198,16 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
 >
 `
     height: 30px;
-    width: 33px;
+    width: 32px;
     display: flex;
+    margin-left: 16px;
   
     &:first-of-type {
-      // margin-left: 8px;
+      margin-left: 1px;
     }
 
     &:last-of-type {
-      width: 33px;
+      width: 32px;
     }
 
     svg {
@@ -226,21 +223,64 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
 
       ${p => {
         return p.disabled && `
-          opacity: 0.7;
+          opacity: 0.5;
         `}
       }
     }
+
+    cursor: move;
 
 
 
 `
 
+const SorterPlusOrMinus = styled(PlusOrMinusIcon)`
+  background-color: ${({theme}) => theme.colors.success.semilight};
+  padding: 2px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  svg { 
+    height: 24px;
+  }
+`
+
+const SorterAccessTimeFilled = styled(AccessTimeFilled)`
+  background-color: ${({theme}) => theme.colors.secondary.dark};
+  fill: white;
+  border-radius: 4px;
+`
+
+const SorterTimer = styled(Timer)`
+  background-color: ${({theme}) => theme.colors.primary.light};
+  border-radius: 4px;
+  padding-top: 2px;
+  padding-bottom: 0px;
+  padding-right: 1px;
+  box-sizing: border-box;
+`
+
+const SorterSortByName = styled(SortByAlpha)`
+  background-color: rgb(100,65,164);
+  border-radius: 4px;
+  padding: 2px;
+  stroke: white;
+  box-sizing: border-box;
+`
+
+const SorterViews = styled(Visibility)`
+  background-color: white;
+  border-radius: 4px;
+  padding: 2px;
+  fill: ${({theme}) => theme.colors.success.dark};
+  box-sizing: border-box;
+`
+
 const SortIcons = {
-  [SortTypes.frogscount]: PlusOrMinusIcon,
-  [SortTypes.date]: AccessTimeFilled,
-  [SortTypes.length]: Timer,
-  [SortTypes.streamername]: SortByAlpha,
-  [SortTypes.views]: Visibility
+  [SortTypes.frogscount]: SorterPlusOrMinus,
+  [SortTypes.date]: SorterAccessTimeFilled,
+  [SortTypes.length]: SorterTimer,
+  [SortTypes.streamername]: SorterSortByName,
+  [SortTypes.views]: SorterViews
 }
 
 const AscendingContainer = styled.div`
@@ -258,17 +298,17 @@ const AscendingArrow = styled.div<{brighten: boolean}>`
   position: relative;
   margin-top: auto;
   margin-bottom: auto;
-  margin-left: 17px;
+  margin-left: 28px;
   margin-right: 0px;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
   border-bottom: 6px solid ${p => p.brighten ? p.theme.colors.secondary.dark : 'transparent'};
-  top: -10px;
+  top: -15px;
   z-index: 2;
 
   &:first-of-type {
     margin-right: 0px;
-    margin-left: 16px;
+    margin-left: 15px;
   }
 
   &:last-of-type {
@@ -306,16 +346,16 @@ const DescendingArrow = styled.div<{brighten: boolean}>`
   width: 0;
   position: relative;
   margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 17px;
+  margin-bottom: -1px;
+  margin-left: 28px;
   margin-right: auto;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 5px solid ${p => p.brighten ? p.theme.colors.secondary.dark : 'transparent'};
-  bottom: -5px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 6px solid ${p => p.brighten ? p.theme.colors.secondary.dark : 'transparent'};
+  bottom: -6px;
  
   &:first-of-type {
-    margin-left: 16px;
+    margin-left: 15px;
     margin-right: 0px;
   }
 
@@ -364,7 +404,7 @@ export const SortSetter = ({channelName, className}: {
 
   return (
     <SortSetterOuterContainer className={className}>
-      <OptionsPanelSectionTitle isActive={currentSort.reduce((sortIs, sort) => sortIs ? true : sort.active, false as boolean)}>prio</OptionsPanelSectionTitle>
+      <OptionsPanelSectionTitle isActive={currentSort.reduce((sortIs, sort) => sortIs ? true : sort.active, false as boolean)}>sort</OptionsPanelSectionTitle>
       <SortSetterContainer>
         <AscendingContainer>
           { renderAscendingRow(currentSort.map(sort => sort.direction === 'asc' && sort.active)) }
