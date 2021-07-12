@@ -22,14 +22,14 @@ export default styled(DurationBadge)`
   padding: 0px 4px;
   width: fit-content;
   align-self: flex-end;
-
-  line-height: 14px;
+  font-size: 16px;
+  line-height: 21px;
   color: ${p => p.theme.colors.secondary.dark};
   border-radius: 4px;
-  height: 18px;
   background-color: ${p => p.theme.colors.primary.light};
 
   span {
+    margin-left: 2px;
     margin-top: auto;
     margin-bottom: auto;
     font-weight: bold;
@@ -38,10 +38,10 @@ export default styled(DurationBadge)`
 
   svg {
     margin-top: auto;
-    margin-bottom: 1.5px;
+    margin-bottom: auto;
     margin-left: 2px;
     margin-right: 0px;
-    height: 14px;
+    height: 16px;
     line-weight: 2px;
   }
 

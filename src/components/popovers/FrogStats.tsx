@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { UserTypes } from '../../types'
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { shallowEqual } from 'react-redux';
-import { UserPip } from '../badges/UserPip';
+import { DifferentiatedUserPip } from '../badges/UserPip';
 import { UserName } from '../../redux/clips';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,7 +31,7 @@ const UserTallySpan = styled(
               ? tallyObject['all' + userType.charAt(0).toUpperCase() + userType.substr(1, userType.length)] 
               : []).map(userName =>
             <span>
-              <UserPip userType={UserTypes[userType as keyof typeof UserTypes]}/>
+              <DifferentiatedUserPip userType={UserTypes[userType as keyof typeof UserTypes]}/>
               {userName}
             </span> 
           ))

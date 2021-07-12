@@ -13,27 +13,24 @@ import { useEffect } from 'react'
 const DelayBadge = styled(Flex)`
   padding-left: 4px;
   padding-right: 4px;
-  margin-left: auto;
-  margin-right: 4px;
+  margin: 4px 4px 4px auto;
   line-height: 16px;
   color: ${p => p.theme.colors.gray.light};
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 21px;
   padding-top: 0px;
-  padding-bottom: 2px;
-  margin-top: auto;
-  margin-bottom: 4px;
+  padding-bottom: 0px;
   background-color: ${p => p.theme.colors.tertiary.dark};
   width: fit-content;
   font-weight: bold;
   text-wrap: none;
-  height: 18px;
-
 
   span {
-    padding-top: 0.5px;
+    margin-left: 2px;
     margin-top: auto;
     margin-bottom: auto;
+    padding-bottom: 1px;
   }
   
 
@@ -65,11 +62,11 @@ const DelaySometimesButton = styled(({activate, clickHandler, className}: {activ
 
   display: contents;
   svg {
-    padding-top: 2px;
+    // padding-top: 2px;
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 4px;
-    height: 14px;
+    height: 16px;
     z-index: 10;
   }
 `

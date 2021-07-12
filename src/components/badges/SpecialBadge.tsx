@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import { UserTypes } from '../../types'
 import { isEmpowered } from '../../utilities/parsers'
-import { UserPip } from './UserPip'
+import { DifferentiatedUserPip } from './UserPip'
 
 enum SpecialState {
   no,
@@ -132,7 +132,7 @@ const SpecialBadgePopover = styled(
                 <div>
                   <span id={'sectionTitle'}>suggested by:</span>
                   {allUsers[0].map((user) => (
-                    <div><UserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
+                    <div><DifferentiatedUserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
                   ))}
                 </div>
               ),
@@ -140,11 +140,11 @@ const SpecialBadgePopover = styled(
                 <div>
                   <span id={'sectionTitle'}>confirmed by:</span>
                   {allUsers[1].map((user) => (
-                    <div><UserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
+                    <div><DifferentiatedUserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
                   ))}
                   <span id={'sectionTitle'}>suggested by:</span>
                   {allUsers[0].map((user) => (
-                    <div><UserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
+                    <div><DifferentiatedUserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
                   ))}
                 </div>
               ),

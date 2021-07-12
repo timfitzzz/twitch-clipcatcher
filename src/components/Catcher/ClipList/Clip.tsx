@@ -43,6 +43,8 @@ const ClipOverlayRight = styled(Flex).attrs(p => ({
   marginRight: "0"
 }))`
   min-width: 75px;
+  position: absolute;
+  right: 0px;
 
 `
 
@@ -53,6 +55,7 @@ const ClipOverlayLeft = styled(Flex).attrs(p => ({
   marginLeft: "0",
   marginRight: "auto"
 }))`
+max-width: 65%;
 `
 
 const ClipOverlayUpperLeft = styled(Box)`

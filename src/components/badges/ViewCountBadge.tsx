@@ -18,30 +18,28 @@ export default styled(ViewCountBadge)`
   display: flex;
   flex-direction: row;
 
-  margin: 4px 4px auto auto;
-  padding: 0px 4px 2px 4px;
+  margin: 4px 4px 4px auto;
+  padding: 0px 4px;
   
-  line-height: 16px;
+  font-size: 16px;
+  line-height: 21px;
   color: ${p => p.theme.colors.success.dark};
   border-radius: 4px;
-  height: 18px;
 
   background-color: ${p => p.theme.colors.success.light};
   width: fit-content;
   font-weight: bold;
 
   svg {
-    padding-top: 2px;
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 4px;
-    height: 14px;
+    height: 16px;
   }
 
   span {
-    padding-top: 0.5px;
-    margin-top: auto;
-    margin-bottom: auto;
+    margin-left: 2px;
+    padding-bottom: 1px;
   }
 
 `

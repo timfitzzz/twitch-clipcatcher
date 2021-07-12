@@ -5,7 +5,7 @@ import { Flex, Popover } from 'rendition'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import { UserTypes } from '../../types'
-import { UserPip } from './UserPip'
+import { DifferentiatedUserPip } from './UserPip'
 import FrogStats from '../popovers/FrogStats'
 import useUpdateLock from '../../hooks/useUpdateLock'
 
@@ -65,7 +65,7 @@ const VoteCountBadge = styled(Flex)`
 
 // <span id='subtotals'>({upvotes.length}/{downvotes.length})</span>
 
-const StackerFrog = styled(UserPip)<{index: number}>`
+const StackerFrog = styled(DifferentiatedUserPip)<{index: number}>`
   // position: absolute;
   // // margin-left: -7px;
   // top: 7px;

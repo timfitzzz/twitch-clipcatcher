@@ -108,29 +108,39 @@ export const TagsBadge = ({channelName, clipSlugs, className}: { channelName: st
           </PopoverContentsContainer>
         </Popover>
       )}
-      <TagIcon />
       <span>{displayTagElements.length}</span>
+      <TagIcon />
     </div>
   )
 }
 
 export default styled(TagsBadge)`
-
+  display: flex;
+  flex-direction: row;
   margin: 4px 4px 4px auto;
   background-color: ${({theme}) => theme.colors.warning.dark};
   padding: 0px 4px;
   border-radius: 4px;
   z-index: 10;
+  line-height: 21px;
 
   svg {
-    height: 12px;
+    padding-top: 1px;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 16px;
     color: black;
+    stroke-width: 2px;
   }
 
   span {
     color: black;
     font-weight: bold;
-    margin-left: 4px;
+    margin-right: 4px;
+    margin-left: 2px;
+    font-size: 16px;
+
+    padding-bottom: 1px;
   }
 
   > div {

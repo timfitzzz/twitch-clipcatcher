@@ -1,31 +1,19 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import ViewCountBadge from '../../badges/ViewCountBadge'
-import VoteCount from '../../badges/VoteCount'
 import Delay from '../../badges/WhenAgoBadge'
 import ClipDurationBadge from '../../badges/ClipDurationBadge';
+import VoteCountBadge from '../../badges/VoteCountBadge';
 import { useAppSelector } from '../../../hooks/reduxHooks'
 import { SortTypes } from '../../../types'
 
-const ClipOverlayFrogCountBadge = styled(VoteCount)`
-  margin-right: 4px;
-  margin-left: auto;
-  margin-top: 4px;
-  margin-bottom: 4px;
-`
-const ClipOverlayWhenAgoBadge = styled(Delay)`
-  margin-top: 4px;
-  margin-bottom: 4px;
-`
-
-
-export const LowerRightOverlay = ({clipSlug, channelName, className}: { clipSlug: string, channelName: string, className?: string}) => {
+export const UpperRightOverlay = ({clipSlug, channelName, className}: { clipSlug: string, channelName: string, className?: string}) => {
   
   const currentSort = useAppSelector(state => state.channels[channelName].sort)
 
-  let FrogCount = useMemo(() => <ClipOverlayFrogCountBadge key={'frogs'+clipSlug+channelName} clipSlug={clipSlug} channelName={channelName}/>, [clipSlug, channelName])
+  let FrogCount = useMemo(() => <VoteCountBadge key={'frogs'+clipSlug+channelName} clipSlugs={[clipSlug]} channelName={channelName}/>, [clipSlug, channelName])
   let ViewCount = useMemo(() => <ViewCountBadge clipSlug={clipSlug} key={'views'+clipSlug}/>, [clipSlug])
-  let WhenAgo = useMemo(() => <ClipOverlayWhenAgoBadge clipSlug={clipSlug} key={'when'+clipSlug}/>, [clipSlug])
+  let WhenAgo = useMemo(() => <Delay clipSlug={clipSlug} key={'when'+clipSlug}/>, [clipSlug])
   let Duration = useMemo(() => <ClipDurationBadge clipSlug={clipSlug} key={'duration'+clipSlug}/>, [clipSlug])
 
   function renderBadges() {
@@ -74,7 +62,7 @@ export const LowerRightOverlay = ({clipSlug, channelName, className}: { clipSlug
 
 }
 
-export default styled(LowerRightOverlay)`
+export default styled(UpperRightOverlay)`
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-end;

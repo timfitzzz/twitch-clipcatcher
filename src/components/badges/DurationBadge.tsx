@@ -8,10 +8,9 @@ const DurationBadge = styled(Flex)`
   padding-right: 4px;
   margin-left: 4px;
   margin-right: 4px;
-  line-height: 14px;
+  line-height: 19px;
   color: ${p => p.theme.colors.secondary.dark};
   border-radius: 4px;
-  height: 18px;
   padding-top: 0px;
   padding-bottom: 0px;
   margin-top: auto;
@@ -22,7 +21,6 @@ const DurationBadge = styled(Flex)`
     margin-top: auto;
     margin-bottom: auto;
     font-weight: bold;
-    padding-bottom: 1px;
   }
 
   svg {
@@ -30,7 +28,7 @@ const DurationBadge = styled(Flex)`
     margin-bottom: 1.5px;
     margin-left: 2px;
     margin-right: 0px;
-    height: 14px;
+    height: 16px;
     line-weight: 2px;
   }
   

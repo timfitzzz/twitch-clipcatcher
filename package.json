@@ -9,6 +9,7 @@
     "@styled-icons/foundation": "^10.34.0",
     "@styled-icons/heroicons-outline": "^10.34.0",
     "@styled-icons/material": "^10.34.0",
+    "@styled-icons/remix-fill": "^10.18.0",
     "@styled-icons/styled-icon": "^10.6.3",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",

@@ -2,7 +2,6 @@ import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rendition'
 import { SortTypes } from '../../../types'
-import { Frog } from '@styled-icons/fa-solid/Frog'
 import { OptionsPanelSectionTitle } from '.'
 import { Timer as OriginalTimer } from '@styled-icons/material/Timer'
 import { Visibility } from '@styled-icons/material/Visibility'
@@ -12,6 +11,7 @@ import { Twitch } from '@styled-icons/feather/Twitch'
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
 import { useMemo } from 'react'
 import { sortMoved, sortToggled } from '../../../redux/channels'
+import PlusOrMinusIcon from '../../badges/PlusOrMinusIcon'
 
 const Timer = styled(OriginalTimer)`
   padding-bottom: 2px;
@@ -236,7 +236,7 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
 `
 
 const SortIcons = {
-  [SortTypes.frogscount]: Frog,
+  [SortTypes.frogscount]: PlusOrMinusIcon,
   [SortTypes.date]: AccessTimeFilled,
   [SortTypes.length]: Timer,
   [SortTypes.streamername]: SortByAlpha,
