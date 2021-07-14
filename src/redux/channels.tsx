@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { CaughtClip, defaultFilters, defaultSort, ICatcherChannel } from '../types'
 import { annotationAdded, annotationsReverted, AnnotationAddedPayload, AnnotationsRevertedPayload, firstAnnotationAdded, FirstAnnotationAddedPayload, AnnotationTypes } from './annotations'
+import { RootState } from './store'
 
 export interface ChannelsSliceState {
   [channelName: string]: ICatcherChannel
@@ -12,6 +13,7 @@ type ChannelAddedPayload = string
 export type ChannelRemovedPayload = string
 type ScanningStartedPayload = string
 type ScanningStoppedPayload = string
+type ChannelStackingToggledPayload = string
 type ChannelClearedPayload = string
 type ChannelUpdatesHeldPayload = string
 type ChannelUpdatesReleasedPayload = string
@@ -36,15 +38,34 @@ export function initChannelState(channelName: string): ICatcherChannel {
     clips: [],
     sort: defaultSort,
     filters: defaultFilters,
-    postersByClip: {}
+    postersByClip: {},
+    stackClips: true
   };
 }
+
+export const selectChannels = (state: RootState) => state.channels
+export const selectChannelName = (state: RootState, channelName: string) => channelName
+export const selectChannelById = createSelector(
+  [selectChannels, selectChannelName],
+  (channels, channelId) => channels[channelId]
+)
+export const selectChannelClipsById = createSelector(
+  [selectChannelById],
+  channel => channel.clips
+)
+export const selectChannelClipsCount = createSelector(
+  [selectChannelClipsById],
+  clips => clips.length
+)
 
 
 const channelsSlice = createSlice({ 
   name: 'channels',
   initialState,
   reducers: {
+    channelStackingToggled(channels, action: PayloadAction<ChannelStackingToggledPayload>) {
+      channels[action.payload].stackClips = !channels[action.payload].stackClips
+    },
     channelUpdatesHeld(channels, action: PayloadAction<ChannelUpdatesHeldPayload>) {
       channels[action.payload].holdUpdates = true
     },

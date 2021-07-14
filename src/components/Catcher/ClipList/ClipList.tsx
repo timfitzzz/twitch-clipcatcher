@@ -4,9 +4,10 @@ import styled from 'styled-components'
 // import { defaultFilters, Filters } from '../../../types'
 import Clip from './Clip'
 import {OptionsPanel} from '../OptionsPanel'
-import useClips from '../../../hooks/useClips'
+import useClipStacks from '../../../hooks/useClipStacks'
 import NoClips from './NoClips'
 import useUpdateLock from '../../../hooks/useUpdateLock'
+import ClipStack from './ClipStack'
 
 
 
@@ -33,15 +34,25 @@ const ClipsContainer = styled(Flex)`
 
 const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
 
-  const currentClips = useClips({channelName})
-  const clips = useUpdateLock(currentClips, channelName)
+  const currentClipStacks = useClipStacks({channelName})
+  const clipStacks = useUpdateLock(currentClipStacks, channelName)
 
   return (
     <ClipListContainer flexDirection={"column"}>
       <OptionsPanel channelName={channelName}/>
       <ClipsContainer flexDirection={"column"}>
-        { clips && clips.map((clip) => <Clip key={clip+channelName} clipSlug={clip} channelName={channelName}/>)}
-        { clips && clips.length === 0 ? (
+        { clipStacks && clipStacks.map(clipStack => {
+          if (Array.isArray(clipStack)) {
+            return clipStack.length === 1 ? (
+              <Clip key={channelName+clipStack[0]} clipSlug={clipStack[0]} channelName={channelName}/>
+            ) : ( 
+              <ClipStack key={channelName+clipStack.reduce((string, slug) => string + slug, "")} clipSlugs={clipStack} channelName={channelName} />
+            )
+          } else {
+            return <Clip key={channelName+clipStack} clipSlug={clipStack} channelName={channelName}/>
+          }
+        })}
+        { clipStacks && clipStacks.length === 0 ? (
           <NoClips/>
         ) : (<></>)}
       </ClipsContainer>

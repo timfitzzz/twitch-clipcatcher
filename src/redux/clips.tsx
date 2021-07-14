@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TwitchClipV5 } from '../types'
 import { UpdatedClipEpoch } from '../utilities/apiMethods'
-import { tagsReport } from '../utilities/parsers'
+import { isEmpowered, tagsReport } from '../utilities/parsers'
 import { clipEpochsRetry, clipAdded, ClipAddedPayloadV2 } from './actions'
 import { annotationAdded, annotationsReverted, AnnotationsRevertedPayload, ClipAnnotation, FirstAnnotationAddedPayload } from './annotations'
 import { mutateClipByAnnotation, revertClipByAnnotation } from './mutators'
+import { RootState } from './store'
+import memoize from 'proxy-memoize'
 
 // export interface ClipPostedBy {
 //   broadcaster?: boolean,
@@ -213,7 +215,99 @@ export interface ClipsEpochsUpdatedPayload {
   updates: UpdatedClipEpoch[]
 }
 
+export const selectClips = (state: RootState) => state.clips.clips
+export const selectClipBySlug = (state: RootState, clipSlug: string) => state.clips.clips[clipSlug]
+export const selectClipsBySlug = (state: RootState, clipSlugs: string[]) => clipSlugs.map(clipSlug => state.clips.clips[clipSlug])
+export const createSpecialTagsSelector = (clipSlugs: string[], type: 'meta' | 'drama', channelName: string) => {
+  
+  return memoize((state: RootState) => clipSlugs.map(clipSlug => {
+      if (clipSlug 
+          && state.clips.clips[clipSlug] 
+          && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]
+          && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName]) {
+        return state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by
+      } else {
+        return null
+      }
+    }))
+}
 
+type SpecialTagsSelectorInput = [state: RootState, clipSlugs: string[], channelName: string, type: 'meta' | 'drama']
+
+export const specialTagsSelector = memoize((obj: SpecialTagsSelectorInput) => {
+  let [state, clipSlugs, channelName, type] = obj
+  return clipSlugs.map((clipSlug: string) => {
+    if (clipSlug 
+      && state.clips.clips[clipSlug] 
+      && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]
+      && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName]) {
+      return state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by
+    } else {
+      return null
+    }
+  })
+})
+  
+export const specialTagsOrderedUsersSelector = memoize((obj: SpecialTagsSelectorInput): string[][] => {
+  let [state, clipSlugs, channelName, type] = obj
+  let users = clipSlugs.reduce((taggerNames: string[], clipSlug: string) => {
+    if (clipSlug 
+      && state.clips.clips[clipSlug] 
+      && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]
+      && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName]) {
+      return taggerNames.concat(
+        state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by.filter(
+          name => taggerNames.indexOf(name) === -1
+        ))
+    } else {
+      return taggerNames
+    }
+  }, [] as string[])
+  .sort((userNameA: string, userNameB: string) => 
+    Math.max(...state.users.users[userNameB].userTypes[channelName]) - 
+    Math.max(...state.users.users[userNameA].userTypes[channelName]))
+
+  let foundRegularUser = false
+  let checkingUser = 0
+  while (!foundRegularUser && checkingUser < users.length) {
+    if (!isEmpowered(state.users.users[users[checkingUser]].userTypes[channelName])) {
+      foundRegularUser = true
+    }
+    checkingUser++
+  }
+  return [
+    users.slice(0, checkingUser),
+    (users.length > 0 || checkingUser === 0) ? users.slice(checkingUser, users.length) : []
+  ]
+})
+
+export const specialTagsMaxUserTypeSelector = memoize((obj: SpecialTagsSelectorInput) => {
+  let [state, clipSlugs, channelName, type] = obj
+  let maxType = -1
+  let checkingSlug = 0
+
+  while (maxType < 4 && checkingSlug < clipSlugs.length) {
+    let slug = clipSlugs[checkingSlug]
+    if (clipSlugs[checkingSlug]) {
+      let clip = state.clips.clips[slug]
+      if (clip) {
+        if (clip[type+'edIn' as "metaedIn" | "dramaedIn"] &&
+            clip[type+'edIn' as "metaedIn" | "dramaedIn"]![channelName]) {
+          let checkingUser = 0
+          while (maxType < 4 && checkingUser < clip[type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by.length) {
+            let userMax = Math.max(...state.users.users[clip[type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by[checkingUser]].userTypes[channelName])
+            if (maxType < userMax) {
+              maxType = userMax
+            } 
+            checkingUser++
+          }
+        }
+      }
+    }
+    checkingSlug++
+  }
+  return maxType
+})
 
 export const clipsSlice = createSlice({ 
   name: 'clips',

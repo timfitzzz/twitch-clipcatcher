@@ -12,7 +12,7 @@ const VoteStatsUserPip = styled(UserPip)`
     margin-bottom: auto;
     margin-right: 0px;
     height: 16px;
-    border-radius: 2px;
+    border-radius: 3px;
 
     svg {
       margin-left: 0px;
@@ -93,7 +93,7 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
             <SectionTitle>{upVoters.length} upvote{upVoters.length !== 1 && `s`}:</SectionTitle>
             { upVoters.map(userName => (
               <div>
-                <VoteStatsUserPip userName={userName} channelName={channelName}/>
+                <VoteStatsUserPip key={'userpip'+userName+channelName} userName={userName} channelName={channelName}/>
                 <span>
                   {userName}
                 </span>
@@ -106,7 +106,7 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
             <SectionTitle>{downVoters.length} downvote{downVoters.length !== 1 && 's'}:</SectionTitle>
             { downVoters.map(userName => (
               <div>
-                <VoteStatsUserPip userName={userName} channelName={channelName}/>
+                <VoteStatsUserPip key={'userpip'+userName+channelName}  userName={userName} channelName={channelName}/>
                 <span>
                   {userName}
                 </span>

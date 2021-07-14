@@ -185,7 +185,7 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
     drag(drop(ref))
     return (
         <div onClick={onClick} ref={ref} className={className} style={{ opacity }} data-handler-id={handlerId}>
-          <Icon ref={preview}/>
+            <Icon ref={preview}/>
         </div>
     )
 

@@ -4,8 +4,10 @@ import { Visibility } from '@styled-icons/material/Visibility'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import { abbreviateNumber } from 'js-abbreviation-number'
 
-export const ViewCountBadge = ({clipSlug, className}: {clipSlug: string, className?: string}) => {
-  let views = useAppSelector(s => s.clips.clips[clipSlug].views)
+export const ViewCountBadge = ({clipSlugs, className}: {clipSlugs: string[], className?: string}) => {
+  let views = useAppSelector(s => clipSlugs.reduce(
+      (viewCount, clipSlug) => viewCount + s.clips.clips[clipSlug].views
+    , 0))
 
   return (
     <div className={className}>

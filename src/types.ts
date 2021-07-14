@@ -221,12 +221,13 @@ export interface ICatcherChannel {
   postersByClip: {
     [clipSlug: string]: string[]
   }
+  stackClips: boolean
 }
 
 export enum UserTypes {
   'user',
   'sub',
-  'broadcaster',
+  'vip',
   'mod',
-  'vip'
+  'broadcaster'
 }

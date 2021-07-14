@@ -102,7 +102,7 @@ export default styled(VoteCountBadge)`
     margin-right: 0px;
     height: 20px;
     width: 20px;
-    margin-top: -5px;
+    margin-top: auto;
     margin-bottom: auto;
 
   }

@@ -6,6 +6,7 @@ import { ButtonCard } from './ButtonCards'
 import { useContextSelector } from 'use-context-selector'
 import { AuthContext } from '../../contexts/AuthContext'
 import { useAppSelector } from '../../hooks/reduxHooks'
+import { selectAppUser } from '../../redux/settings'
 
 const TwitchUserIcon = styled.img`
   width: 35px;
@@ -181,7 +182,7 @@ export const AuthButton = () => {
   let isAuthenticated = useContextSelector(AuthContext, ctx => ctx.isAuthenticated)
   let logIn = useContextSelector(AuthContext, ctx => ctx.signinRedirect)
   let logout = useContextSelector(AuthContext, ctx => ctx.logout)
-  let user = useAppSelector(state => state.settings.user)
+  let user = useAppSelector(selectAppUser)
 
   let loggedIn = useMemo(() => isAuthenticated ? isAuthenticated() : false, [isAuthenticated])
 
