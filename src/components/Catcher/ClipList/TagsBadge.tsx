@@ -126,6 +126,7 @@ export default styled(TagsBadge)`
 
   svg {
     padding-top: 1px;
+    margin-left: 4px;
     margin-top: auto;
     margin-bottom: auto;
     height: 16px;

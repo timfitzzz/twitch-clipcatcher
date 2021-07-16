@@ -12,7 +12,7 @@ export const UpperRightOverlay = ({clipSlug, channelName, className}: { clipSlug
   const currentSort = useAppSelector(state => state.channels[channelName].sort)
 
   let FrogCount = useMemo(() => <VoteCountBadge key={'frogs'+clipSlug+channelName} clipSlugs={[clipSlug]} channelName={channelName}/>, [clipSlug, channelName])
-  let ViewCount = useMemo(() => <ViewCountBadge clipSlug={clipSlug} key={'views'+clipSlug}/>, [clipSlug])
+  let ViewCount = useMemo(() => <ViewCountBadge clipSlugs={[clipSlug]} key={'views'+clipSlug}/>, [clipSlug])
   let WhenAgo = useMemo(() => <Delay clipSlug={clipSlug} key={'when'+clipSlug}/>, [clipSlug])
   let Duration = useMemo(() => <ClipDurationBadge clipSlug={clipSlug} key={'duration'+clipSlug}/>, [clipSlug])
 

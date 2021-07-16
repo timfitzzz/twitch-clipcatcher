@@ -8,7 +8,7 @@ export const parseUserType = (userInfo: TwitchPrivateMessage ['userInfo'], sub: 
   userInfo.isMod && response.push(UserTypes['mod'])
   userInfo.isVip && response.push(UserTypes['vip'])
   userInfo.isBroadcaster && response.push(UserTypes['broadcaster'])
-  return response
+  return response.sort((typeA, typeB) => typeB - typeA)
 }
 
 export interface tagsReport {

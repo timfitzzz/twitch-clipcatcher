@@ -10,6 +10,7 @@ export const ClipThumb = styled(({clipSlug, thumbSize = "small", className}: { c
 })`
   height: 147px;
   width: 260px;
+  border-radius: 8px;
 `
 
 export default styled(ClipThumb)`

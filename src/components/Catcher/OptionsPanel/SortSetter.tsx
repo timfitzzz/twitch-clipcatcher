@@ -185,7 +185,7 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
     drag(drop(ref))
     return (
         <div onClick={onClick} ref={ref} className={className} style={{ opacity }} data-handler-id={handlerId}>
-          <Icon ref={preview}/>
+            <Icon ref={preview}/>
         </div>
     )
 
@@ -265,10 +265,10 @@ const SorterSortByName = styled(SortByAlpha)`
 `
 
 const SorterViews = styled(Visibility)`
-  background-color: white;
+  background-color: ${({theme}) => theme.colors.success.dark};
   border-radius: 4px;
   padding: 2px;
-  fill: ${({theme}) => theme.colors.success.dark};
+  fill: ${({theme}) => theme.colors.success.light};
   box-sizing: border-box;
 `
 

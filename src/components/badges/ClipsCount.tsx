@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
+import { selectChannelClipsCount } from '../../redux/channels'
 
 const ClipsCount = ({channelName, className, inverted}: {channelName: string, className?: string, inverted?: boolean}) => {
 
-  const clipsCount = useAppSelector(state => state.channels[channelName].clips.length)
+  const clipsCount = useAppSelector(state => selectChannelClipsCount(state, channelName))
 
   return (
   <div className={className}>

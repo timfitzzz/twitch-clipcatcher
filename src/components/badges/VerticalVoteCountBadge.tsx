@@ -1,19 +1,57 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { UserTypes } from '../../types';
 import { DifferentiatedUserPip } from './UserPip';
-import { PlusOrMinusIcon } from './PlusOrMinusIcon';
 import VoteStats from '../popovers/VoteStats'
 import debounce from 'lodash/debounce';
+import { abbreviateNumber } from 'js-abbreviation-number'
 import { selectVotersByClipIds } from '../../redux/clips';
 
-const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
+const VerticalVoteCount = styled.div<{charCount: number}>`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-left: auto;
+  margin-right: auto;
+  height: unset;
 
-  let { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
-    selectVotersByClipIds({ state, clipSlugs, channelName })
-  )
+  box-shadow: none;
 
+  span {
+    font-weight: bold;
+    font-size: ${p => {
+
+      switch (p.charCount) {
+        case 1:
+          return 28
+        case 2: 
+          return 24
+        case 3:
+          return 18
+        case 4:
+          return 14
+        case 5:
+          return 12
+        case 6:
+          return 10
+        default:
+          return 8
+      }
+    }}px;
+    line-height: 21px;
+    margin-top: 0px;
+    margin-bottom: auto;
+    padding-bottom: 1px;
+    margin-left: 0px;
+  }
+`
+
+const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
+
+  const { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
+      selectVotersByClipIds({ state, clipSlugs, channelName })
+    )
   // let upVoters = useAppSelector(state => clipSlugs.reduce(
   //   (upvoters, clipSlug) => {
   //     state.clips.clips[clipSlug].votes[channelName].up.forEach(userName => {
@@ -64,6 +102,10 @@ const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: strin
     setShowPopover(false)
   }
 
+  const voteTotalText = useMemo(() => 
+    ((upVoters.length - downVoters.length) > 0 ? '+' : '') + 
+    abbreviateNumber(upVoters.length - downVoters.length), 
+  [upVoters, downVoters])
 
   return (
     <div className={className} ref={popoverTarget} onMouseLeave={handleMouseExit} onMouseOver={handlePopover}>
@@ -71,13 +113,17 @@ const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: strin
         && !!(popoverTarget.current)
         && <VoteStats target={popoverTarget.current} clipSlugs={clipSlugs} channelName={channelName} />
       }
-      {typesUpvotedBy.map((type: UserTypes) => (
-        <DifferentiatedUserPip key={'horizontalpip'+type} userType={type}/>
-      ))}
-      <div className={'badgeinner'}>
-        <span>{upVoters.length - downVoters.length}</span>
-        <PlusOrMinusIcon className={'plusorminus'}/>
+      <VerticalVoteCount charCount={voteTotalText.length}>
+        <span>{voteTotalText}</span>
+      </VerticalVoteCount>
+      {/* <PlusOrMinusIcon className={'plusorminus'}/> */}
+      <div className={'types'}>
+        {typesUpvotedBy.map((type: UserTypes) => (
+          <DifferentiatedUserPip userType={type}/>
+        ))}
       </div>
+
+
     </div>
   )
   // return (<div></div>)
@@ -85,65 +131,90 @@ const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: strin
 }
 
 
-export default styled(VoteCountBadge)`
+export default styled(VerticalVoteCountBadge)`
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  margin: 4px;
+  flex-direction: column;
+  // justify-content: flex-end;
+  margin-bottom: 0px!important;
+  margin-top: 0px!important;
+  width: 32px;
+  border-radius: inherit;
+  background-color: ${({theme}) => theme.colors.success.semilight};
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  box-sizing: border-box;
 
-  div {
-    margin-left: 4px;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-right: 0px;
-    height: 20px;
-    border-radius: 4px;
+  // div {
+  //   // margin-left: 2px;
+  //   margin-top: 0px;
+  //   // margin-bottom: auto;
+  //   // margin-right: 0px;
+  //   height: 20px;
+  //   border-radius: 4px;
 
+  // }
+
+  .types {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    justify-content: center;
+    justify-self: flex-end;
+
+    > div {
+      height: 16px;
+      margin-top: 4px!important;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 4px;
+      svg {
+        margin-left: 0px;
+        margin-right: 0px;
+        height: 16px;
+        width: 16px;
+        margin-top: auto;
+        margin-bottom: auto;
+    
+      }
+    }
+    
   }
 
-  svg {
-    margin-left: 0px;
-    margin-right: 0px;
-    height: 20px;
-    width: 20px;
-    margin-top: auto;
-    margin-bottom: auto;
 
-  }
-
-
-
-  .badgeinner {
+  .votecount {
     display: flex;
     flex-direction: row;
-    border-radius: 4px;
+    justify-content: flex-end;
     padding: 0px 4px 0px 4px;
-    margin-right: 0px;
-    // margin: 4px 4px 4px auto;
+    margin-left: auto;
+    margin-right: auto;
     height: unset;
-    background-color: ${({theme}) => theme.colors.success.semilight};
-    width: fit-content;
+    justify-self: flex-start;
+
     box-shadow: none;
   
     span {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 28px;
       line-height: 21px;
-      margin-top: auto;
+      margin-top: 0px;
       margin-bottom: auto;
       padding-bottom: 1px;
       margin-left: 0px;
     }
-  
-    .plusorminus {
-      margin-top: auto;
-      margin-left: 4px;
-      margin-right: 0px;
-      height: 16px;
-      width: 16px;
-      margin-bottom: auto;
-      fill: ${({theme}) => theme.colors.text.main};
-    }
+
+  }
+
+    
+  .plusorminus {
+    margin-left: auto;
+    margin-right: auto;
+    height: 16px;
+    width: 16px;
+    margin-bottom: auto;
+    fill: ${({theme}) => theme.colors.text.main};
   }
 
 `

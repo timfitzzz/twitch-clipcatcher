@@ -2,13 +2,12 @@ import debounce from 'lodash/debounce'
 import React, { useMemo } from 'react'
 import { useState } from 'react'
 import { useRef } from 'react'
-import { shallowEqual } from 'react-redux'
 import { Popover } from 'rendition'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
-import { UserTypes } from '../../types'
-import { isEmpowered } from '../../utilities/parsers'
-import { DifferentiatedUserPip } from './UserPip'
+import { specialTagsMaxUserTypeSelector, specialTagsOrderedUsersSelector } from '../../redux/clips'
+import { UserPip } from './UserPip'
+import { SectionTitle } from '../typography/SectionTitle'
 
 enum SpecialState {
   no,
@@ -63,203 +62,109 @@ const SpecialBadgePopover = styled(
   ({
     target,
     type,
-    specialState,
-    clipsTypaedBy,
-    clipsUserTypesMap,
-    className,
+    clipSlugs,
+    channelName,
+    className
   }: {
-    target: HTMLDivElement;
-    type: 'meta' | 'drama';
-    specialState: SpecialState;
-    clipsTypaedBy: (string[] | null)[];
-    clipsUserTypesMap: { [userName: string]: UserTypes };
-    className?: string;
+    target: HTMLDivElement
+    type: 'meta' | 'drama'
+    clipSlugs: string[]
+    channelName: string
+    className?: string
   }) => {
-    let allUsers = useMemo<[string[], string[]]>(
-      () => {
-        let splitIndex = null
-        let checkingIndex = 0
 
-        let sortedUsers = clipsTypaedBy
-          .reduce(
-            (allUsers: string[], clipTypaedBy) => {
-              if (clipTypaedBy) {
-                allUsers = allUsers.concat(clipTypaedBy as string[])
-              }
-              return allUsers
-            },
-            [] as string[]
-          )
-          .sort(
-            (userA, userB) =>
-              clipsUserTypesMap[userA!] - clipsUserTypesMap[userB!]
-          )
-
-        if (specialState > SpecialState.maybe) {
-          while (splitIndex === null && checkingIndex <= (sortedUsers.length - 1)) {
-            if (clipsUserTypesMap[sortedUsers[checkingIndex]] < UserTypes['mod']) {
-              splitIndex = checkingIndex
-            } else {
-              checkingIndex++
-            }
-          }
-          
-          return [
-            sortedUsers.slice(0, splitIndex || 0),
-            sortedUsers.slice(splitIndex || 0, sortedUsers.length)
-          ]
-        } else {
-          return [
-            sortedUsers,
-            []
-          ]
-        }
-
-      }, [clipsTypaedBy, clipsUserTypesMap, specialState]
-    );
+    let [empoweredUsers, otherUsers] = useAppSelector(state => specialTagsOrderedUsersSelector([
+      state,
+      clipSlugs,
+      channelName,
+      type
+    ]))
 
     return (
       <Popover placement={'right'} onDismiss={() => null} target={target}>
         <div className={className}>
-          {
-            {
-              0: (
-                <span>
-                  no {type} tags
-                </span>
-              ),
-              1: (
-                <div>
-                  <span id={'sectionTitle'}>suggested by:</span>
-                  {allUsers[0].map((user) => (
-                    <div><DifferentiatedUserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
-                  ))}
-                </div>
-              ),
-              2: (
-                <div>
-                  <span id={'sectionTitle'}>confirmed by:</span>
-                  {allUsers[1].map((user) => (
-                    <div><DifferentiatedUserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
-                  ))}
-                  <span id={'sectionTitle'}>suggested by:</span>
-                  {allUsers[0].map((user) => (
-                    <div><DifferentiatedUserPip key={user + type + 'pip'} userType={clipsUserTypesMap[user]}/>{user}</div>
-                  ))}
-                </div>
-              ),
-            }[specialState]
-          }
+          { empoweredUsers.length === 0 && otherUsers.length === 0 && (
+            <SectionTitle>no {type} tags</SectionTitle>
+          )}
+          { empoweredUsers.length > 0 && (
+            <>
+              <SectionTitle>confirmed by:</SectionTitle>
+              { empoweredUsers.map(userName =>
+                <div><UserPip key={'user'+userName+channelName} userName={userName} channelName={channelName}/>{userName}</div>
+              )}
+            </>
+          )}
+          { otherUsers.length > 0 && (
+            <>
+              <SectionTitle>suggested by:</SectionTitle>
+              { otherUsers.map(userName =>
+                <div><UserPip key={'user'+userName+channelName} userName={userName} channelName={channelName}/>{userName}</div>
+              )}
+            </>
+          )}
         </div>
       </Popover>
-    );
+    )
   }
 )`
-  font-size: 12px;
+  font-size: 14px;
   padding: 4px;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
 
-  > div {
-    display: flex;
-    flex-direction: column;
-
-    #sectionTitle {
-      text-transform: uppercase;
-    }
-
-    div {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      svg {
-        margin-right: 4px;
-      }
-    }
+  h5 {
+    margin-left: 0px;
   }
-`;
+
+  div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    // height: 12px;
+    // width: 14px;
+    // margin-right: 4px;
+
+    margin-top: 2px;
+    margin-bottom: 0px;
+    margin-right: 4px;
+    height: 16px;
+    border-radius: 3px;
+
+    &:first-of-type {
+      margin-top: 4px;
+    }
+
+    &:last-of-type {
+      margin-bottom: 4px;
+    }
+
+    svg {
+      margin-left: 0px;
+      height: 16px;
+      width: 16px;
+      padding: 0px 1px;
+      margin-top: auto
+      margin-bottom: auto;
+      box-sizing: border-box;
+  
+    }
+
+  }
+`
 
 export const SpecialBadge = ({type, clipSlugs, channelName, className}: { type: 'meta' | 'drama', clipSlugs: string[], channelName: string, className?: string}) => {
 
-  // clipsTypaedBy: sets of usernames that marked a clip in this set as 'meta'
-  const clipsTypaedBy: (string[] | null)[] = useAppSelector(state => clipSlugs.map(clipSlug => {
-    if (clipSlug 
-        && state.clips.clips[clipSlug] 
-        && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]
-        && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName]) {
-      return state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by
-    } else {
-      return null
-    }
-  }), shallowEqual)
+  let maxUserType = useAppSelector(state => specialTagsMaxUserTypeSelector(
+    [state, clipSlugs, channelName, type]
+  ))
 
-  // clipsTypaedByTypeSets: sets of usertypes matching the sets of usernames that marked a clip in this set as meta
-  const clipsTypaedByTypeSets: (UserTypes[][] | null)[] = useAppSelector(state => clipsTypaedBy.map(
-    clipsTypaedBySet => !clipsTypaedBySet ? null : clipsTypaedBySet.map(
-      userName => state.users.users[userName].userTypes[channelName]
-    ))
-  , shallowEqual)
-
-  // clipsTypaedByUserTypes: usertypes found in each set
-  const clipsTypaedByUserTypes: (UserTypes[] | null)[] = useAppSelector(state => {
-    return clipsTypaedByTypeSets.map(clipTypeSets => {
-      if (clipTypeSets) {
-        return clipTypeSets.reduce((foundUserTypes, userUserTypes) => {
-          if (userUserTypes) {
-            userUserTypes.forEach(userType => {
-              foundUserTypes[userType] = userType
-            })
-            return foundUserTypes
-          } else {
-            return foundUserTypes
-          }
-        }, [] as UserTypes[])
-      } else {
-        return null
-      }
-    })
-    //     return userNames.reduce((userTypes, userName) => {
-    //       state.users.users[userName].userTypes[channelName].forEach(userType => {
-    //         userTypes[userType] = userType
-    //       })
-    //       return userTypes
-    //     }, [] as UserTypes[])
-    //   } else {
-    //     return []
-    //   }
-    // })
-  }, shallowEqual)
-
-  let clipsUserTypesMap = useMemo(() => clipSlugs.reduce((clipUserTypesMap, clipSlug, clipIndex) => {
-    clipsTypaedBy[clipIndex] && clipsTypaedBy[clipIndex]!.forEach((userName, userIndex) => {
-      if (clipsTypaedByTypeSets[clipIndex] && clipsTypaedByTypeSets[clipIndex]![userIndex]) {
-        clipUserTypesMap[userName] = Math.max(...clipsTypaedByTypeSets[clipIndex]![userIndex]!) as UserTypes
-      }
-    })
-    return clipUserTypesMap
-  }, {} as {
-    [userName: string]: UserTypes
-  }), [clipSlugs, clipsTypaedBy, clipsTypaedByTypeSets])
-
-  let specialState: SpecialState = useMemo(() => clipsTypaedByUserTypes.reduce((maxState: SpecialState, userTypes: UserTypes[] | null) => {
-    if (maxState === SpecialState.yes) {
-      return maxState
-    } else {
-      if (userTypes && userTypes.length > 0) {
-        if (isEmpowered(userTypes)) {
-          return SpecialState.yes
-        } else {
-          return SpecialState.maybe
-        }
-      }
-      return maxState
-    }
-  }, SpecialState.no), [clipsTypaedByUserTypes])
+  let specialState: SpecialState = useMemo(() => (maxUserType > -1 ? maxUserType > 2  ? SpecialState.yes : SpecialState.maybe : SpecialState.no)
+    , [maxUserType])
 
   let popoverTarget = useRef<HTMLDivElement>(null)
   let [showPopover, setShowPopover] = useState<any>(false)
-
   const handlePopover = debounce(() => setShowPopover(true), 100)
-
   const handleMouseExit = () => {
     handlePopover.cancel()
     setShowPopover(false)
@@ -271,10 +176,9 @@ export const SpecialBadge = ({type, clipSlugs, channelName, className}: { type: 
         && !!(popoverTarget.current)
         && <SpecialBadgePopover 
             target={popoverTarget.current}
-            clipsTypaedBy={clipsTypaedBy}
-            clipsUserTypesMap={clipsUserTypesMap}
-            specialState={specialState}
             type={type}
+            clipSlugs={clipSlugs}
+            channelName={channelName}
           />
       }
       <SpecialText type={type} specialState={specialState}/>
