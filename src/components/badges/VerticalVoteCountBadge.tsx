@@ -26,23 +26,23 @@ const VerticalVoteCount = styled.div<{charCount: number}>`
         case 1:
           return 28
         case 2: 
-          return 24
+          return 22
         case 3:
-          return 18
+          return 16
         case 4:
-          return 14
-        case 5:
           return 12
-        case 6:
+        case 5:
           return 10
-        default:
+        case 6:
           return 8
+        default:
+          return 6
       }
     }}px;
-    line-height: 21px;
+    line-height: 18px;
     margin-top: 0px;
     margin-bottom: auto;
-    padding-bottom: 1px;
+    padding-bottom: 0px;
     margin-left: 0px;
   }
 `
@@ -140,10 +140,11 @@ export default styled(VerticalVoteCountBadge)`
   width: 32px;
   border-radius: inherit;
   background-color: ${({theme}) => theme.colors.success.semilight};
-  border-radius: 8px;
+  border-radius: 4px;
   padding-top: 8px;
   padding-bottom: 8px;
   box-sizing: border-box;
+  height: 119px;
 
   // div {
   //   // margin-left: 2px;
@@ -157,26 +158,27 @@ export default styled(VerticalVoteCountBadge)`
 
   .types {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     flex-wrap: wrap;
     margin-top: 4px;
+    margin-left: auto;
+    margin-right: auto;
     justify-content: center;
     justify-self: flex-end;
 
     > div {
-      height: 16px;
-      margin-top: 4px!important;
+      height: 14px;
+      margin-top: 2px!important;
       margin-left: auto;
       margin-right: auto;
       border-radius: 4px;
       svg {
         margin-left: 0px;
         margin-right: 0px;
-        height: 16px;
-        width: 16px;
-        margin-top: auto;
-        margin-bottom: auto;
-    
+        height: 14px;
+        width: 14px;
+        margin-top: 0px;
+        margin-bottom: 2px;    
       }
     }
     

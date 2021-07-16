@@ -26,10 +26,11 @@ const ClipsContainer = styled(Flex)`
   flex-grow: 1;
   flex-basis: 0;
   align-items: flex-end;
-  padding-left: 4px;
+  padding-left: 2px;
   padding-top: 8px;
   padding-bottom: 8px;
-  padding-right: 12px;
+  padding-right: 0px;
+  scrollbar-width: none;
 
 `
 

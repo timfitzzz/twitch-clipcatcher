@@ -17,7 +17,9 @@ import ClipLowerRightOverlay from './ClipLowerRightOverlay';
 
 const ClipThumbContainer = styled.div`
   position:relative;
-  display: inline-block;
+  display: flex;
+  margin-right: 0px;
+  margin-left: auto;
   img {
     display: block;
   }
@@ -34,8 +36,9 @@ const ClipOverlay = styled(Flex)`
   background-color: rgba(100,100,100,0.2);
   box-sizing: border-box;
   display: flex;
-  height: 147px;
-  width: 260px;
+  height: 142px;
+  width: 252px;
+  border-radius: 4px;
 `
 
 const ClipOverlayRight = styled(Flex).attrs(p => ({

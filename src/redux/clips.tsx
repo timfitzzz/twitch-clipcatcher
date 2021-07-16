@@ -319,8 +319,8 @@ export const selectVotersByClipIds = memoize((obj: ChannelClipsSelectorInput) =>
   let output = {
     upVoters: [] as string[],
     downVoters: [] as string[],
-    upvoterTypes: [0] as UserTypes[],
-    downvoterTypes: [0] as UserTypes[]
+    upvoterTypes: [] as UserTypes[],
+    downvoterTypes: [] as UserTypes[]
   }
 
   obj.clipSlugs.forEach(clipSlug => {
@@ -345,17 +345,23 @@ export const selectVotersByClipIds = memoize((obj: ChannelClipsSelectorInput) =>
     obj.state.users.users[usernameA].userTypes[obj.channelName][0]
   )
 
-  output.upVoters.forEach(upVoterName => {
-    if (obj.state.users.users[upVoterName].userTypes[obj.channelName][0] > output.upvoterTypes[0]) {
-      output.upvoterTypes.unshift(obj.state.users.users[upVoterName].userTypes[obj.channelName][0])
+  output.upvoterTypes = output.upVoters.reduce((voterTypes, upVoterName) => {
+    if (voterTypes.length === 0 || (obj.state.users.users[upVoterName].userTypes[obj.channelName].indexOf(voterTypes[0]) === -1)) {
+      voterTypes.unshift(obj.state.users.users[upVoterName].userTypes[obj.channelName][0])
+      return voterTypes
+    } else {
+      return voterTypes
     }
-  })
+  }, [] as UserTypes[])
 
-  output.downVoters.forEach(downVoterName => {
-    if (obj.state.users.users[downVoterName].userTypes[obj.channelName][0] > output.downvoterTypes[0]) {
-      output.downvoterTypes.unshift(obj.state.users.users[downVoterName].userTypes[obj.channelName][0])
+  output.downvoterTypes = output.downVoters.reduce((voterTypes, downVoterName) => {
+    if (voterTypes.length === 0 || (obj.state.users.users[downVoterName].userTypes[obj.channelName].indexOf(voterTypes[0]) === -1)) {
+     voterTypes.unshift(obj.state.users.users[downVoterName].userTypes[obj.channelName][0])
+     return voterTypes
+    } else {
+      return voterTypes
     }
-  })
+  }, [] as UserTypes[])
 
   return output
 })

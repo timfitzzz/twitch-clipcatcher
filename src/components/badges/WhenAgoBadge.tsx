@@ -113,7 +113,7 @@ const Delay = ({className, clipSlug}: { className?: string, clipSlug: string }) 
 
   return (
     <DelayBadge flexDirection={"row"} className={className}>
-      <span>{startEpoch > 0 ? delayText : `? (${delayText})`}</span>
+      <span>{startEpoch > 0 ? delayText : `(${delayText})`}</span>
       <DelaySometimesButton activate={startEpoch === 0} clickHandler={retryDelay}/>
     </DelayBadge>
 )}

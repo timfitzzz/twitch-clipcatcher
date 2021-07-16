@@ -8,9 +8,9 @@ export const ClipThumb = styled(({clipSlug, thumbSize = "small", className}: { c
     <img className={className} src={thumbUrl} alt={"thumbnail for clip " + clipSlug}/>
   )
 })`
-  height: 147px;
-  width: 260px;
-  border-radius: 8px;
+  height: 142px;
+  width: 252px;
+  border-radius: 4px;
 `
 
 export default styled(ClipThumb)`

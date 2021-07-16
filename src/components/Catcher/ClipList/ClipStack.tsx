@@ -26,6 +26,9 @@ const FirstClipContainer = styled.div`
 const OtherClipsContainer = styled.div`
   flex-direction: column;
   display: flex;
+  margin-top: 4px;
+  margin-right: 76px;
+  align-content: flex-end;
 `
 
 
@@ -94,13 +97,13 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
   display: flex;
   flex-direction: column;
-  width: 80px;
-  height: 144px;
+  width: 76px;
+  height: 142px;
   box-sizing: border-box;
   
 
   > div {
-    flex-direction: row-reverse;
+    flex-direction: row;
     border-radius: 0px;
     align-self: unset;
 
@@ -117,7 +120,13 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
     }
 
     span {
-      margin-left: 4px;
+      margin-right: 2px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    svg {
+      margin-right: 2px;
     }
 
     margin: 2px 2px 2px 4px;

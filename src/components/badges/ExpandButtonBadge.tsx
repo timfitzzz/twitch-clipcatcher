@@ -28,7 +28,7 @@ export default styled(ExpandButtonBadge)`
   padding: 0px 4px;
   
   font-size: 16px;
-  line-height: 21px;
+  line-height: 17.8px;
   color: ${p => p.clipsCount > 1 
             ? p.theme.colors.success.dark
             : p.theme.colors.gray.light
@@ -53,7 +53,7 @@ export default styled(ExpandButtonBadge)`
   span {
     margin-left: 2px;
     padding-bottom: 1px;
-    height: 21px;
+    height: 17.8px;
   }
 
   ${p => p.clipsCount > 1
