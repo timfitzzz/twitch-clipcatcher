@@ -2,18 +2,20 @@ import { useMemo, useCallback } from 'react'
 import { selectChannelChronology } from '../redux/clips'
 import { Sort, SortTypes } from '../types'
 import { useAppSelector } from './reduxHooks'
+import useUpdateLock from './useUpdateLock'
 
 const useClipStacks = ({channelName}: { channelName: string}): (string[] | string)[] => {
 
   let clips = useAppSelector(state => state.clips.clips)
-  let clipIds = useAppSelector(state => state.channels[channelName].clips)
+  // let clipIds = useAppSelector(state => state.channels[channelName].clips)
   let sort = useAppSelector(state => state.channels[channelName].sort)
   let stackClips = useAppSelector(state => state.channels[channelName].stackClips)
 
-  let clipsChronologically = useAppSelector(state => selectChannelChronology({ state, channelName }))
+  let currentClipsChronologically = useAppSelector(state => selectChannelChronology({ state, channelName }))
 
-  console.log(clipIds)
-  console.log(clipsChronologically)
+  let clipsChronologically = useUpdateLock(currentClipsChronologically, channelName)
+  // console.log(clipIds)
+  // console.log(clipsChronologically)
   const sortersTable = useMemo(() => ({
     [SortTypes['frogscount']]: (clipIds: string[]) => 
       clipIds.reduce(

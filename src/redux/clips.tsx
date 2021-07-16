@@ -427,18 +427,18 @@ export const doPresortedClipsOverlap = memoize(
           : false
 })
 
-let ascendingSortCount = 0
+// let ascendingSortCount = 0
 
 const selectAscendingEpochalSort = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
-  console.log('running ascending epochal sort', ascendingSortCount++)
+  // console.log('running ascending epochal sort', ascendingSortCount++)
   return clipA.startEpoch - clipB.startEpoch
 }, { size: 500 })
 
-let chronologySortCount = 0
+// let chronologySortCount = 0
 
 export const selectChannelChronology = memoize(
   ({ state, channelName }: { state: RootState, channelName: string}) => {
-    console.log('running channel chronology', chronologySortCount++)
+    // console.log('running channel chronology', chronologySortCount++)
     return [...state.channels[channelName].clips]
               .sort((clipA, clipB) => selectAscendingEpochalSort({ clipA: state.clips.clips[clipA], clipB: state.clips.clips[clipB] }))
 }, { size: 500 })
