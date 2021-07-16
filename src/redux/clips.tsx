@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { TwitchClipV5 } from '../types'
+import { TwitchClipV5, UserTypes } from '../types'
 import { UpdatedClipEpoch } from '../utilities/apiMethods'
 import { isEmpowered, tagsReport } from '../utilities/parsers'
 import { clipEpochsRetry, clipAdded, ClipAddedPayloadV2 } from './actions'
@@ -308,6 +308,162 @@ export const specialTagsMaxUserTypeSelector = memoize((obj: SpecialTagsSelectorI
   }
   return maxType
 })
+
+interface ChannelClipsSelectorInput {
+  state: RootState
+  clipSlugs: string[]
+  channelName: string
+}
+
+export const selectVotersByClipIds = memoize((obj: ChannelClipsSelectorInput) => {
+  let output = {
+    upVoters: [] as string[],
+    downVoters: [] as string[],
+    upvoterTypes: [0] as UserTypes[],
+    downvoterTypes: [0] as UserTypes[]
+  }
+
+  obj.clipSlugs.forEach(clipSlug => {
+    obj.state.clips.clips[clipSlug].votes[obj.channelName].up.forEach(userName => {
+      if (output.upVoters.indexOf(userName) === -1) {
+        output.upVoters.push(userName)
+      }
+    })
+    obj.state.clips.clips[clipSlug].votes[obj.channelName].down.forEach(userName => {
+      if (output.downVoters.indexOf(userName) === -1) {
+        output.downVoters.push(userName)
+      }
+    })
+  }) 
+
+  output.upVoters = output.upVoters.sort((usernameA, usernameB) => 
+    obj.state.users.users[usernameB].userTypes[obj.channelName][0] -
+    obj.state.users.users[usernameA].userTypes[obj.channelName][0]
+  )
+  output.downVoters = output.downVoters.sort((usernameA, usernameB) => 
+    obj.state.users.users[usernameB].userTypes[obj.channelName][0] -
+    obj.state.users.users[usernameA].userTypes[obj.channelName][0]
+  )
+
+  output.upVoters.forEach(upVoterName => {
+    if (obj.state.users.users[upVoterName].userTypes[obj.channelName][0] > output.upvoterTypes[0]) {
+      output.upvoterTypes.unshift(obj.state.users.users[upVoterName].userTypes[obj.channelName][0])
+    }
+  })
+
+  output.downVoters.forEach(downVoterName => {
+    if (obj.state.users.users[downVoterName].userTypes[obj.channelName][0] > output.downvoterTypes[0]) {
+      output.downvoterTypes.unshift(obj.state.users.users[downVoterName].userTypes[obj.channelName][0])
+    }
+  })
+
+  return output
+})
+
+interface ChannelClipSelectorInput {
+  state: RootState
+  clipSlug: string
+  channelName: string
+  direction?: 'asc' | 'desc'
+}
+
+export const selectVoteTotalByClipId = memoize((obj: ChannelClipSelectorInput) => 
+  obj.state.clips.clips[obj.clipSlug].votes[obj.channelName].up.length - obj.state.clips.clips[obj.clipSlug].votes[obj.channelName].down.length
+)
+
+export const selectVoteTotalByClipIds = memoize((obj: ChannelClipsSelectorInput) => 
+  obj.clipSlugs.reduce(
+    (total: number, clipSlug: string) =>
+      total + obj.state.clips.clips[clipSlug].votes[obj.channelName].up.length - obj.state.clips.clips[clipSlug].votes[obj.channelName].down.length
+    , 0)
+)
+
+interface ClipsSelectorInput {
+  state: RootState
+  clipSlugs: string[]
+  direction?: 'asc' | 'desc'
+}
+
+interface ClipSelectorInput {
+  state: RootState
+  clipSlug: string
+}
+
+export const selectLengthByClipId = memoize((obj: ClipSelectorInput) => 
+  obj.state.clips.clips[obj.clipSlug].duration
+)
+
+export const selectViewsByClipId = memoize((obj: ClipSelectorInput) => 
+  obj.state.clips.clips[obj.clipSlug].views
+)
+
+export const selectViewsTotalByClipIds = memoize((obj: ClipsSelectorInput) => 
+    obj.clipSlugs.reduce(
+      (total: number, clipSlug: string) => 
+        total + obj.state.clips.clips[clipSlug].views
+    , 0)
+  )
+
+export const selectStartEpochByClipIds = memoize((obj: ClipsSelectorInput) => 
+    obj.state.clips.clips[obj.clipSlugs[0]].startEpoch
+  )
+
+export const selectLengthByClipIdsAndSort = memoize((obj: ClipsSelectorInput) => 
+    obj.direction === 'asc'
+      ? Math.min(...obj.clipSlugs.map(clipSlug => obj.state.clips.clips[clipSlug].duration))
+      : Math.max(...obj.clipSlugs.map(clipSlug => obj.state.clips.clips[clipSlug].duration))
+  )
+
+export const doPresortedClipsOverlap = memoize(
+  ({ clipA, clipB }: { 
+    clipA: CaughtClipV2, 
+    clipB: CaughtClipV2
+  }) => {
+
+  return clipA.broadcasterName === clipB.broadcasterName
+          ? clipA.startEpoch + clipA.duration * 1000 > clipB.startEpoch
+            ? true
+            : false
+          : false
+})
+
+let ascendingSortCount = 0
+
+const selectAscendingEpochalSort = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
+  console.log('running ascending epochal sort', ascendingSortCount++)
+  return clipA.startEpoch - clipB.startEpoch
+}, { size: 500 })
+
+let chronologySortCount = 0
+
+export const selectChannelChronology = memoize(
+  ({ state, channelName }: { state: RootState, channelName: string}) => {
+    console.log('running channel chronology', chronologySortCount++)
+    return [...state.channels[channelName].clips]
+              .sort((clipA, clipB) => selectAscendingEpochalSort({ clipA: state.clips.clips[clipA], clipB: state.clips.clips[clipB] }))
+}, { size: 500 })
+
+// export const selectChannelChronologyWithStacks = memoize(
+//   ({ state, channelName }: { state: RootState, channelName: string }) => {
+//     return selectChannelChronology({ state, channelName }).reduce((clipStacks: (string[] | string)[], clipId))
+//   })
+
+
+// const selectSortedClips = memoize((obj: ChannelClipsSelectorInput) => {
+
+//   const sortersTable = {
+//     [SortTypes['frogscount']]: (obj: ChannelClipSelectorInput) => selectVoteTotalByClipId({ obj.}),
+//     [SortTypes['views']]: selectViewsByClipId,
+//     [SortTypes['date']]: selectLengthByClipId,
+//     [SortTypes['length']]: 'tbd'
+//   }
+
+//   let { state, clipSlugs, channelName } = obj
+
+
+
+
+// })
 
 export const clipsSlice = createSlice({ 
   name: 'clips',

@@ -9,12 +9,17 @@ export const NoClips = ({className}: {className?: string}) => (
 )
 
 export default styled(NoClips)`
-  margin: 8px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   height: 100px;
   align-content: center;
   justify-content: center;
   flex-direction: column;
+  width: 100%;
   background-color: ${({theme}) => theme.colors.quartenary.semilight};
 
+  h3 {
+    text-align: center;
+  }
 `

@@ -25,10 +25,10 @@ export default styled(ViewCountBadge)`
   
   font-size: 16px;
   line-height: 21px;
-  color: ${p => p.theme.colors.success.dark};
+  color: ${p => p.theme.colors.success.light};
   border-radius: 4px;
 
-  background-color: ${p => p.theme.colors.success.light};
+  background-color: ${p => p.theme.colors.success.dark};
   width: fit-content;
   font-weight: bold;
 

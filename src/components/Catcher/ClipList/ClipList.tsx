@@ -2,7 +2,6 @@ import React from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'
 // import { defaultFilters, Filters } from '../../../types'
-import Clip from './Clip'
 import {OptionsPanel} from '../OptionsPanel'
 import useClipStacks from '../../../hooks/useClipStacks'
 import NoClips from './NoClips'
@@ -14,10 +13,11 @@ import ClipStack from './ClipStack'
 const ClipListContainer = styled(Flex)`
   flex-grow: 1;
   flex-basis: 0;
+
 `
 
 const ClipsContainer = styled(Flex)`
-  display: block;
+  display: flex;
   overflow-y: auto;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -25,6 +25,11 @@ const ClipsContainer = styled(Flex)`
   overflow-x: hidden;
   flex-grow: 1;
   flex-basis: 0;
+  align-items: flex-end;
+  padding-left: 4px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 12px;
 
 `
 
@@ -41,15 +46,16 @@ const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
     <ClipListContainer flexDirection={"column"}>
       <OptionsPanel channelName={channelName}/>
       <ClipsContainer flexDirection={"column"}>
-        { clipStacks && clipStacks.map(clipStack => {
+        { clipStacks && clipStacks.map(clipStack => 
+          {
           if (Array.isArray(clipStack)) {
             return clipStack.length === 1 ? (
-              <Clip key={channelName+clipStack[0]} clipSlug={clipStack[0]} channelName={channelName}/>
+              <ClipStack key={channelName+clipStack.reduce((string, slug) => string + slug, "")} clipSlugs={clipStack} channelName={channelName}/>
             ) : ( 
               <ClipStack key={channelName+clipStack.reduce((string, slug) => string + slug, "")} clipSlugs={clipStack} channelName={channelName} />
             )
           } else {
-            return <Clip key={channelName+clipStack} clipSlug={clipStack} channelName={channelName}/>
+            return <ClipStack key={channelName+clipStack} clipSlugs={[clipStack]} channelName={channelName} />
           }
         })}
         { clipStacks && clipStacks.length === 0 ? (

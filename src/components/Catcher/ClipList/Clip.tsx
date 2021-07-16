@@ -18,6 +18,9 @@ import ClipLowerRightOverlay from './ClipLowerRightOverlay';
 const ClipThumbContainer = styled.div`
   position:relative;
   display: inline-block;
+  img {
+    display: block;
+  }
 `
 
 const ClipOverlay = styled(Flex)`
@@ -54,8 +57,8 @@ const ClipOverlayLeft = styled(Flex).attrs(p => ({
   height: '100%',
   marginLeft: "0",
   marginRight: "auto"
-}))`
-max-width: 65%;
+}))<{fullWidth?: boolean}>`
+${({fullWidth}) => !fullWidth && 'max-width: 65%;' }
 `
 
 const ClipOverlayUpperLeft = styled(Box)`
@@ -72,7 +75,7 @@ const ClipOverlayLowerLeft = styled(Flex).attrs(p => ({
   height: 50%;
 `
 
-const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelName: string, className?: string}) => {
+const Clip = ({clipSlug, channelName, hideStats = false, className}: { clipSlug: string, channelName: string, hideStats?: boolean, className?: string}) => {
 
   return (
     <Box className={className}>
@@ -82,7 +85,7 @@ const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelNam
            <ClipOverlay flexDirection={'column'} justifyContent={'space-between'}>
               <Flex flexDirection={'row'} height={'100%'}>
                 <PlayButton channelName={channelName} clipSlug={clipSlug} />
-                <ClipOverlayLeft>
+                <ClipOverlayLeft fullWidth={hideStats}>
                   <ClipOverlayUpperLeft>
                     <StreamerBadge clipSlug={clipSlug}/>
                     <Flex flexDirection={'row'}>
@@ -94,10 +97,12 @@ const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelNam
                       <ClipTitle clipSlug={clipSlug}/>
                   </ClipOverlayLowerLeft>
                 </ClipOverlayLeft>
-                <ClipOverlayRight>
-                  <ClipUpperRightOverlay clipSlug={clipSlug} channelName={channelName}/>
-                  <ClipLowerRightOverlay clipSlug={clipSlug} channelName={channelName}/>
-               </ClipOverlayRight>
+                { !hideStats && (
+                                <ClipOverlayRight >
+                                  <ClipUpperRightOverlay clipSlug={clipSlug} channelName={channelName}/>
+                                  <ClipLowerRightOverlay clipSlug={clipSlug} channelName={channelName}/>
+                               </ClipOverlayRight>
+                )}
              </Flex>
            </ClipOverlay>
          </ClipThumbContainer>
@@ -107,5 +112,5 @@ const Clip = ({clipSlug, channelName, className}: { clipSlug: string, channelNam
 }
 
 export default styled(Clip)`
-  margin: 4px;
+  margin-left: 4px;
 `

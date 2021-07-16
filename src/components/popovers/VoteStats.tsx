@@ -92,7 +92,7 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
           <div id={'sectiondiv'}>
             <SectionTitle>{upVoters.length} upvote{upVoters.length !== 1 && `s`}:</SectionTitle>
             { upVoters.map(userName => (
-              <div>
+              <div key={'votelistitem'+userName+channelName} >
                 <VoteStatsUserPip key={'userpip'+userName+channelName} userName={userName} channelName={channelName}/>
                 <span>
                   {userName}
@@ -105,7 +105,7 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
           <div id={'sectiondiv'}>
             <SectionTitle>{downVoters.length} downvote{downVoters.length !== 1 && 's'}:</SectionTitle>
             { downVoters.map(userName => (
-              <div>
+              <div key={'votelistitem'+userName+channelName} >
                 <VoteStatsUserPip key={'userpip'+userName+channelName}  userName={userName} channelName={channelName}/>
                 <span>
                   {userName}

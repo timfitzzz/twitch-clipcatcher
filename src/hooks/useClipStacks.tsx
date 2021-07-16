@@ -1,4 +1,5 @@
 import { useMemo, useCallback } from 'react'
+import { selectChannelChronology } from '../redux/clips'
 import { Sort, SortTypes } from '../types'
 import { useAppSelector } from './reduxHooks'
 
@@ -9,6 +10,10 @@ const useClipStacks = ({channelName}: { channelName: string}): (string[] | strin
   let sort = useAppSelector(state => state.channels[channelName].sort)
   let stackClips = useAppSelector(state => state.channels[channelName].stackClips)
 
+  let clipsChronologically = useAppSelector(state => selectChannelChronology({ state, channelName }))
+
+  console.log(clipIds)
+  console.log(clipsChronologically)
   const sortersTable = useMemo(() => ({
     [SortTypes['frogscount']]: (clipIds: string[]) => 
       clipIds.reduce(
@@ -29,11 +34,10 @@ const useClipStacks = ({channelName}: { channelName: string}): (string[] | strin
 
   let clipStacks = useMemo(() => {
     if (!stackClips) {
-      return clipIds
+      return clipsChronologically
     } else {
-      let sortedByEpoch = [...clipIds].sort((clipAid: string, clipBid: string) => clips[clipAid].startEpoch - clips[clipBid].startEpoch)
 
-      return sortedByEpoch.reduce((clipStacks: (string[] | string)[], clipId) => {
+      return clipsChronologically.reduce((clipStacks: (string[] | string)[], clipId) => {
         let stackClip = clips[clipId].startEpoch === 0
                         ? false 
                         : clipStacks.length > 0 // if not first item
@@ -68,7 +72,7 @@ const useClipStacks = ({channelName}: { channelName: string}): (string[] | strin
         return clipStacks
       }, [] as (string[] | string)[])
     }
-  }, [clipIds, stackClips, clips])
+  }, [clipsChronologically, stackClips, clips])
 
   let lexSortClipStacks = useCallback(() => (clipStackA: string[] | string, clipStackB: string[] | string): number => {
 
