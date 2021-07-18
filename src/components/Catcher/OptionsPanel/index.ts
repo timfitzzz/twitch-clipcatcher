@@ -19,6 +19,9 @@ export const OptionsPanelRow = styled(Flex).attrs(p => ({
 }))`
   padding-top: 0px;
   position: relative;
+  height: 50px;
+  margin-top: auto;
+  margin-bottom: auto;
 `
 
 export const OptionsPanelSection = styled(Flex)`

@@ -7,6 +7,8 @@ import VoteStats from '../popovers/VoteStats'
 import debounce from 'lodash/debounce';
 import { abbreviateNumber } from 'js-abbreviation-number'
 import { selectVotersByClipIds } from '../../redux/clips';
+import { SpecialBadge } from './SpecialBadge';
+import { Flex } from 'rendition';
 
 const VerticalVoteCount = styled.div<{charCount: number}>`
   display: flex;
@@ -46,6 +48,33 @@ const VerticalVoteCount = styled.div<{charCount: number}>`
     margin-left: 0px;
   }
 `
+
+const StackSpecialBadge = styled(SpecialBadge)`
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  
+  // background-color: ${({theme}) => theme.colors.gray.dark};
+  // border: 1px solid ${({theme}) => theme.colors.gray.dark};
+  border-radius: 4px;
+  padding: 1px;
+  box-sizing: border-box;
+  svg {
+    display: flex;
+    margin: auto;
+    width: 12px;
+    height: 12px;
+  }
+`
+
+const SpecialBadgesContainer = styled(Flex)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: auto;
+  margin-bottom: 0px;
+`
+
 
 const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
 
@@ -122,6 +151,10 @@ const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlug
           <DifferentiatedUserPip userType={type}/>
         ))}
       </div>
+      <SpecialBadgesContainer>
+            <StackSpecialBadge type={'drama'} clipSlugs={clipSlugs} channelName={channelName} />
+            <StackSpecialBadge type={'meta'} clipSlugs={clipSlugs} channelName={channelName} />
+      </SpecialBadgesContainer>
 
 
     </div>
@@ -137,14 +170,14 @@ export default styled(VerticalVoteCountBadge)`
   // justify-content: flex-end;
   margin-bottom: 0px!important;
   margin-top: 0px!important;
-  width: 32px;
+  width: 42px;
   border-radius: inherit;
   background-color: ${({theme}) => theme.colors.success.semilight};
   border-radius: 4px;
   padding-top: 8px;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
   box-sizing: border-box;
-  height: 119px;
+  height: 142px;
 
   // div {
   //   // margin-left: 2px;
@@ -160,24 +193,27 @@ export default styled(VerticalVoteCountBadge)`
     display: flex;
     flex-direction: column-reverse;
     flex-wrap: wrap;
-    margin-top: 4px;
+    margin-top: auto;
+    padding-top: 6px;
+    margin-bottom: auto;
     margin-left: auto;
     margin-right: auto;
-    justify-content: center;
+    justify-content: flex-end;
     justify-self: flex-end;
+    height: ${18*5}px;
 
     > div {
-      height: 14px;
+      height: 16px;
       margin-top: 2px!important;
       margin-left: auto;
       margin-right: auto;
       border-radius: 4px;
       svg {
-        margin-left: 0px;
-        margin-right: 0px;
-        height: 14px;
+        margin-left: 1px;
+        margin-right: 1px;
+        height: 13px;
         width: 14px;
-        margin-top: 0px;
+        margin-top: 1.5px;
         margin-bottom: 2px;    
       }
     }

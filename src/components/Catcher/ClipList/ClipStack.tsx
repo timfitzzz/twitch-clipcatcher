@@ -11,11 +11,12 @@ import { SortTypes } from '../../../types'
 import Delay from '../../badges/WhenAgoBadge'
 import ClipDurationBadge from '../../badges/ClipDurationBadge';
 import ExpandButtonBadge from '../../badges/ExpandButtonBadge'
-
+import { Flex } from 'rendition'
 
 const FirstClipContainer = styled.div`
   flex-direction: row;
   display: flex;
+  justify-content: stretch;
   
   > div {
     margin-top: auto;
@@ -27,11 +28,10 @@ const OtherClipsContainer = styled.div`
   flex-direction: column;
   display: flex;
   margin-top: 4px;
-  margin-right: 76px;
+  margin-right: 68px;
   align-content: flex-end;
+  margin-left: 40px;
 `
-
-
 
 const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandStack, className}: { clipSlugs: string[], channelName: string, expandStack: boolean, toggleExpandStack: () =>  void, className?: string}) => {
 
@@ -84,9 +84,6 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
   return (
     <div className={className}>
-      {/* <SquareVoteCountBadge clipSlugs={clipSlugs} channelName={channelName} /> */}
-      {/* <ViewCountBadge clipSlugs={clipSlugs}/>
-      <WhenAgoBadge clipSlug={clipSlugs[0]}/> */}
       { renderBadges() }
       <TagsBadge clipSlugs={clipSlugs} channelName={channelName}/>
       <ExpandButtonBadge expandToggle={toggleExpandStack} expanded={expandStack} clipsCount={clipSlugs.length}/>
@@ -97,7 +94,9 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
   display: flex;
   flex-direction: column;
-  width: 76px;
+  width: 64px;
+  min-width: 64px;
+  justify-content: stretch;
   height: 142px;
   box-sizing: border-box;
   
@@ -131,7 +130,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
     margin: 2px 2px 2px 4px;
     padding: 2px;
-    width: unset;
+    width: 100%;
     justify-content: flex-end;
   }
 
@@ -152,7 +151,9 @@ export const ClipStack = ({clipSlugs, channelName, className}: {clipSlugs: strin
     <div className={className}>
       
       <FirstClipContainer>
-        <VerticalVoteCountBadge clipSlugs={clipSlugs} channelName={channelName} />
+        <Flex flexDirection={'column'}>
+          <VerticalVoteCountBadge clipSlugs={clipSlugs} channelName={channelName} />
+        </Flex>
         <Clip key={channelName+sortedSlugs[0]} clipSlug={sortedSlugs[0]} channelName={channelName} hideStats={!expandStack}/>
         <StackSummary clipSlugs={clipSlugs} channelName={channelName} className={className} expandStack={expandStack} toggleExpandStack={toggleExpandStack}/>
       </FirstClipContainer>
@@ -171,9 +172,8 @@ export const ClipStack = ({clipSlugs, channelName, className}: {clipSlugs: strin
 
 
 export default styled(ClipStack)`
-  // border: 1px solid black;
-  // border-radius: 8px;
-  display: flex-column;
+  display: flex;
+  flex-direction: column;
   align-content: flex-end;
   margin: 0px 0px 8px 0px;
 `

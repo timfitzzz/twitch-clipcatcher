@@ -429,4 +429,6 @@ export const SortSetter = ({channelName, className}: {
 
 export default styled(SortSetter)`
   margin-left: 4px;
+  margin-top: auto;
+  margin-bottom: auto;
 `

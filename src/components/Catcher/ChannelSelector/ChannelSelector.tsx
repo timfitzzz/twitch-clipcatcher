@@ -3,7 +3,7 @@ import { Add } from '@styled-icons/material/Add'
 import styled from 'styled-components';
 import { Flex } from 'rendition';
 
-import Tab from './Tab';
+import ChannelButton from './Tab';
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
 import { channelChanged } from '../../../redux/settings';
 
@@ -20,18 +20,18 @@ const AddIcon = styled(Add)`
   }
 `
 
-const ChannelSelectorTabContainer = styled(Flex).attrs(p => ({
+const ChannelButtonContainer = styled(Flex).attrs(p => ({
   ...p,
-  flexDirection: "row-reverse",
-  justifyContent: "flex-end",
-  flexWrap: "wrap"
+  flexDirection: "row",
+  alignContent: "flex-start",
+
 }))`
-
-
-
-
+  width: 100%;
+  flex-wrap: wrap-reverse;
+  height: fit-content;
 `
-const ChannelSelectorTabsContainer = styled(Flex).attrs(p => ({
+
+const ChannelButtonsContainer = styled(Flex).attrs(p => ({
   ...p,
   flexDirection: "row"
 }))`
@@ -39,10 +39,17 @@ const ChannelSelectorTabsContainer = styled(Flex).attrs(p => ({
   width: 100%;
   background-color: ${p => p.theme.colors.gray.semilight};
 
-  padding-top: 8px;
+  padding-top: 0px;
+  padding-bottom: 3px;
+
+  &:first-of-type {
+    > div {
+      margin-left: 0px;
+    }
+  }
 
 `
-const ChannelSelectorTabs = styled(Flex).attrs(p => ({
+const ChannelButtons = styled(Flex).attrs(p => ({
   ...p,
   flexDirection: 'row'
 }))`
@@ -67,37 +74,31 @@ export const ReusableChannelSelector = ({
 
 
   return (
-    <ChannelSelectorTabs>
-      <ChannelSelectorTabsContainer>
-        <ChannelSelectorTabContainer>
+    <ChannelButtons className={className}>
+      <ChannelButtonsContainer>
+        <ChannelButton
+          onClick={() => changeChannel(-1)}
+          icon={AddIcon}
+          current={currentChannel === -1}
+          key={'addPanelChannelButton'}
+        />
+        <ChannelButtonContainer>
           {channelNames.map((channelName) => (
-            <Tab
+            <ChannelButton
               onClick={() => { changeChannel(channelName) }}
               title={channelName}
-              current={channelName === currentChannel}
+              current={currentChannel === channelName}
               key={channelName+'tab'}
             />
           ))}
-          <Tab
-            onClick={() => changeChannel(-1)}
-            icon={AddIcon}
-            current={currentChannel === -1}
-            key={'addPanelTab'}
-          />
-        </ChannelSelectorTabContainer>
-      </ChannelSelectorTabsContainer>
-
-    </ChannelSelectorTabs>
+        </ChannelButtonContainer>
+      </ChannelButtonsContainer>
+    </ChannelButtons>
   );
 };
 
 const ChannelSelector = styled(ReusableChannelSelector)`
   width: 100%;
-  height: 100%;
 `
 
 export default ChannelSelector
-
-// <Tab title={"+"}>
-//   <AddChannelForm />
-// </Tab>

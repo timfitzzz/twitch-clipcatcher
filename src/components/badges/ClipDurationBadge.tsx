@@ -18,14 +18,18 @@ export default styled(DurationBadge)`
   
   display: flex;
   flex-direction: row;
+  width: fit-content;
+
   margin: 4px 4px 4px auto;
   padding: 0px 4px;
-  width: fit-content;
-  align-self: flex-end;
+
+  
+  // align-self: flex-end;
   font-size: 16px;
   line-height: 21px;
   color: ${p => p.theme.colors.secondary.dark};
   border-radius: 4px;
+  
   background-color: ${p => p.theme.colors.primary.light};
 
   span {

@@ -234,5 +234,6 @@ const PlayButton = ({
 export default styled(PlayButton)`
   position: absolute;
   height: 100%;
-  width: 100%;
+  left: 0;
+  right: 0;
 `

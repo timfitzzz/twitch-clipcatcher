@@ -3,35 +3,34 @@ import { DeleteForever } from '@styled-icons/material/DeleteForever'
 import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
 import { channelCleared, channelUpdatesHeld, channelUpdatesReleased, scanningStarted, scanningStopped } from '../../../redux/channels'
-import { OptionsPanelSectionTitle } from '.'
 import { RecordingButton } from '../../badges/RecordingButton'
 import { LockButton } from '../../badges/LockButton'
+import ChannelCloseButton from './ChannelCloseButton'
 import memoize from 'proxy-memoize'
 
 
 const LargerRecordingButton = styled(RecordingButton)`
-  padding-left: 4px;
-  height: 30px;
-  width: 30px;
+  height: 21px;
+  width: 21px;
   svg {
-    height: 30px;
-    width: 30px;
+    height: 21.5px;
+    width: 21.5px;
   }
-  margin-left: 4px;
   margin-top: auto;
   margin-bottom: auto;
 `
 
 const ClearIcon = styled(DeleteForever).attrs((p) => ({
   ...p,
-  viewBox: '0 0 20 21'
+  viewBox: '0 0 22 22'
 }))`
-  height: 29px;
-  margin-top: -1.5px;
+  height: 22px;
+  margin-top: auto;
   margin-bottom: auto;
-  margin-right: 0px;
+  margin-left: 2px;
+  padding-bottom: 2px;
   fill: ${p => p.theme.colors.warning.light};
-  width: 29px;
+  width: 23px;
   cursor: pointer;
 
   &:hover {
@@ -39,7 +38,7 @@ const ClearIcon = styled(DeleteForever).attrs((p) => ({
   }
 `
 
-const ReusableCollectionControls = ({channelName, className}: {channelName: string, className?: string}) => {
+const ReusableChannelControls = ({channelName, className}: {channelName: string, className?: string}) => {
 
   const scanning = useAppSelector(memoize(state => state.channels[channelName].scanning))
   const holdUpdates = useAppSelector(memoize(state => state.channels[channelName].holdUpdates))
@@ -68,22 +67,23 @@ const ReusableCollectionControls = ({channelName, className}: {channelName: stri
   
   return (
     <div className={className}>
-      <OptionsPanelSectionTitle isActive={true}>
-        ctrl
-      </OptionsPanelSectionTitle>
       <LargerRecordingButton recording={scanning} toggleRecording={toggleScanning} />
       <LockButton locked={holdUpdates} toggleLock={toggleUpdateHold}/>
       <ClearIcon onClick={() => resetChannel()}/>
+      <ChannelCloseButton channelName={channelName}/>
     </div>
   )
 
 }
 
-const CollectionControls = styled(ReusableCollectionControls)`
+const ChannelControlBar = styled(ReusableChannelControls)`
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
   padding-left: 4px;
+  align-items: center;
+  margin-left: 0px;
+  margin-right: 0px;
 `
 
-export default CollectionControls
+export default ChannelControlBar

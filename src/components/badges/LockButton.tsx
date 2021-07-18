@@ -4,14 +4,14 @@ import { Unlock } from '@styled-icons/fa-solid/Unlock'
 import styled from 'styled-components'
 
 const LockButtonContainer = styled.div<{locked: boolean}>`
-  width: 25px;
-  height: 25px;
+  width: 18px;
+  height: 18px;
   margin-left: 4px;
   margin-top: auto;
   margin-bottom: auto;
   > svg {
-    height: 25px;
-    width: 25px;
+    height: 18px;
+    width: 18px;
     position: absolute;
     margin-top: auto;
     margin-bottom: auto;

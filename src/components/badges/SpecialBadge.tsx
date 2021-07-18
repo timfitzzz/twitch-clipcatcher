@@ -8,6 +8,8 @@ import { useAppSelector } from '../../hooks/reduxHooks'
 import { specialTagsMaxUserTypeSelector, specialTagsOrderedUsersSelector } from '../../redux/clips'
 import { UserPip } from './UserPip'
 import { SectionTitle } from '../typography/SectionTitle'
+import { TheaterMasks } from '@styled-icons/fa-solid/TheaterMasks'
+import { BookDead } from '@styled-icons/fa-solid/BookDead'
 
 enum SpecialState {
   no,
@@ -15,48 +17,99 @@ enum SpecialState {
   yes
 }
 
-const SpecialText = styled(({type, specialState, className}: { type: 'drama' | 'meta', specialState: SpecialState, className?: string}) => {
- 
-  return (
-    <svg viewBox={`0 0 ${13 * type.length} 24`} className={className}>
-      <text y="18">{type.toUpperCase()}</text>
-    </svg>
-  )
-  
-})`
-  font-size: 20px;
-  font-weight: bolder;
-  font-stretch: expanded;
-  height: 20px;
-  line-height: 20px;
+const SpecialIcon = styled(({type, specialState, className}: { type: 'drama' | 'meta', specialState: SpecialState, className?: string}) => {
 
-  text {
+  return (
+    <div className={className}>
+      { 
+        {
+          'meta': <BookDead/>,
+          'drama': <TheaterMasks/>
+        }[type]
+      }
+    </div>
+  )
+
+})`
+
+  height: 16px;
+  width: 16px;
+  display: flex;
+  background-color: gray;
+
+  svg {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    height: 16px;
+    width: 16px;
     ${({specialState, theme}) => {
       switch (specialState) {
         case SpecialState.maybe:
           return `
-            fill: none;
-            stroke: ${theme.colors.warning.main};
-            stroke-width: 1px;
-            stroke-linejoin: round;
-            text-shadow: -1px 1px 0.5px black;
+            color: ${theme.colors.warning.main};
+            opacity: 0.8;
           `
         case SpecialState.yes:
           return `
-            fill: ${theme.colors.danger.main};
-            stroke-width: 2px;
-            stroke: ${theme.colors.danger.main};
-            text-shadow: -1px 1px 0.5px black;
+            color: ${theme.colors.danger.dark};
+            opacity: 1;
           `
         default:
           return `
-            fill: ${theme.colors.gray.light};
+            color: ${theme.colors.gray.light};
             opacity: 0.1;
           `
       }
     }}
   }
+
 `
+
+// const SpecialText = styled(({type, specialState, className}: { type: 'drama' | 'meta', specialState: SpecialState, className?: string}) => {
+ 
+//   return (
+//     <svg viewBox={`0 0 ${13 * type.length} 24`} className={className}>
+//       <text y="18">{type.toUpperCase()}</text>
+//     </svg>
+//   )
+  
+// })`
+//   font-size: 20px;
+//   font-weight: bolder;
+//   font-stretch: expanded;
+//   height: 20px;
+//   line-height: 20px;
+
+//   text {
+//     ${({specialState, theme}) => {
+//       switch (specialState) {
+//         case SpecialState.maybe:
+//           return `
+//             fill: none;
+//             stroke: ${theme.colors.warning.main};
+//             stroke-width: 1px;
+//             stroke-linejoin: round;
+//             text-shadow: -1px 1px 0.5px black;
+//           `
+//         case SpecialState.yes:
+//           return `
+//             fill: ${theme.colors.danger.main};
+//             stroke-width: 2px;
+//             stroke: ${theme.colors.danger.main};
+//             text-shadow: -1px 1px 0.5px black;
+//           `
+//         default:
+//           return `
+//             fill: ${theme.colors.gray.light};
+//             opacity: 0.1;
+//           `
+//       }
+//     }}
+//   }
+// `
 
 const SpecialBadgePopover = styled(
   ({
@@ -181,7 +234,7 @@ export const SpecialBadge = ({type, clipSlugs, channelName, className}: { type: 
             channelName={channelName}
           />
       }
-      <SpecialText type={type} specialState={specialState}/>
+      <SpecialIcon type={type} specialState={specialState}/>
     </div>
   )
 
@@ -189,8 +242,9 @@ export const SpecialBadge = ({type, clipSlugs, channelName, className}: { type: 
 
 
 export default styled(SpecialBadge)`
-  height: 20px;
-  margin-left: 4px;
+  height: 16px;
+  // margin-left: 4px;
+  // margin-top: 4px;
   z-index: 10;
   cursor: pointer;
 `

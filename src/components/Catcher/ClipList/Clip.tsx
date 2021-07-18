@@ -18,8 +18,12 @@ import ClipLowerRightOverlay from './ClipLowerRightOverlay';
 const ClipThumbContainer = styled.div`
   position:relative;
   display: flex;
+  flex-direction: row;
   margin-right: 0px;
+  justify-content: stretch;
+  flex-grow: 1;
   margin-left: auto;
+  width: 100%;
   img {
     display: block;
   }
@@ -28,7 +32,6 @@ const ClipThumbContainer = styled.div`
 const ClipOverlay = styled(Flex)`
   position: absolute;
   height: 100%;
-  width: 100%;
   top: 0;
   left: 0;
   right: 0;
@@ -36,8 +39,8 @@ const ClipOverlay = styled(Flex)`
   background-color: rgba(100,100,100,0.2);
   box-sizing: border-box;
   display: flex;
-  height: 142px;
-  width: 252px;
+  // height: 142px;
+  // width: 252px;
   border-radius: 4px;
 `
 
@@ -81,9 +84,7 @@ const ClipOverlayLowerLeft = styled(Flex).attrs(p => ({
 const Clip = ({clipSlug, channelName, hideStats = false, className}: { clipSlug: string, channelName: string, hideStats?: boolean, className?: string}) => {
 
   return (
-    <Box className={className}>
-      <Flex flexDirection={'row'}>
-         <ClipThumbContainer>
+         <ClipThumbContainer className={className}>
            <ClipThumb clipSlug={clipSlug} />
            <ClipOverlay flexDirection={'column'} justifyContent={'space-between'}>
               <Flex flexDirection={'row'} height={'100%'}>
@@ -109,8 +110,6 @@ const Clip = ({clipSlug, channelName, hideStats = false, className}: { clipSlug:
              </Flex>
            </ClipOverlay>
          </ClipThumbContainer>
-      </Flex>
-    </Box>
   )
 }
 

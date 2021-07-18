@@ -3,16 +3,21 @@ import { Refresh } from '@styled-icons/material/Refresh'
 import { TimeAgoUtil } from '../../utilities/TimeAgo'
 import React, { useState } from 'react'
 import { useMemo } from 'react'
-import { Flex } from 'rendition'
 import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import useApiClient from '../../singleton-hooks/useApiClient'
 import { clipEpochsRetry } from '../../redux/actions'
 import { useEffect } from 'react'
 
-const DelayBadge = styled(Flex)`
+const DelayBadge = styled.div`
+
+  display: flex;
+  flex-direction: row;
+  
+
   padding-left: 4px;
   padding-right: 4px;
+
   margin: 4px 4px 4px auto;
   line-height: 16px;
   color: ${p => p.theme.colors.gray.light};
@@ -112,7 +117,7 @@ const Delay = ({className, clipSlug}: { className?: string, clipSlug: string }) 
   }, [redrawInterval, createdAt, retryDelay, startEpoch])
 
   return (
-    <DelayBadge flexDirection={"row"} className={className}>
+    <DelayBadge className={className}>
       <span>{startEpoch > 0 ? delayText : `(${delayText})`}</span>
       <DelaySometimesButton activate={startEpoch === 0} clickHandler={retryDelay}/>
     </DelayBadge>

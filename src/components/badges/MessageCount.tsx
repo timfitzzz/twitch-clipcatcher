@@ -5,7 +5,7 @@ import { abbreviateNumber } from 'js-abbreviation-number'
 
 const CountBadge = styled.div`
   padding-left: 4px;
-  padding-right: 4px;
+  padding-right: 2px;
   // border: 1px dotted ${p => p.theme.colors.statusUpdating.main}; 
   background-color: transparent;
   color: ${p => p.theme.colors.statusInactive.dark};

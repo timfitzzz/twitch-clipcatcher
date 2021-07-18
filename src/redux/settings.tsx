@@ -11,16 +11,19 @@ interface SettingsSliceState {
   }
   userLoading: boolean
   currentChannel: string | -1
+  leftColumnWidth: number
 }
 
 const initialState: SettingsSliceState = {
   userLoading: false,
-  currentChannel: -1
+  currentChannel: -1,
+  leftColumnWidth: 312
 }
 
 interface ChannelChangedPayload {
   newChannel: string | -1
 }
+type LeftColumnWidthAdjustedPayload = number
 
 export const selectAppUser = (state: RootState) => state.settings.user
 
@@ -28,6 +31,10 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    leftColumnWidthAdjusted(settings, action: PayloadAction<LeftColumnWidthAdjustedPayload>) {
+      settings.leftColumnWidth =
+        (action.payload > 312) ? action.payload : 312
+    },
     channelChanged(settings, action: PayloadAction<ChannelChangedPayload>) {
       settings.currentChannel = action.payload.newChannel
     },
@@ -58,5 +65,5 @@ const settingsSlice = createSlice({
   }
 })
 
-export const { channelChanged, userLoggedOut } = settingsSlice.actions
+export const { channelChanged, userLoggedOut, leftColumnWidthAdjusted } = settingsSlice.actions
 export default settingsSlice.reducer

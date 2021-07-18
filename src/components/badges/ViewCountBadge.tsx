@@ -19,6 +19,7 @@ export const ViewCountBadge = ({clipSlugs, className}: {clipSlugs: string[], cla
 export default styled(ViewCountBadge)`
   display: flex;
   flex-direction: row;
+  width: fit-content;
 
   margin: 4px 4px 4px auto;
   padding: 0px 4px;
@@ -29,8 +30,11 @@ export default styled(ViewCountBadge)`
   border-radius: 4px;
 
   background-color: ${p => p.theme.colors.success.dark};
-  width: fit-content;
-  font-weight: bold;
+
+  span {
+    margin-left: 2px;
+    padding-bottom: 1px;
+  }
 
   svg {
     margin-top: auto;
@@ -39,9 +43,6 @@ export default styled(ViewCountBadge)`
     height: 16px;
   }
 
-  span {
-    margin-left: 2px;
-    padding-bottom: 1px;
-  }
+
 
 `

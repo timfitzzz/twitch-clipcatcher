@@ -13,6 +13,7 @@ import ClipStack from './ClipStack'
 const ClipListContainer = styled(Flex)`
   flex-grow: 1;
   flex-basis: 0;
+  border: 4px solid ${p => p.theme.colors.primary.semilight};
 
 `
 
@@ -25,11 +26,11 @@ const ClipsContainer = styled(Flex)`
   overflow-x: hidden;
   flex-grow: 1;
   flex-basis: 0;
-  align-items: flex-end;
+  align-items: stretch;
   padding-left: 2px;
   padding-top: 8px;
   padding-bottom: 8px;
-  padding-right: 0px;
+  padding-right: 10px;
   scrollbar-width: none;
 
 `
