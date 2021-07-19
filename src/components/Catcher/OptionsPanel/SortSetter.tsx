@@ -236,7 +236,7 @@ const SorterPlusOrMinus = styled(PlusOrMinusIcon)`
   padding: 2px;
   border-radius: 4px;
   box-sizing: border-box;
-  fill: white;
+  fill: #23445e;
   height: 24px;
 `
 

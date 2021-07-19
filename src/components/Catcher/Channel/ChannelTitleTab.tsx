@@ -9,13 +9,13 @@ const ChannelTabTitleText = styled.h5`
   margin-bottom: auto;
   margin-left: 4px;
   margin-right: 4px;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 24px;
+  line-height: 24px;
 `
 
 const ChannelTabBox = styled(Box)`
 
-  padding: 4px;
+  padding: 6px 4px 4px 4px;
   margin-left: 0px;
   margin-right: 2px;
   > div {

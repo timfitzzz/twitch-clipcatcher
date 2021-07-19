@@ -216,5 +216,8 @@ export default styled(ClipStack)`
   display: flex;
   flex-direction: column;
   align-content: flex-end;
-  margin: 0px 0px 16px 0px;
+  margin: 8px 0px 8px 0px;
+  &:first-of-type {
+    margin-top: 0px;
+  }
 `
