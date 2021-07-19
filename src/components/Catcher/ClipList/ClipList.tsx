@@ -7,7 +7,7 @@ import useClipStacks from '../../../hooks/useClipStacks'
 import NoClips from './NoClips'
 import useUpdateLock from '../../../hooks/useUpdateLock'
 import ClipStack from './ClipStack'
-
+import ChannelStatsPanel from '../Channel/ChannelStatsPanel'
 
 
 const ClipListContainer = styled(Flex)`
@@ -27,14 +27,30 @@ const ClipsContainer = styled(Flex)`
   flex-grow: 1;
   flex-basis: 0;
   align-items: stretch;
-  padding-left: 2px;
+  padding-left: 8px;
   padding-top: 8px;
   padding-bottom: 8px;
-  padding-right: 10px;
+  padding-right: 16px;
   scrollbar-width: none;
+  border-left: 1px solid ${({theme}) => theme.colors.primary.light};
+  border-right: 1px solid ${({theme}) => theme.colors.primary.light};
+  border-bottom: 1px solid ${({theme}) => theme.colors.primary.light};
 
 `
-
+const InlineChannelStatsPanel = styled(ChannelStatsPanel)`
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex-grow: 0;
+  justify-content: center;
+  background-color: ${p => p.theme.colors.quartenary.main};
+  border-left: 1px solid ${({theme}) => theme.colors.primary.light};
+  border-top: 1px solid ${({theme}) => theme.colors.primary.light};
+  border-right: 1px solid ${({theme}) => theme.colors.primary.light};
+  > div {
+  }
+`
 
 
 // const defaultSort: SortTypes[] = []
@@ -47,6 +63,7 @@ const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
   return (
     <ClipListContainer flexDirection={"column"}>
       <OptionsPanel channelName={channelName}/>
+      <InlineChannelStatsPanel channelName={channelName}/>
       <ClipsContainer flexDirection={"column"}>
         { clipStacks && clipStacks.map(clipStack => 
           {

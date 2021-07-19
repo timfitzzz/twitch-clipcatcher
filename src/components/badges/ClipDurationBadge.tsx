@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
 
-const DurationBadge = ({clipSlug, className}: {clipSlug: string, className?: string}) => {
+const DurationBadge = ({clipSlug, className, zIndex}: {clipSlug: string, zIndex?: number, className?: string}) => {
   
   let duration = useAppSelector(s => s.clips.clips[clipSlug].duration)
   
@@ -27,10 +27,10 @@ export default styled(DurationBadge)`
   // align-self: flex-end;
   font-size: 16px;
   line-height: 21px;
-  color: ${p => p.theme.colors.secondary.dark};
+  color: ${p => p.theme.colors.gray.light};
   border-radius: 4px;
   
-  background-color: ${p => p.theme.colors.primary.light};
+  background-color: ${p => p.theme.colors.primary.dark};
 
   span {
     margin-left: 2px;
@@ -49,6 +49,9 @@ export default styled(DurationBadge)`
     line-weight: 2px;
   }
 
-
+  
+  ${p => p.zIndex && `
+    z-index: ${p.zIndex};
+  `}
 
 `

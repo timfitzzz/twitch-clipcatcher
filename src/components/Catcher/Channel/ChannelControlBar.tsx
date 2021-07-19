@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
 import { channelCleared, channelUpdatesHeld, channelUpdatesReleased, scanningStarted, scanningStopped } from '../../../redux/channels'
 import { RecordingButton } from '../../badges/RecordingButton'
 import { LockButton } from '../../badges/LockButton'
-import ChannelCloseButton from './ChannelCloseButton'
 import memoize from 'proxy-memoize'
 
 
@@ -70,7 +69,6 @@ const ReusableChannelControls = ({channelName, className}: {channelName: string,
       <LargerRecordingButton recording={scanning} toggleRecording={toggleScanning} />
       <LockButton locked={holdUpdates} toggleLock={toggleUpdateHold}/>
       <ClearIcon onClick={() => resetChannel()}/>
-      <ChannelCloseButton channelName={channelName}/>
     </div>
   )
 

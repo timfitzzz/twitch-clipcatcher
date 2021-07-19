@@ -177,7 +177,7 @@ export default styled(VerticalVoteCountBadge)`
   padding-top: 8px;
   padding-bottom: 4px;
   box-sizing: border-box;
-  height: 142px;
+  height: 100%;
 
   // div {
   //   // margin-left: 2px;

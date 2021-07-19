@@ -5,7 +5,7 @@ import useChannel from '../../../hooks/useChannel'
 import ChannelTitleTab from './ChannelTitleTab'
 import ClipList from '../ClipList/ClipList'
 import ChannelControlBar from './ChannelControlBar'
-import ChannelStatsPanel from './ChannelStatsPanel'
+import ChannelCloseButton from './ChannelCloseButton'
 
 const ChannelContainer = styled.div`
   flex-grow: 1;
@@ -15,30 +15,17 @@ const ChannelContainer = styled.div`
   flex-direction: column;
 `
 
-const ChannelControlStrip = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  height: 100%;
-  background-color: ${p => p.theme.colors.quartenary.main};
-  align-self: flex-end;
-  align-content: center;
-  margin-left: -4px;
-`
-
-const Channel = styled(({channelName, hidden}: {channelName: string, hidden?: boolean}) => {
+const Channel = styled(({channelName, hidden, className}: {channelName: string, className?: string, hidden?: boolean}) => {
 
   const isScanning = useChannel(channelName)
 
   return (
-    <ChannelContainer hidden={hidden}>
+    <ChannelContainer hidden={hidden} className={className}>
       <Flex flexDirection={'row'}>
         <ChannelTitleTab channelName={channelName}>
           <ChannelControlBar channelName={channelName} />
+          <ChannelCloseButton channelName={channelName}/>
         </ChannelTitleTab>
-        <ChannelControlStrip>
-          <ChannelStatsPanel channelName={channelName} />
-        </ChannelControlStrip>
       </Flex>
       <ClipList channelName={channelName} scanning={isScanning ? isScanning : false}/>
     </ChannelContainer>
@@ -47,7 +34,7 @@ const Channel = styled(({channelName, hidden}: {channelName: string, hidden?: bo
 }).attrs(p => ({
   ...p
 }))`
-  border: 4px solid ${p => p.theme.colors.primary.semilight};
+
 
 `
 

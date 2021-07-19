@@ -17,7 +17,7 @@ export default styled(NoClips)`
   justify-content: center;
   flex-direction: column;
   width: 100%;
-  background-color: ${({theme}) => theme.colors.quartenary.semilight};
+  background-color: ${({theme}) => theme.colors.quartenary.light};
 
   h3 {
     text-align: center;

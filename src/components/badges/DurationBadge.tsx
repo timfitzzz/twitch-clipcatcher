@@ -9,13 +9,13 @@ const DurationBadge = styled(Flex)`
   margin-left: 4px;
   margin-right: 4px;
   line-height: 19px;
-  color: ${p => p.theme.colors.secondary.dark};
+  color: ${p => p.theme.colors.gray.light};
   border-radius: 4px;
   padding-top: 0px;
   padding-bottom: 0px;
   margin-top: auto;
   margin-bottom: auto;
-  background-color: ${p => p.theme.colors.primary.light};
+  background-color: ${p => p.theme.colors.primary.dark};
 
   span {
     margin-top: auto;

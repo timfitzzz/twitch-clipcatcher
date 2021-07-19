@@ -130,12 +130,12 @@ export default styled(TagsBadge)`
     margin-top: auto;
     margin-bottom: auto;
     height: 16px;
-    color: black;
+    color: ${p => p.theme.colors.gray.light};
     stroke-width: 2px;
   }
 
   span {
-    color: black;
+    color: ${p => p.theme.colors.gray.light};
     font-weight: bold;
     margin-right: 4px;
     margin-left: 2px;

@@ -76,7 +76,7 @@ const DelaySometimesButton = styled(({activate, clickHandler, className}: {activ
   }
 `
 
-const Delay = ({className, clipSlug}: { className?: string, clipSlug: string }) => {
+const Delay = ({className, clipSlug, zIndex}: { className?: string, zIndex?: number, clipSlug: string }) => {
   
   let timeAgo = useMemo(() => {
     return TimeAgoUtil.instance.timeAgo
@@ -123,4 +123,8 @@ const Delay = ({className, clipSlug}: { className?: string, clipSlug: string }) 
     </DelayBadge>
 )}
 
-export default Delay
+export default styled(Delay)`  
+  ${p => p.zIndex && `
+  z-index: ${p.zIndex};
+  `}
+`

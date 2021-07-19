@@ -27,9 +27,9 @@ export const OptionsPanelRow = styled(Flex).attrs(p => ({
 export const OptionsPanelSection = styled(Flex)`
   margin-top: auto;
   margin-bottom: auto;
-  margin: 2px;
+  margin: 2px 2px 2px 0px;
   border-radius: 5px;
-  padding: 4px;
+  padding: 4px 4px 4px 0px;
   flex-direction: row;
   justify-content: center;
 `

@@ -1,66 +1,51 @@
 import React from 'react'
 import styled from 'styled-components'
-import Count from '../../badges/MessageCount';
-import { MessageSquare } from '@styled-icons/feather/MessageSquare'
+
+import CountOfMessages from './StatsPanel/CountOfMessages';
 import CountOfClips from './StatsPanel/CountOfClips';
 
-const CountOfMessages = styled(({children, className}: {children: React.ReactNode, className?: string}) => (
-  <div className={className}>
-    <span>{children}</span>
-    <MessageSquare/>
-  </div>
-))`
-
-
-  padding-left: 8px;
-  font-size: 20px;
-  line-height: 20px;
-  display: flex;
-  flex-direction: row;
-  margin-top: auto;
-  margin-bottom: auto;
-
-  span {
-    margin-left: auto;
-    margin-right: 0px;
-    margin-bottom: auto;
-    position: relative;
-    display: flex-item;
-    color: ${p => p.theme.colors.gray.dark};
-  }
-
-  svg {
-    color: ${p => p.theme.colors.gray.dark};
-    height: 18px;
-    width: 18px;
-    margin-top: auto;
-    margin-bottom: auto;
-  }
-
-`
 
 const ReusableStatsPanel = ({channelName, className}: {channelName: string, className?: string}) => {
   
   return (
     <div className={className}>
       <CountOfClips channelName={channelName}/>
-      <CountOfMessages>
-        <Count channelName={channelName}/>
-      </CountOfMessages>
+      <CountOfMessages channelName={channelName}/>
     </div>
   )
 
 }
 
-const StatsPanel = styled(ReusableStatsPanel)`
+const ChannelStatsPanel = styled(ReusableStatsPanel)`
+  background-color: ${p => p.theme.colors.quartenary.semilight};
+  border-left: 1px solid ${({theme}) => theme.colors.primary.light};
+  border-top: 1px solid ${({theme}) => theme.colors.primary.light};
+  border-right: 1px solid ${({theme}) => theme.colors.primary.light};
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
+  flex-grow: 1;
+  height: 100%;
+  align-self: flex-end;
+  align-content: center;
 
   margin-top: auto;
   margin-bottom: auto;
   margin-left: auto;
   margin-right: auto;
+
+  span {
+    line-height: 20px;
+    font-size: 20px;
+    margin: 1px auto;
+    position: relative;
+    display: flex-item;
+    margin-left: auto;
+    margin-right: 0px;
+    margin-bottom: auto;
+    position: relative;
+    display: flex-item;
+  }
 `
 
-export default StatsPanel
+export default ChannelStatsPanel

@@ -35,7 +35,7 @@ const SpecialIcon = styled(({type, specialState, className}: { type: 'drama' | '
   height: 16px;
   width: 16px;
   display: flex;
-  background-color: gray;
+  // background-color: gray;
 
   svg {
     display: flex;

@@ -33,8 +33,8 @@ export default styled(ChannelCloseButton)`
   height: 18px;
   width: 18px;
   right: 0;
-  margin-left: 8px;
-  margin-right: 4px;
+  margin-left: auto;
+  margin-right: 0px;
   // background-color: rgba(255,255,255,0.5);
   border-radius: 4px;
   // border: 1px solid ${p => p.theme.colors.primary.light};

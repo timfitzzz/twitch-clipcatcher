@@ -153,11 +153,11 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
   
           const hoverClientX = (clientOffset as XYCoord).x - hoverBoundingRect.left
   
-          if (dragIndex < hoverIndex && hoverClientX < (hoverMiddleX - 10)) {
+          if (dragIndex < hoverIndex && hoverClientX < (hoverMiddleX)) {
             return
           }
 
-          if (dragIndex > hoverIndex && hoverClientX > (hoverMiddleX + 10)) {
+          if (dragIndex > hoverIndex && hoverClientX > (hoverMiddleX)) {
             return
           }
 
@@ -223,7 +223,7 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
 
       ${p => {
         return p.disabled && `
-          opacity: 0.5;
+          opacity: 0.6;
         `}
       }
     }
@@ -236,9 +236,8 @@ const SorterPlusOrMinus = styled(PlusOrMinusIcon)`
   padding: 2px;
   border-radius: 4px;
   box-sizing: border-box;
-  svg { 
-    height: 24px;
-  }
+  fill: white;
+  height: 24px;
 `
 
 const SorterAccessTimeFilled = styled(AccessTimeFilled)`
@@ -254,6 +253,7 @@ const SorterTimer = styled(Timer)`
   padding-bottom: 0px;
   padding-right: 1px;
   box-sizing: border-box;
+  fill: white;
 `
 
 const SorterSortByName = styled(SortByAlpha)`

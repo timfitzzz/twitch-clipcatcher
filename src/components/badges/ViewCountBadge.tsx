@@ -4,7 +4,7 @@ import { Visibility } from '@styled-icons/material/Visibility'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import { abbreviateNumber } from 'js-abbreviation-number'
 
-export const ViewCountBadge = ({clipSlugs, className}: {clipSlugs: string[], className?: string}) => {
+export const ViewCountBadge = ({clipSlugs, className, zIndex}: {clipSlugs: string[], zIndex?: number, className?: string}) => {
   let views = useAppSelector(s => clipSlugs.reduce(
       (viewCount, clipSlug) => viewCount + s.clips.clips[clipSlug].views
     , 0))
@@ -43,6 +43,8 @@ export default styled(ViewCountBadge)`
     height: 16px;
   }
 
-
+  ${p => p.zIndex && `
+    z-index: ${p.zIndex};
+  `}
 
 `

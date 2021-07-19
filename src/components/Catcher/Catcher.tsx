@@ -13,12 +13,19 @@ import { shallowEqual } from 'react-redux'
 const ChannelContainer = styled(Flex).attrs(p => ({
   ...p,
   flexDirection: 'column'
-}))`
+}))<{borders: boolean}>`
   flex-grow: 1;
+
+  ${ p => p.borders && `
+    border-left: 1px solid ${p.theme.colors.primary.light};
+    border-right: 1px solid ${p.theme.colors.primary.light};
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  `}
 `
 
 
-const Catcher = () => {
+const Catcher = styled(({  className }: { className?: string}) => {
 
   const channelNames = useAppSelector(state => Object.getOwnPropertyNames(state.channels), shallowEqual)
   const currentChannel = useAppSelector(state => state.settings.currentChannel)
@@ -33,9 +40,9 @@ const Catcher = () => {
   // }, [channelNames, currentChannel])
 
   return (
-    <>
+    <div className={className}>
       <ChannelSelector channelNames={channelNames}/>
-      <ChannelContainer>
+      <ChannelContainer borders={currentChannel !== -1}>
         {channelNames.length > 0 &&
           channelNames.map((channelName) => (
             <Channel
@@ -50,8 +57,14 @@ const Catcher = () => {
           <></>
         )}
       </ChannelContainer>
-    </>
+    </div>
   )
-}
+})`
+  margin-left: 4px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-right: 4px;
+`
 
 export default Catcher

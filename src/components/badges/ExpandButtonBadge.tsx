@@ -38,7 +38,7 @@ export default styled(ExpandButtonBadge)`
 
   background-color: ${p => p.clipsCount > 1 
     ? p.theme.colors.gray.dark
-    : p.theme.colors.gray.light
+    : p.theme.colors.quartenary.main
   };
   width: fit-content;
   font-weight: bold;

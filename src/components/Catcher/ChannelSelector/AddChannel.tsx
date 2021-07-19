@@ -88,7 +88,6 @@ const AddChannelForm = ({className}: {className?: string}) => {
 export default styled(AddChannelForm)`
   margin-top: 0px;
   margin-left: auto;
-  padding-right: 4px;
   box-sizing: border-box;
   width: 100%;
 

@@ -17,6 +17,7 @@ const FirstClipContainer = styled.div`
   flex-direction: row;
   display: flex;
   justify-content: stretch;
+  height: 150px;
   
   > div {
     margin-top: auto;
@@ -30,7 +31,7 @@ const OtherClipsContainer = styled.div`
   margin-top: 4px;
   margin-right: 68px;
   align-content: flex-end;
-  margin-left: 40px;
+  margin-left: 42px;
 `
 
 const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandStack, className}: { clipSlugs: string[], channelName: string, expandStack: boolean, toggleExpandStack: () =>  void, className?: string}) => {
@@ -38,27 +39,23 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
   const currentSort = useAppSelector(state => state.channels[channelName].sort)
 
-  let ViewCount = useMemo(() => <ViewCountBadge clipSlugs={clipSlugs} key={'summaryviews'+clipSlugs.join("")}/>, [clipSlugs])
-  let WhenAgo = useMemo(() => <Delay clipSlug={clipSlugs[0]} key={'summarywhen'+clipSlugs}/>, [clipSlugs])
-  let Duration = useMemo(() => <ClipDurationBadge clipSlug={clipSlugs[0]} key={'duration'+clipSlugs[0]}/>, [clipSlugs])
-
-  function renderBadges() {
+  const renderBadges = useMemo(() => () => {
     let activeresult: JSX.Element[] = []
     let inactiveresult: JSX.Element[] = []
 
-    currentSort.forEach(sort => {
+    currentSort.forEach((sort, index) => {
 
       let component: JSX.Element | null;
 
       switch (sort.type) {
         case SortTypes.views:
-          component = ViewCount
+          component = <ViewCountBadge clipSlugs={clipSlugs} key={'summaryviews'+clipSlugs.join("")} zIndex={10 - index}/>
           break;
         case SortTypes.date:
-          component = WhenAgo
+          component = <Delay clipSlug={clipSlugs[0]} key={'summarywhen'+clipSlugs} zIndex={10 - index}/>
           break;
         case SortTypes.length:
-          component = Duration
+          component = <ClipDurationBadge clipSlug={clipSlugs[0]} key={'duration'+clipSlugs[0]} zIndex={10 - index}/>
           break;
         default:
           component = null
@@ -74,7 +71,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
     return activeresult.concat(inactiveresult)
 
-  }
+  }, [clipSlugs, currentSort])
 
   // return (
   //   <div className={className}>
@@ -84,9 +81,13 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
   return (
     <div className={className}>
-      { renderBadges() }
-      <TagsBadge clipSlugs={clipSlugs} channelName={channelName}/>
-      <ExpandButtonBadge expandToggle={toggleExpandStack} expanded={expandStack} clipsCount={clipSlugs.length}/>
+      <div className={'stackedBadges'}>
+        { renderBadges() }
+      </div>
+      <div className={'otherBadges'}>
+        <TagsBadge clipSlugs={clipSlugs} channelName={channelName}/>
+        <ExpandButtonBadge expandToggle={toggleExpandStack} expanded={expandStack} clipsCount={clipSlugs.length}/>
+      </div>
     </div>
   )
 
@@ -99,40 +100,80 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
   justify-content: stretch;
   height: 142px;
   box-sizing: border-box;
+
+  .stackedBadges {
+    display: flex;
+    flex-direction: column;
+    > div {
+      flex-direction: row;
+      border-radius: 0px;
+      align-self: unset;
   
-
-  > div {
-    flex-direction: row;
-    border-radius: 0px;
-    align-self: unset;
-
-    &:first-of-type {
-      border-top-left-radius: 4px;
-      border-top-right-radius: 4px;
-      margin-top: 0px;
+      transform: rotate3d(1, 1, -0.1, 15deg);
+  
+      &:first-of-type {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        margin-top: 0px;
+      }
+  
+      &:not(:first-of-type) {
+        // border-top: 1px solid lightgray;
+      }
+      
+      &:last-of-type {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        margin-bottom: 0px;
+        border-bottom: none;
+        box-shadow: -0px 2px lightgray;
+        z-index: -200;
+      }
+  
+      span {
+        margin-right: 2px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+  
+      svg {
+        margin-right: 2px;
+      }
+  
+      margin: -2px 2px -0px 4px;
+      padding: 2px;
+      width: 100%;
+      justify-content: flex-end;
     }
-    
-    &:last-of-type {
-      border-bottom-left-radius: 4px;
-      border-bottom-right-radius: 4px;
-      margin-bottom: 0px;
-    }
-
-    span {
-      margin-right: 2px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    svg {
-      margin-right: 2px;
-    }
-
-    margin: 2px 2px 2px 4px;
-    padding: 2px;
-    width: 100%;
-    justify-content: flex-end;
   }
+  .otherBadges {
+    margin-top: auto;
+    margin-bottom: 0px;
+      
+
+    > div {
+      margin: 4px 2px 0px 4px;
+      flex-direction: row;
+      border-radius: 0px;
+      align-self: unset;
+      border-radius: 4px;
+  
+      span {
+        margin-right: 2px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+  
+      svg {
+        margin-right: 2px;
+      }
+
+      padding: 2px;
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+  
 
 `
 
@@ -175,5 +216,5 @@ export default styled(ClipStack)`
   display: flex;
   flex-direction: column;
   align-content: flex-end;
-  margin: 0px 0px 8px 0px;
+  margin: 0px 0px 16px 0px;
 `
