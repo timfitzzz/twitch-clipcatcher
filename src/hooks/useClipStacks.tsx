@@ -140,10 +140,9 @@ const useClipStacks = ({channelName}: { channelName: string}): (string[] | strin
   //   }
   // }, [clipStacks, lexSortClipStacks])
 
-  console.log(clipStacks)
 
   const returnClipStacks = useAppSelector(useCallback(state => {
-    console.log('resorting clip stacks')
+    console.log('resorting clip stacks for ', channelName)
     if (clipStacks) {
       let result = clipStacks.sort(lexSortClipStackIds({state, channel: state.channels[channelName]}))
       return result

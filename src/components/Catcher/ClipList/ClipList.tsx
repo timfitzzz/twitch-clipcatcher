@@ -56,7 +56,7 @@ const InlineChannelStatsPanel = styled(ChannelStatsPanel)`
 // const defaultSort: SortTypes[] = []
 
 const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
-  console.log('re-rending clip list')
+  // console.log('re-rending clip list')
   // const currentClipStacks = useAppSelector(state => selectSortedStacks({ state, channel: state.channels[channelName] }))
   const currentClipStacks = useClipStacks({channelName})
   const clipStacks = useUpdateLock(currentClipStacks, channelName)
