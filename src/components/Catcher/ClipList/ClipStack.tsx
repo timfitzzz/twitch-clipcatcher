@@ -28,10 +28,15 @@ const FirstClipContainer = styled.div`
 const OtherClipsContainer = styled.div`
   flex-direction: column;
   display: flex;
-  margin-top: 4px;
+  margin-top: 0px;
+
   margin-right: 68px;
   align-content: flex-end;
   margin-left: 42px;
+`
+
+const OtherClip = styled(Clip)`
+  margin-bottom: 4px;
 `
 
 const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandStack, className}: { clipSlugs: string[], channelName: string, expandStack: boolean, toggleExpandStack: () =>  void, className?: string}) => {
@@ -102,14 +107,17 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
   box-sizing: border-box;
 
   .stackedBadges {
+    margin-right: 2px;
     display: flex;
     flex-direction: column;
+
     > div {
       flex-direction: row;
-      border-radius: 0px;
+      // border-radius: 0px;
       align-self: unset;
   
-      transform: rotate3d(1, 1, -0.1, 15deg);
+      transform: rotate3d(1, 1, -0.1, 20deg);
+      box-shadow: -2px 2px 5px -3px darkgray;
   
       &:first-of-type {
         border-top-left-radius: 4px;
@@ -117,6 +125,10 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
         margin-top: 0px;
       }
   
+      &:nth-of-type(2) {
+
+      }
+
       &:not(:first-of-type) {
         // border-top: 1px solid lightgray;
       }
@@ -126,8 +138,12 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
         border-bottom-right-radius: 4px;
         margin-bottom: 0px;
         border-bottom: none;
-        box-shadow: -0px 2px lightgray;
-        z-index: -200;
+        box-shadow: box-shadow: -2px 2px 2px -3px darkgray;
+        transform: none;
+        padding-right: 0px;
+        svg {
+          padding-right: 1px;
+        }
       }
   
       span {
@@ -140,7 +156,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
         margin-right: 2px;
       }
   
-      margin: -2px 2px -0px 4px;
+      margin: -4px 2px -0px 4px;
       padding: 2px;
       width: 100%;
       justify-content: flex-end;
@@ -152,10 +168,10 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
       
 
     > div {
+      box-sizing: border-box;
       margin: 4px 2px 0px 4px;
       flex-direction: row;
       border-radius: 0px;
-      align-self: unset;
       border-radius: 4px;
   
       span {
@@ -165,16 +181,25 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
       }
   
       svg {
-        margin-right: 2px;
+        margin-right: 3px;
       }
 
-      padding: 2px;
+      padding: 0px 2px;
       width: 100%;
       justify-content: flex-end;
     }
   }
   
 
+`
+
+const ClipsSeparator = styled.div`
+  margin-top: 12px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 25%;
+  border: 1px solid ${p => p.theme.colors.gray.main};
+  border-radius: 2px;
 `
 
 
@@ -199,12 +224,14 @@ export const ClipStack = ({clipSlugs, channelName, className}: {clipSlugs: strin
         <StackSummary clipSlugs={clipSlugs} channelName={channelName} className={className} expandStack={expandStack} toggleExpandStack={toggleExpandStack}/>
       </FirstClipContainer>
 
-      { expandStack && sortedSlugs.slice(1, sortedSlugs.length).map(slug => (
-        <OtherClipsContainer>
-          <Clip key={channelName+slug} clipSlug={slug} channelName={channelName}/>
-        </OtherClipsContainer>
-      )) }
 
+        <OtherClipsContainer>
+        { expandStack && sortedSlugs.slice(1, sortedSlugs.length).map(slug => (
+          <OtherClip key={channelName+slug} clipSlug={slug} channelName={channelName}/>
+          )) }
+        </OtherClipsContainer>
+
+      <ClipsSeparator/>
 
     </div>
   )
@@ -216,8 +243,8 @@ export default styled(ClipStack)`
   display: flex;
   flex-direction: column;
   align-content: flex-end;
-  margin: 8px 0px 8px 0px;
+  margin: 12px 0px 0px 0px;
   &:first-of-type {
-    margin-top: 0px;
+    margin-top: 4px;
   }
 `

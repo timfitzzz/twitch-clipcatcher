@@ -17,6 +17,12 @@ type ChannelStackingToggledPayload = string
 type ChannelClearedPayload = string
 type ChannelUpdatesHeldPayload = string
 type ChannelUpdatesReleasedPayload = string
+
+interface ChannelClipRemovedPayload {
+  channelName: string
+  clipSlug: string
+}
+
 export type ClipAddedPayload = [streamName: string, clip: CaughtClip, messageId: string]
 
 interface SortMovedPayload {
@@ -86,6 +92,9 @@ const channelsSlice = createSlice({
     },
     channelCleared(channels, action: PayloadAction<ChannelClearedPayload>) {
       channels[action.payload].clips = []
+    },
+    channelClipRemoved(channels, action: PayloadAction<ChannelClipRemovedPayload>) {
+      channels[action.payload.channelName].clips = channels[action.payload.channelName].clips.filter(clipSlug => clipSlug !== action.payload.clipSlug)
     },
     sortMoved(channels, action: PayloadAction<SortMovedPayload>) {
       let { dragIndex, hoverIndex, channelName } = action.payload

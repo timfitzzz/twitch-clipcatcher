@@ -18,9 +18,7 @@ const ReusableStatsPanel = ({channelName, className}: {channelName: string, clas
 
 const ChannelStatsPanel = styled(ReusableStatsPanel)`
   background-color: ${p => p.theme.colors.quartenary.semilight};
-  border-left: 1px solid ${({theme}) => theme.colors.primary.light};
-  border-top: 1px solid ${({theme}) => theme.colors.primary.light};
-  border-right: 1px solid ${({theme}) => theme.colors.primary.light};
+
   display: flex;
   flex-direction: row;
   box-sizing: border-box;

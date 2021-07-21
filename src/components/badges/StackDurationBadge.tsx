@@ -1,20 +1,21 @@
+import { Timer } from '@styled-icons/material/Timer'
 import { Stopwatch } from '@styled-icons/fa-solid/Stopwatch'
 import React from 'react'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
 
-const ClipDurationBadge = ({clipSlug, className, zIndex}: {clipSlug: string, zIndex?: number, className?: string}) => {
+const StackDurationBadge = ({clipSlugs, className, zIndex}: {clipSlugs: string[], zIndex?: number, className?: string}) => {
   
-  let duration = useAppSelector(s => s.clips.clips[clipSlug].duration)
+  let durations = useAppSelector(s => clipSlugs.map(clipSlug => s.clips.clips[clipSlug].duration))
   
   return (
     <div className={className}>
-      <span>{duration}s</span><Stopwatch />
+      <span>{Math.round(Math.min(...durations))}s - {Math.round(Math.max(...durations))}s</span><Stopwatch />
     </div>
   )
 }
 
-export default styled(ClipDurationBadge)`
+export default styled(StackDurationBadge)`
   
   display: flex;
   flex-direction: row;

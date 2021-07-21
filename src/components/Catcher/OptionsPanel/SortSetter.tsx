@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Flex } from 'rendition'
 import { SortTypes } from '../../../types'
 import { OptionsPanelSectionTitle } from '.'
-import { Timer as OriginalTimer } from '@styled-icons/material/Timer'
 import { Visibility } from '@styled-icons/material/Visibility'
 import { AccessTimeFilled } from '@styled-icons/material/AccessTimeFilled'
 import { useDrop, XYCoord, DropTargetMonitor, useDrag } from 'react-dnd'
@@ -12,11 +11,9 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
 import { useMemo } from 'react'
 import { sortMoved, sortToggled } from '../../../redux/channels'
 import PlusOrMinusIcon from '../../badges/PlusOrMinusIcon'
+import { Stopwatch } from '@styled-icons/fa-solid/Stopwatch'
 
-const Timer = styled(OriginalTimer)`
-  padding-bottom: 2px;
- 
-`
+
 
 const SortByAlpha = styled(Twitch)`
   stroke-width: 2px;
@@ -246,14 +243,16 @@ const SorterAccessTimeFilled = styled(AccessTimeFilled)`
   border-radius: 4px;
 `
 
-const SorterTimer = styled(Timer)`
+const SorterTimer = styled(Stopwatch)`
   background-color: ${({theme}) => theme.colors.primary.light};
   border-radius: 4px;
   padding-top: 2px;
-  padding-bottom: 0px;
+  padding-bottom: 2px;
   padding-right: 1px;
   box-sizing: border-box;
-  fill: white;
+  path {
+    fill: white;
+  }
 `
 
 const SorterSortByName = styled(SortByAlpha)`

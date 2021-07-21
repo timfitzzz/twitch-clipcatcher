@@ -1,0 +1,377 @@
+import memoize, { getUntrackedObject } from 'proxy-memoize'
+import { RootState } from './store'
+import { CaughtClipV2 } from './clips'
+import { ICatcherChannel, Sort, SortTypes } from '../types'
+
+// SINGLE-VALUE SELECTORS
+
+  // CHANNELS
+  export const selectChannelSort = memoize((channel: ICatcherChannel) => channel.sort, { size: 500 })
+
+  // CLIPS
+  export const selectUpvoters = memoize(({ votesSet }: { votesSet: CaughtClipV2['votes'][0] }) => votesSet.up,  { size: 500 })
+  export const selectDownvoters = memoize(({ votesSet } : { votesSet: CaughtClipV2['votes'][0] }) => votesSet.down, { size: 500})
+  export const selectViews = memoize(({clip}: { clip: CaughtClipV2 }) => clip.views, { size: 500 })
+  export const selectEpoch = memoize(({clip}: { clip: CaughtClipV2 }) => clip.startEpoch, { size: 500 })
+  export const selectDuration = memoize(({clip}: { clip: CaughtClipV2 }) => clip.duration, { size: 500})
+  export const selectStreamerName = memoize(({clip}: { clip: CaughtClipV2 }) => clip.broadcaster.name, { size: 500})
+
+  // STACKS
+  export const selectStackDuration = memoize(({sort, clips}: {sort: Sort, clips: CaughtClipV2[]}) => {
+    if (sort.direction === 'asc') {
+      return clips.reduce((shortest: number | null, clip: CaughtClipV2) => {
+        let duration = selectDuration({ clip: (getUntrackedObject(clip) || clip) })
+        if (shortest === null) {
+          return duration
+        } else {
+          return duration < shortest ? duration : shortest
+        }
+      }, null as number | null)
+    } else {
+    return clips.reduce((longest: number | null, clip: CaughtClipV2) => {
+        let duration = selectDuration({ clip: (getUntrackedObject(clip) || clip) })
+        if (longest === null) {
+          return duration
+        } else {
+          return duration < longest ? duration : longest
+        }
+      }, null as number | null)
+    }
+  }, { size: 500})
+
+  export const selectStackVoters = memoize(( {votesSets} : { votesSets: { up: string[], down: string[] }[] }) => {
+    // console.log('selectStackVoters')
+    let upnames: { [name: string]: 1 } = {};
+    let downnames: { [name: string]: 1} = {};
+    let results: { up: string[], down: string[] } = { up: [], down: [] };
+
+    // console.log('selecting stack voters: ', votesSets)
+
+    votesSets.forEach(voteSet => {
+      voteSet.up.forEach(userName => {
+        if (upnames[userName]) {
+          return
+        } else {
+          upnames[userName] = 1
+          results.up.push(userName)
+        }
+      })
+      voteSet.down.forEach(userName => {
+        if (downnames[userName]) {
+          return
+        } else {
+          upnames[userName] = 1
+          results.down.push(userName)
+        }
+      })
+    })
+    return results
+  }, { size: 500 })
+
+  export const selectStackViews = memoize(( {clips}: { clips: CaughtClipV2[]} ) => {
+    return clips.reduce((total: number, clip: CaughtClipV2) => total + selectViews({clip: (getUntrackedObject(clip) || clip)}), 0)
+  }, { size: 500 })
+
+  export const selectStackEpoch = memoize(( {dateSort, clips}: { dateSort: Sort, clips: CaughtClipV2[]} ) => {
+    if (dateSort.direction === 'asc') {
+      return Math.min(...clips.map(clip => selectEpoch({ clip: (getUntrackedObject(clip) || clip) })))
+    } else {
+      return Math.max(...clips.map(clip => selectEpoch({ clip: (getUntrackedObject(clip) || clip) })))
+    }
+  }, { size: 500 })
+
+  export const selectStackStreamer = memoize(( {clips}: { clips: CaughtClipV2[] }) => clips[0].broadcaster.name, { size: 500 })
+
+// MEMOIZED SORT COMPARATOR FUNCTIONS
+// these functions are intended to be applied to the array.sort function. since the arguments are provided from state,
+// they should memoize and speed up redundant sort operations considerably.
+//
+// i.e.: (clipIdA, clipIdB) => selectAscendingEpochalSort({clipA: state.clips.clips[clipIdA], clipB: state.clips.clips[clipIdB]})
+
+  // CLIPS
+
+    // START EPOCH
+    export const selectAscendingEpochalSort = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
+      console.log('running ascending sort')
+      return clipA.startEpoch - clipB.startEpoch
+    }, { size: 500 })
+
+    export const selectDescendingEpochalSort = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
+      return clipB.startEpoch - clipA.startEpoch
+    }, { size: 500 })
+
+    // VOTERS
+    export const selectAscendingClipVotersSort = memoize(({ votesSetA, votesSetB }: { votesSetA: CaughtClipV2['votes'][0], votesSetB: CaughtClipV2['votes'][0]} ) => {
+      return (
+              selectUpvoters({votesSet: (getUntrackedObject(votesSetA) || votesSetA) }).length - 
+              selectDownvoters({votesSet: (getUntrackedObject(votesSetA) || votesSetA)}).length
+            ) - 
+            ( 
+              selectUpvoters({votesSet: (getUntrackedObject(votesSetB) || votesSetB)}).length - 
+              selectUpvoters({votesSet: (getUntrackedObject(votesSetB) || votesSetB)}).length
+            )
+    }, { size: 500 })
+
+    export const selectDescendingClipVotersSort = memoize(({ votesSetA, votesSetB }: { votesSetA: CaughtClipV2['votes'][0], votesSetB: CaughtClipV2['votes'][0]} ) => {
+      return (
+              selectUpvoters({votesSet: (getUntrackedObject(votesSetB) || votesSetB) }).length - 
+              selectDownvoters({votesSet: (getUntrackedObject(votesSetB) || votesSetB)}).length
+            ) - 
+            ( 
+              selectUpvoters({votesSet: (getUntrackedObject(votesSetA) || votesSetA)}).length - 
+              selectUpvoters({votesSet: (getUntrackedObject(votesSetA) || votesSetA)}).length
+            )
+    }, { size: 500 })
+
+    // VIEWS
+    export const selectAscendingClipViewsSort = memoize(({ clipA, clipB }: { clipA: CaughtClipV2, clipB: CaughtClipV2 }) => {
+      return selectViews(({ clip: (getUntrackedObject(clipA) || clipA)})) - selectViews(({clip: (getUntrackedObject(clipB) || clipB)}))
+    }, { size: 500})
+
+    export const selectDescendingClipViewsSort = memoize(({ clipA, clipB }: { clipA: CaughtClipV2, clipB: CaughtClipV2 }) => {
+      return selectViews(({ clip: (getUntrackedObject(clipA) || clipA)})) - selectViews(({clip: (getUntrackedObject(clipB) || clipB)}))
+    }, { size: 500})
+
+    // DURATION
+    export const selectAscendingClipDurationSort = memoize(({clipA, clipB}: { clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
+      return selectDuration(({ clip: (getUntrackedObject(clipA) || clipA)})) - selectDuration(({clip: (getUntrackedObject(clipB) || clipB)}))
+    }, { size: 500})
+
+    export const selectDescendingClipDurationSort = memoize(({clipA, clipB}: { clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
+      return selectDuration(({ clip: (getUntrackedObject(clipB) || clipB)})) - selectDuration(({clip: (getUntrackedObject(clipA) || clipA)}))
+    }, { size: 500})
+
+    // STREAMER NAME
+    export const selectAscendingStreamerSort = memoize(({clipA, clipB}: { clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
+      return selectStreamerName(({ clip: (getUntrackedObject(clipA) || clipA)})).localeCompare(selectStreamerName(({clip: (getUntrackedObject(clipB) || clipB)})))
+    }, { size: 500})
+
+    export const selectDescendingStreamerSort = memoize(({clipA, clipB}: { clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
+      return selectStreamerName(({ clip: (getUntrackedObject(clipB) || clipB)})).localeCompare(selectStreamerName(({clip: (getUntrackedObject(clipA) || clipA)})))
+    }, { size: 500})
+
+  // STACKS
+
+    // VOTES
+    export const selectStackVotersSort = memoize(
+      ({sort, clipStackA, clipStackB, channel}: 
+        { 
+          sort: Sort, 
+          clipStackA: CaughtClipV2[], 
+          clipStackB: CaughtClipV2[], 
+          channel: ICatcherChannel
+        }
+      ) => {
+        // console.log('iteration: stack voters sort')
+        let stackVotersA = selectStackVoters({votesSets: (getUntrackedObject(clipStackA) || clipStackA).map(clip => clip.votes[channel.name])})
+        let stackVotersB = selectStackVoters({votesSets: (getUntrackedObject(clipStackB) || clipStackB).map(clip => clip.votes[channel.name])})
+
+        if (sort.direction === 'asc') {
+          return (stackVotersA.up.length - stackVotersA.down.length) - (stackVotersB.up.length - stackVotersB.down.length)
+        } else {
+          return (stackVotersB.up.length - stackVotersB.down.length) - (stackVotersA.up.length - stackVotersA.down.length)
+        }
+    }, { size: 500 })
+
+    // VIEWS
+    export const selectStackViewsSort = memoize(
+      ({sort, clipStackA, clipStackB}:
+        {
+          sort: Sort,
+          clipStackA: CaughtClipV2[],
+          clipStackB: CaughtClipV2[]
+        }
+      ) => {
+        // console.log('iteration: stack views sort')
+        let stackViewsA = selectStackViews({ clips: (getUntrackedObject(clipStackA) || clipStackA) })
+        let stackViewsB = selectStackViews({ clips: (getUntrackedObject(clipStackB) || clipStackB) })
+
+        if (sort.direction === 'asc') {
+          return stackViewsA - stackViewsB
+        } else {
+          return stackViewsB - stackViewsA
+        }
+      }, { size: 500 })
+
+    // START EPOCH
+    export const selectStackEpochSort = memoize(
+      ({sort, clipStackA, clipStackB}:
+        {
+          sort: Sort
+          clipStackA: CaughtClipV2[]
+          clipStackB: CaughtClipV2[]
+        }
+      ) => {
+        // console.log('iteration: stack epoch sort')
+        let stackEpochA = selectStackEpoch(
+          {
+            dateSort: (getUntrackedObject(sort) || sort),
+            clips: (getUntrackedObject(clipStackA) || clipStackA)
+          }
+        )
+        let stackEpochB = selectStackEpoch(
+          {
+            dateSort: (getUntrackedObject(sort) || sort),
+            clips: (getUntrackedObject(clipStackB) || clipStackB)
+          }
+        )
+
+        if (sort.direction === 'asc') {
+          return stackEpochA - stackEpochB
+        } else {
+          return stackEpochB - stackEpochA
+        }
+      }, { size: 500 })
+
+    // DURATION
+    export const selectStackDurationSort = memoize(
+      ({ sort, clipStackA, clipStackB }: 
+        { 
+          sort: Sort, 
+          clipStackA: CaughtClipV2[], 
+          clipStackB: CaughtClipV2[]
+        }
+      ) => {
+        // console.log('iteration: stack duration sort')
+        let stackDurationA = selectStackDuration(({sort: (getUntrackedObject(sort) || sort), 
+          clips: (getUntrackedObject(clipStackA) || clipStackA)}))
+        let stackDurationB = selectStackDuration(({sort: (getUntrackedObject(sort) || sort), 
+          clips: (getUntrackedObject(clipStackB) || clipStackB)}))
+        if (sort.direction === 'asc') {
+          return stackDurationA! - stackDurationB!
+        } else {
+          return stackDurationB! - stackDurationA!
+        }
+    }, { size: 500 })
+
+    // STREAMERNAME
+    export const selectStackStreamerSort = memoize(
+      ({ sort, clipStackA, clipStackB }: 
+        {
+          sort: Sort
+          clipStackA: CaughtClipV2[]
+          clipStackB: CaughtClipV2[]
+        }
+      ) => {
+        // console.log('iteration: stack streamer sort')
+        let stackStreamerA = selectStackStreamer({ clips: (getUntrackedObject(clipStackA) || clipStackA) })
+        let stackStreamerB = selectStackStreamer({ clips: (getUntrackedObject(clipStackB) || clipStackB) })
+        if (sort.direction === 'asc') {
+          return stackStreamerA.localeCompare(stackStreamerB)
+        } else {
+          return stackStreamerB.localeCompare(stackStreamerA)
+        }
+      }
+    )
+
+// MEMOIZED OTHER
+export const doAscendingClipsOverlap = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
+  return clipA.broadcaster.name === clipB.broadcasterName && clipA.startEpoch + (clipA.duration * 1000) >= clipB.startEpoch
+}, { size: 500})
+
+// COMPOSITE SELECTORS
+export const selectChannelChronology = memoize(
+  ({ state, channel }: { state: RootState, channel: ICatcherChannel}) => {
+    console.log('running channel chronology for ' + channel.name)
+    let clips = channel.clips.map((clipId) => state.clips.clips[clipId])
+    return clips.sort((clipA, clipB) => selectAscendingEpochalSort({ clipA: /*getUntrackedObject(clipA) ||*/ clipA, clipB: /*getUntrackedObject(clipB) || */clipB }))
+}, { size: 500 })
+
+export const selectChannelChronologyWithStacksIfDesired = memoize(
+  ({ state, channel }: { state: RootState, channel: ICatcherChannel }) => {
+    let channelChronology = channel.clips.map(clipId => state.clips.clips[clipId]).sort(
+      (clipA, clipB) => selectAscendingEpochalSort({ 
+        clipA: (getUntrackedObject(clipA) || clipA), 
+        clipB: (getUntrackedObject(clipB) || clipB) 
+      })
+    )
+    // let channelChronology = selectChannelChronology({ state: (getUntrackedObject(state) || state), channel: getUntrackedObject(channel) || channel })
+    console.log(`reran selectChannelChronologyWithStacksIfDesired for ${channel.name}, got `, channelChronology)
+    if (channel.stackClips) {
+      console.log('current channel chronology: ', channelChronology)
+      return channelChronology.reduce((clipStacks: string[][], clip, index) => {
+        if (clipStacks.length === 0) {                // first iteration, we just push the string
+          return [[clip.slug]]
+        } else { // if the previous item is a stack
+          let overlap = clip.startEpoch === 0 ? false : doAscendingClipsOverlap({clipA: channelChronology[index - 1], 
+                                                 clipB: clip})
+          if (overlap) {
+            (clipStacks[clipStacks.length - 1]).push(clip.slug)
+            return clipStacks
+          } else {
+            clipStacks.push([clip.slug])
+            return clipStacks
+          }
+        }
+      }, [] as string[][])
+    } else {
+      return channelChronology.map(clip => [clip.slug])
+    }
+  }, { size: 500 })
+
+export const StacksSortTable = {
+  [SortTypes['frogscount']]: selectStackVotersSort,
+  [SortTypes['views']]: selectStackViewsSort,
+  [SortTypes['date']]: selectStackEpochSort,
+  [SortTypes['length']]: selectStackDurationSort,
+  [SortTypes['streamername']]: selectStackStreamerSort
+}
+
+export const lexSortClipStacks = 
+  ({channel, channel: { sort, name }}: {channel: ICatcherChannel}) => 
+    (clipStackA: CaughtClipV2[] | CaughtClipV2, 
+     clipStackB: CaughtClipV2[] | CaughtClipV2 ): number => {
+  
+      if (!Array.isArray(clipStackA)) {
+        clipStackA = [clipStackA]
+      }
+      if (!Array.isArray(clipStackB)) {
+        clipStackB = [clipStackB]
+      }
+
+
+      for (let sortNumber = 0; sortNumber < sort.length; sortNumber++) {
+        let result = StacksSortTable[sort[sortNumber].type]({ sort: sort[sortNumber], clipStackA, clipStackB, channel })
+        if (result !== 0) {
+          return result
+        }
+      }
+
+      return 0
+  }
+
+export const lexSortClipStackIds = 
+  ({state, channel, channel: { sort }}: {state: RootState, channel: ICatcherChannel}) => 
+    (clipStackA: string[], 
+     clipStackB: string[]): number => {
+      // console.log('lexsort iteration')
+
+      for (let sortNumber = 0; sortNumber < sort.length; sortNumber++) {
+        if (sort[sortNumber].active) {
+          let result = StacksSortTable[sort[sortNumber].type]({ 
+            sort: sort[sortNumber], 
+            clipStackA: clipStackA.map(clipId => state.clips.clips[clipId]), 
+            clipStackB: clipStackB.map(clipId => state.clips.clips[clipId]), 
+            channel
+          })
+          if (result !== 0) {
+            return result
+          }
+        }
+      }
+
+      return 0
+  }
+
+
+export const selectSortedStacks =
+  ({ state, channel }: { state: RootState, channel: ICatcherChannel }) => {
+    let channelStacks = selectChannelChronologyWithStacksIfDesired({ state: getUntrackedObject(state) || state, channel: getUntrackedObject(channel) || channel})
+    // console.log(`re-ran selectSortedStacks for ${channel.name}, got stacks: `, channelStacks)
+    let channelSort = channelStacks.sort(
+      (clipIdsA: string[] | string, clipIdsB: string[] | string) => 
+        lexSortClipStacks({channel})
+          (Array.isArray(clipIdsA) ? clipIdsA.map(clipId => state.clips.clips[clipId]) : state.clips.clips[clipIdsA],
+          Array.isArray(clipIdsB) ? clipIdsB.map(clipId => state.clips.clips[clipId]) : state.clips.clips[clipIdsB]))
+    return channelSort
+  }

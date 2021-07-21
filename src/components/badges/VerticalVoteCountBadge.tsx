@@ -148,7 +148,7 @@ const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlug
       {/* <PlusOrMinusIcon className={'plusorminus'}/> */}
       <div className={'types'}>
         {typesUpvotedBy.map((type: UserTypes) => (
-          <DifferentiatedUserPip userType={type}/>
+          <DifferentiatedUserPip key={Math.random()} userType={type}/>
         ))}
       </div>
       <SpecialBadgesContainer>

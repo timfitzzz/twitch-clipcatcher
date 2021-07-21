@@ -6,7 +6,8 @@ import { clipEpochsRetry, clipAdded, ClipAddedPayloadV2 } from './actions'
 import { annotationAdded, annotationsReverted, AnnotationsRevertedPayload, ClipAnnotation, FirstAnnotationAddedPayload } from './annotations'
 import { mutateClipByAnnotation, revertClipByAnnotation } from './mutators'
 import { RootState } from './store'
-import memoize from 'proxy-memoize'
+import memoize, { getUntrackedObject } from 'proxy-memoize'
+import { selectStackVoters } from './selectors'
 
 // export interface ClipPostedBy {
 //   broadcaster?: boolean,
@@ -281,6 +282,30 @@ export const specialTagsOrderedUsersSelector = memoize((obj: SpecialTagsSelector
   ]
 })
 
+const selectorsInputRegistry: { 
+  [type: string]: {
+    [argumentsSlug: string]: object | any[]
+}} = {
+
+}
+
+export function getDurationsSelector(clipSlugs: string[]) {
+  if (selectorsInputRegistry.durations[clipSlugs.join("")]) {
+    return selectorsInputRegistry.durations[clipSlugs.join("")]
+  } else {
+    selectorsInputRegistry.durations[clipSlugs.join("")] = clipSlugs
+    return clipSlugs
+  }
+}
+
+export const stackDurationsSelector = memoize(({ state, clipSlugs }: { state: RootState, clipSlugs: string[] }) => {
+  return clipSlugs.map(clipSlug => state.clips.clips[clipSlug].duration)
+})
+
+// export const stackDurationRangeSelector = memoize(({ state, clipSlugs }: { state: RootState, clipSlugs: string[] }) => {
+//   let durations = 
+// })
+
 export const specialTagsMaxUserTypeSelector = memoize((obj: SpecialTagsSelectorInput) => {
   let [state, clipSlugs, channelName, type] = obj
   let maxType = -1
@@ -315,7 +340,7 @@ interface ChannelClipsSelectorInput {
   channelName: string
 }
 
-export const selectVotersByClipIds = memoize((obj: ChannelClipsSelectorInput) => {
+export const selectVotersByClipIds = memoize(({state, clipSlugs, channelName}: { state: RootState, clipSlugs: string[], channelName: string}) => {
   let output = {
     upVoters: [] as string[],
     downVoters: [] as string[],
@@ -323,31 +348,41 @@ export const selectVotersByClipIds = memoize((obj: ChannelClipsSelectorInput) =>
     downvoterTypes: [] as UserTypes[]
   }
 
-  obj.clipSlugs.forEach(clipSlug => {
-    obj.state.clips.clips[clipSlug].votes[obj.channelName].up.forEach(userName => {
-      if (output.upVoters.indexOf(userName) === -1) {
-        output.upVoters.push(userName)
-      }
-    })
-    obj.state.clips.clips[clipSlug].votes[obj.channelName].down.forEach(userName => {
-      if (output.downVoters.indexOf(userName) === -1) {
-        output.downVoters.push(userName)
-      }
-    })
-  }) 
+  let votesSets = clipSlugs.map(clipSlug => (getUntrackedObject(state) || state).clips.clips[clipSlug].votes[channelName])
+
+  let stackVoters = selectStackVoters(
+    {
+      votesSets
+    }
+  )
+
+  output.upVoters = stackVoters.up
+  output.downVoters = stackVoters.down
+  // obj.clipSlugs.forEach(clipSlug => {
+  //   obj.state.clips.clips[clipSlug].votes[obj.channelName].up.forEach(userName => {
+  //     if (output.upVoters.indexOf(userName) === -1) {
+  //       output.upVoters.push(userName)
+  //     }
+  //   })
+  //   obj.state.clips.clips[clipSlug].votes[obj.channelName].down.forEach(userName => {
+  //     if (output.downVoters.indexOf(userName) === -1) {
+  //       output.downVoters.push(userName)
+  //     }
+  //   })
+  // }) 
 
   output.upVoters = output.upVoters.sort((usernameA, usernameB) => 
-    obj.state.users.users[usernameB].userTypes[obj.channelName][0] -
-    obj.state.users.users[usernameA].userTypes[obj.channelName][0]
+    state.users.users[usernameB].userTypes[channelName][0] -
+    state.users.users[usernameA].userTypes[channelName][0]
   )
   output.downVoters = output.downVoters.sort((usernameA, usernameB) => 
-    obj.state.users.users[usernameB].userTypes[obj.channelName][0] -
-    obj.state.users.users[usernameA].userTypes[obj.channelName][0]
+    state.users.users[usernameB].userTypes[channelName][0] -
+    state.users.users[usernameA].userTypes[channelName][0]
   )
 
   output.upvoterTypes = output.upVoters.reduce((voterTypes, upVoterName) => {
-    if (voterTypes.length === 0 || (obj.state.users.users[upVoterName].userTypes[obj.channelName].indexOf(voterTypes[0]) === -1)) {
-      voterTypes.unshift(obj.state.users.users[upVoterName].userTypes[obj.channelName][0])
+    if (voterTypes.length === 0 || (state.users.users[upVoterName].userTypes[channelName].indexOf(voterTypes[0]) === -1)) {
+      voterTypes.unshift(state.users.users[upVoterName].userTypes[channelName][0])
       return voterTypes
     } else {
       return voterTypes
@@ -355,8 +390,8 @@ export const selectVotersByClipIds = memoize((obj: ChannelClipsSelectorInput) =>
   }, [] as UserTypes[])
 
   output.downvoterTypes = output.downVoters.reduce((voterTypes, downVoterName) => {
-    if (voterTypes.length === 0 || (obj.state.users.users[downVoterName].userTypes[obj.channelName].indexOf(voterTypes[0]) === -1)) {
-     voterTypes.unshift(obj.state.users.users[downVoterName].userTypes[obj.channelName][0])
+    if (voterTypes.length === 0 || (state.users.users[downVoterName].userTypes[channelName].indexOf(voterTypes[0]) === -1)) {
+     voterTypes.unshift(state.users.users[downVoterName].userTypes[channelName][0])
      return voterTypes
     } else {
       return voterTypes
@@ -435,24 +470,8 @@ export const doPresortedClipsOverlap = memoize(
 
 // let ascendingSortCount = 0
 
-const selectAscendingEpochalSort = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
-  // console.log('running ascending epochal sort', ascendingSortCount++)
-  return clipA.startEpoch - clipB.startEpoch
-}, { size: 500 })
-
 // let chronologySortCount = 0
 
-export const selectChannelChronology = memoize(
-  ({ state, channelName }: { state: RootState, channelName: string}) => {
-    // console.log('running channel chronology', chronologySortCount++)
-    return [...state.channels[channelName].clips]
-              .sort((clipA, clipB) => selectAscendingEpochalSort({ clipA: state.clips.clips[clipA], clipB: state.clips.clips[clipB] }))
-}, { size: 500 })
-
-// export const selectChannelChronologyWithStacks = memoize(
-//   ({ state, channelName }: { state: RootState, channelName: string }) => {
-//     return selectChannelChronology({ state, channelName }).reduce((clipStacks: (string[] | string)[], clipId))
-//   })
 
 
 // const selectSortedClips = memoize((obj: ChannelClipsSelectorInput) => {

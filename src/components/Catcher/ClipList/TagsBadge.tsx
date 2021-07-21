@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useAppSelector } from '../../../hooks/reduxHooks'
 import useUpdateLock from '../../../hooks/useUpdateLock'
 import { SectionTitle } from '../../typography/SectionTitle'
-import { Tag as TagIcon } from '@styled-icons/feather/Tag'
+import { Tag as TagIcon } from '@styled-icons/fa-solid/Tag'
 import debounce from 'lodash/debounce'
 import { Popover } from 'rendition'
 
@@ -125,11 +125,10 @@ export default styled(TagsBadge)`
   line-height: 21px;
 
   svg {
-    padding-top: 1px;
     margin-left: 4px;
     margin-top: auto;
     margin-bottom: auto;
-    height: 16px;
+    height: 13px;
     color: ${p => p.theme.colors.gray.light};
     stroke-width: 2px;
   }

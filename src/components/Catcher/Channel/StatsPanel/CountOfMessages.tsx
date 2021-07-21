@@ -18,10 +18,12 @@ export const CountOfMessages = styled(({channelName, className}: {channelName: s
   line-height: 20px;
   display: flex;
   flex-direction: row;
-  margin-top: auto;
+  margin-top: 3px;
   margin-bottom: auto;
 
   span {
+    margin-top: auto;
+    margin-bottom: auto;
     margin-left: auto;
     margin-right: 0px;
     margin-bottom: auto;
@@ -35,7 +37,7 @@ export const CountOfMessages = styled(({channelName, className}: {channelName: s
     height: 18px;
     width: 18px;
     margin-top: auto;
-    margin-bottom: auto;
+    margin-bottom: 0px;
   }
 
 `
