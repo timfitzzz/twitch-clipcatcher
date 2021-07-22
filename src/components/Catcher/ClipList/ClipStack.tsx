@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { useState } from 'react'
 import styled from 'styled-components'
 import useClipStack from '../../../hooks/useClipStack'
 import ViewCountBadge from '../../badges/ViewCountBadge'
@@ -105,8 +104,8 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
   justify-content: stretch;
   height: 142px;
   box-sizing: border-box;
-
   .stackedBadges {
+
     margin-right: 2px;
     display: flex;
     flex-direction: column;
@@ -116,7 +115,6 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
       // border-radius: 0px;
       align-self: unset;
   
-      transform: rotate3d(1, 1, -0.1, 20deg);
       box-shadow: -2px 2px 5px -3px darkgray;
   
       &:first-of-type {
@@ -138,11 +136,10 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
         border-bottom-right-radius: 4px;
         margin-bottom: 0px;
         border-bottom: none;
-        box-shadow: box-shadow: -2px 2px 2px -3px darkgray;
-        transform: none;
-        padding-right: 0px;
+
+        // padding-right: 0px;
         svg {
-          padding-right: 1px;
+          // padding-right: 1px;
         }
       }
   
@@ -156,7 +153,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
         margin-right: 2px;
       }
   
-      margin: -4px 2px -0px 4px;
+      margin: 2px 2px -0px 4px;
       padding: 2px;
       width: 100%;
       justify-content: flex-end;
@@ -203,14 +200,12 @@ const ClipsSeparator = styled.div`
 `
 
 
-export const ClipStack = ({clipSlugs, channelName, className}: {clipSlugs: string[], channelName: string, className?: string}) => {
+export const ClipStack = ({clipSlugs, stackIndex, toggleExpandStack, isExpanded, channelName, className}: {clipSlugs: string[], stackIndex: number, toggleExpandStack: (clipStack: string[], stackIndex: number) => void, isExpanded: (clipStack: string[]) => string | null, channelName: string, className?: string}) => {
 
   let sortedSlugs = useClipStack(clipSlugs, channelName)
-  let [expandStack, setExpandStack] = useState<boolean>(false)
   
-  
-  const toggleExpandStack = () => {
-    setExpandStack(!expandStack)
+  let toggleExpand = () => {
+    toggleExpandStack(clipSlugs, stackIndex)
   }
 
   return (
@@ -220,13 +215,13 @@ export const ClipStack = ({clipSlugs, channelName, className}: {clipSlugs: strin
         <Flex flexDirection={'column'}>
           <VerticalVoteCountBadge clipSlugs={clipSlugs} channelName={channelName} />
         </Flex>
-        <Clip key={channelName+sortedSlugs[0]} clipSlug={sortedSlugs[0]} channelName={channelName} hideStats={!expandStack}/>
-        <StackSummary clipSlugs={clipSlugs} channelName={channelName} className={className} expandStack={expandStack} toggleExpandStack={toggleExpandStack}/>
+        <Clip key={channelName+sortedSlugs[0]} clipSlug={sortedSlugs[0]} channelName={channelName} hideStats={!isExpanded(clipSlugs)}/>
+        <StackSummary clipSlugs={clipSlugs} channelName={channelName} expandStack={!!isExpanded(clipSlugs)} toggleExpandStack={toggleExpand}/>
       </FirstClipContainer>
 
 
         <OtherClipsContainer>
-        { expandStack && sortedSlugs.slice(1, sortedSlugs.length).map(slug => (
+        { isExpanded(clipSlugs) && sortedSlugs.slice(1, sortedSlugs.length).map(slug => (
           <OtherClip key={channelName+slug} clipSlug={slug} channelName={channelName}/>
           )) }
         </OtherClipsContainer>
@@ -244,7 +239,9 @@ export default styled(ClipStack)`
   flex-direction: column;
   align-content: flex-end;
   margin: 12px 0px 0px 0px;
+  padding-right: 12px;
+  padding-left: 8px;
   &:first-of-type {
-    margin-top: 4px;
+    margin-top: 12px;
   }
 `

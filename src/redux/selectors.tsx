@@ -92,7 +92,7 @@ import { ICatcherChannel, Sort, SortTypes } from '../types'
 
     // START EPOCH
     export const selectAscendingEpochalSort = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
-      console.log('running ascending sort')
+      // console.log('running ascending sort')
       return clipA.startEpoch - clipB.startEpoch
     }, { size: 500 })
 
@@ -272,7 +272,7 @@ export const doAscendingClipsOverlap = memoize(({clipA, clipB}: {clipA: CaughtCl
 // COMPOSITE SELECTORS
 export const selectChannelChronology = memoize(
   ({ state, channel }: { state: RootState, channel: ICatcherChannel}) => {
-    console.log('running channel chronology for ' + channel.name)
+    // console.log('running channel chronology for ' + channel.name)
     let clips = channel.clips.map((clipId) => state.clips.clips[clipId])
     return clips.sort((clipA, clipB) => selectAscendingEpochalSort({ clipA: /*getUntrackedObject(clipA) ||*/ clipA, clipB: /*getUntrackedObject(clipB) || */clipB }))
 }, { size: 500 })
@@ -286,9 +286,9 @@ export const selectChannelChronologyWithStacksIfDesired = memoize(
       })
     )
     // let channelChronology = selectChannelChronology({ state: (getUntrackedObject(state) || state), channel: getUntrackedObject(channel) || channel })
-    console.log(`reran selectChannelChronologyWithStacksIfDesired for ${channel.name}, got `, channelChronology)
+    // console.log(`reran selectChannelChronologyWithStacksIfDesired for ${channel.name}, got `, channelChronology)
     if (channel.stackClips) {
-      console.log('current channel chronology: ', channelChronology)
+      // console.log('current channel chronology: ', channelChronology)
       return channelChronology.reduce((clipStacks: string[][], clip, index) => {
         if (clipStacks.length === 0) {                // first iteration, we just push the string
           return [[clip.slug]]

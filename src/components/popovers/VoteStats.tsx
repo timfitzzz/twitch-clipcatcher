@@ -125,7 +125,7 @@ export default styled(VoteStatsPopover)`
   flex-direction: column;
   
   padding: 4px;
-  
+  z-index: 20;
   #sectiondiv {
     display: flex;
     flex-direction: column;
