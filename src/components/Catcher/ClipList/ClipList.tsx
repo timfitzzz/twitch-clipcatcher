@@ -146,7 +146,7 @@ const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
           itemCount={clipStacks.length}
           itemData={{clipStacks, toggleExpandStack, isExpanded, channelName}}
           itemSize={getStackHeight}
-          itemKey={(index,data) => Array.isArray(data.clipStacks[index]) ? 'listcontainer' + (clipStacks[index] as string[]).join("") : 'listcontainer' + clipStacks[index]}
+          itemKey={(index,data) => Array.isArray(data.clipStacks[index]) ? channelName + 'listcontainer' + (clipStacks[index] as string[]).join("") : channelName + 'listcontainer' + clipStacks[index]}
           width={'100%'}
           style={{boxSizing: 'border-box', marginRight: 8, padding: 8, paddingRight: 12, overflowX: 'hidden'}}
         >
