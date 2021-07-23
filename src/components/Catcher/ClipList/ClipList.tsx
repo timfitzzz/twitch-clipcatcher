@@ -138,20 +138,23 @@ const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
       <OptionsPanel channelName={channelName}/>
       <InlineChannelStatsPanel channelName={channelName}/>
       <ClipsContainer id={"#clipscontainer"} flexDirection={"column"}>
-        <VariableSizeList
-          ref={listRef}
-          height={740}
-          overscanCount={2}
-          estimatedItemSize={176}
-          itemCount={clipStacks.length}
-          itemData={{clipStacks, toggleExpandStack, isExpanded, channelName}}
-          itemSize={getStackHeight}
-          itemKey={(index,data) => Array.isArray(data.clipStacks[index]) ? channelName + 'listcontainer' + (clipStacks[index] as string[]).join("") : channelName + 'listcontainer' + clipStacks[index]}
-          width={'100%'}
-          style={{boxSizing: 'border-box', marginRight: 8, padding: 8, paddingRight: 12, overflowX: 'hidden'}}
-        >
-          {props => <RenderedStack {...props} />} 
-        </VariableSizeList>
+        { clipStacks && clipStacks.length > 0 && (
+            <VariableSizeList
+            ref={listRef}
+            height={740}
+            overscanCount={2}
+            estimatedItemSize={176}
+            itemCount={clipStacks.length}
+            itemData={{clipStacks, toggleExpandStack, isExpanded, channelName}}
+            itemSize={getStackHeight}
+            itemKey={(index,data) => Array.isArray(data.clipStacks[index]) ? channelName + 'listcontainer' + (clipStacks[index] as string[]).join("") : channelName + 'listcontainer' + clipStacks[index]}
+            width={'100%'}
+            style={{boxSizing: 'border-box', marginRight: 8, padding: 8, paddingRight: 12, overflowX: 'hidden'}}
+          >
+            {props => <RenderedStack {...props} />} 
+          </VariableSizeList>
+        )}
+
         {/* { clipStacks && clipStacks.map(clipStack => 
           {
           if (Array.isArray(clipStack)) {

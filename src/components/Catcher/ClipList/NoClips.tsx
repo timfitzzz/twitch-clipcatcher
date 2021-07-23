@@ -16,9 +16,13 @@ export default styled(NoClips)`
   align-content: center;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
-  background-color: ${({theme}) => theme.colors.quartenary.light};
-
+  width: 175px;
+  padding: 16px;
+  height: 175px;
+  border-radius: 0px;
+  background-color: ${({theme}) => theme.colors.quartenary.main};
+  margin-top: auto;
+  margin-bottom: auto;
   h3 {
     text-align: center;
   }

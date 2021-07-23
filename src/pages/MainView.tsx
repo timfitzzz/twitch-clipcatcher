@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 import memoize from 'proxy-memoize'
 import { useState } from 'react'
 import { leftColumnWidthAdjusted } from '../redux/settings'
+import { useRef } from 'react'
 
 const MainViewContainer = styled(Flex)`
   height: 100%;
@@ -32,31 +33,9 @@ const MainViewDivider = styled(Divider)`
   
 `
 
-const VerticalDraggableDivider = styled(({className}: { className?: string}) => {
+const VerticalDraggableDivider = styled(({handleDragStart, className}: { handleDragStart: (e: React.MouseEvent) => void, className?: string}) => {
 
-  let dispatch = useAppDispatch()
-  let [dragging, setDragging] = useState<boolean>(false)
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setDragging(true)
-    console.log(e.clientX)
-  }
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (dragging) {
-      dispatch(leftColumnWidthAdjusted(e.clientX))
-    }
-  }
-
-  const handleMouseUp = (e: React.MouseEvent) => {
-    dispatch(leftColumnWidthAdjusted(e.clientX))
-    setDragging(false)
-    console.log(e.clientX)
-  }
-
-
-
-  return <div className={className} onMouseMove={handleMouseMove} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} draggable></div>
+  return <div className={className} onMouseDown={handleDragStart} draggable></div>
 
 })`
   height: 100%;
@@ -71,10 +50,37 @@ const VerticalDraggableDivider = styled(({className}: { className?: string}) => 
 const MainView = () => {
 
   let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated ? c.isAuthenticated() : false)
-  let leftColumnWidth = useAppSelector(memoize(({settings}) => settings.leftColumnWidth))
+  let savedleftColumnWidth = useAppSelector(memoize(({settings}) => settings.leftColumnWidth))
+  let dispatch = useAppDispatch()
+  let [ leftColumnWidth, setLeftColumnWidth ] = useState<number>(savedleftColumnWidth || 312)
+  let [ draggingDivider, setDraggingDivider ] = useState<boolean>(false)
+  let viewContainer = useRef<HTMLDivElement>(null)
+
+  let handleDividerDragStart = () => {
+    if (viewContainer && viewContainer.current) {
+      setDraggingDivider(true)
+    }
+  }
+
+  let handleDrag = (e: React.MouseEvent) => {
+    if (draggingDivider) {
+      if (e.clientX > 305) {
+        setLeftColumnWidth(e.clientX)
+      }
+    }
+  }
+
+  let handleDividerDragEnd = (e: React.MouseEvent) => {
+    if (viewContainer && viewContainer.current) {
+      dispatch(leftColumnWidthAdjusted(leftColumnWidth))
+      setDraggingDivider(false)
+    }
+  }
+
+  
 
   return (
-    <MainViewContainer flexDirection={"row"}>
+    <MainViewContainer flexDirection={"row"} ref={viewContainer} onMouseMove={draggingDivider ? handleDrag : undefined} onMouseUp={draggingDivider ? handleDividerDragEnd : undefined}>
       <MainViewSideColumn flexDirection={"column"} width={leftColumnWidth}>
         <AuthCard />
         <MainViewDivider />
@@ -84,7 +90,7 @@ const MainView = () => {
           <LoggedOutConsolePanel/>
         )}
       </MainViewSideColumn>
-      <VerticalDraggableDivider/>
+      <VerticalDraggableDivider handleDragStart={handleDividerDragStart}/>
       <PlayerPane/>
     </MainViewContainer>
   )
