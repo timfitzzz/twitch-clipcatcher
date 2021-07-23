@@ -21,6 +21,7 @@ const VerticalVoteCount = styled.div<{charCount: number}>`
   box-shadow: none;
 
   span {
+    color: white;
     font-weight: bold;
     font-size: ${p => {
 
@@ -170,9 +171,9 @@ export default styled(VerticalVoteCountBadge)`
   // justify-content: flex-end;
   margin-bottom: 0px!important;
   margin-top: 0px!important;
-  width: 42px;
+  width: 32px;
   border-radius: inherit;
-  background-color: ${({theme}) => theme.colors.success.semilight};
+  background-color: #138b27; // ${({theme}) => theme.colors.success.dark}; // #82DF0A; // #294800; // #519000; // #7FE000; //  #63B000;
   border-radius: 4px;
   padding-top: 8px;
   padding-bottom: 4px;
@@ -209,11 +210,8 @@ export default styled(VerticalVoteCountBadge)`
       margin-right: auto;
       border-radius: 4px;
       svg {
-        margin-left: 1px;
-        margin-right: 1px;
-        height: 13px;
-        width: 14px;
-        margin-top: 1.5px;
+        height: 16px;
+        width: 16px;
         margin-bottom: 2px;    
       }
     }
@@ -230,6 +228,7 @@ export default styled(VerticalVoteCountBadge)`
     margin-right: auto;
     height: unset;
     justify-self: flex-start;
+    color: white;
 
     box-shadow: none;
   

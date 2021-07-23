@@ -21,7 +21,7 @@ const PipContainer = styled.div<{ userType: UserTypes }>`
         background-color: magenta;
       `,
       [UserTypes['sub']]: `
-        background-color: purple;
+        background-color: #B000DB; // #5F0CFF; // #4B00DD; //purple;
       `,
       [UserTypes['user']]: `
         background-color: ${p.theme.colors.gray.dark};

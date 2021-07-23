@@ -20,7 +20,7 @@ const DelayBadge = styled.div`
 
   margin: 4px 4px 4px auto;
   line-height: 16px;
-  color: ${p => p.theme.colors.gray.light};
+  color: white;
   border-radius: 4px;
   font-size: 16px;
   line-height: 21px;

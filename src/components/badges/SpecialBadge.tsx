@@ -17,7 +17,7 @@ enum SpecialState {
   yes
 }
 
-const SpecialIcon = styled(({type, specialState, className}: { type: 'drama' | 'meta', specialState: SpecialState, className?: string}) => {
+export const SpecialIcon = styled(({type, specialState, className}: { type: 'drama' | 'meta', specialState: SpecialState, className?: string}) => {
 
   return (
     <div className={className}>

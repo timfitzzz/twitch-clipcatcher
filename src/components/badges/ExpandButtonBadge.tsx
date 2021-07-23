@@ -25,33 +25,19 @@ export const ExpandButtonBadge = ({expandToggle, expanded, clipsCount, className
 export default styled(ExpandButtonBadge)`
   display: flex;
   flex-direction: row;
-
-  
-  box-sizing: border-box;
-  border: 2px solid ${p => p.theme.colors.gray.dark};
-  padding: 0px 2px !important;
-  font-size: 16px;
-  line-height: 17.8px;
-  color: ${p => p.clipsCount > 1 
-            ? p.theme.colors.success.dark
-            : p.theme.colors.gray.light
-  }; 
-  
-  border-radius: 4px;
-
+  margin: 4px 4px 4px auto;
   background-color: ${p => p.clipsCount > 1 
     ? p.theme.colors.quartenary.main
     : p.theme.colors.gray.dark
   };
-  width: fit-content;
-  font-weight: bold;
+  padding: 0px 4px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  line-height: 21px;
 
   svg {
     margin-top: auto;
     margin-bottom: auto;
-    height: 13px;
-   
-
   }
 
   .expand {
@@ -65,13 +51,34 @@ export default styled(ExpandButtonBadge)`
     margin-bottom: auto;
     margin-left: 4px;
     margin-right: 2px!important;
+    height: 14px;
+  }
+  
+  span {
+    margin-top: -2px;
+    margin-left: 2px;
+    height: 21px;
+    font-size: 16px;
   }
 
-  span {
-    margin-left: 2px;
-    padding-bottom: 1px;
-    height: 17.8px;
-  }
+
+  border: 2px solid ${p => p.theme.colors.gray.dark};
+
+
+
+  color: ${p => p.clipsCount > 1 
+            ? p.theme.colors.success.dark
+            : p.theme.colors.gray.light
+  }; 
+  
+
+
+
+  width: fit-content;
+  font-weight: bold;
+
+
+
 
   ${p => p.clipsCount > 1
     ? `

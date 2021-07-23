@@ -229,22 +229,22 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
 `
 
 const SorterPlusOrMinus = styled(PlusOrMinusIcon)`
-  background-color: ${({theme}) => theme.colors.success.semilight};
+  background-color: #138b27; // ${({theme}) => theme.colors.success.dark}; // ${({theme}) => theme.colors.success.semilight}
   padding: 2px;
   border-radius: 4px;
   box-sizing: border-box;
-  fill: #23445e;
+  fill: white;
   height: 24px;
 `
 
 const SorterAccessTimeFilled = styled(AccessTimeFilled)`
-  background-color: ${({theme}) => theme.colors.secondary.dark};
+  background-color: ${({theme}) => theme.colors.tertiary.dark};
   fill: white;
   border-radius: 4px;
 `
 
 const SorterTimer = styled(Stopwatch)`
-  background-color: ${({theme}) => theme.colors.primary.light};
+  background-color: ${({theme}) => theme.colors.primary.dark}};
   border-radius: 4px;
   padding-top: 2px;
   padding-bottom: 2px;
@@ -264,10 +264,10 @@ const SorterSortByName = styled(SortByAlpha)`
 `
 
 const SorterViews = styled(Visibility)`
-  background-color: ${({theme}) => theme.colors.success.dark};
+  background-color: #3151FC;
   border-radius: 4px;
   padding: 2px;
-  fill: ${({theme}) => theme.colors.success.light};
+  fill: white;
   box-sizing: border-box;
 `
 

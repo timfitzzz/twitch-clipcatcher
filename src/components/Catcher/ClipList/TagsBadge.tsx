@@ -131,6 +131,7 @@ export default styled(TagsBadge)`
     height: 13px;
     color: ${p => p.theme.colors.gray.light};
     stroke-width: 2px;
+    padding-right: 1px;
   }
 
   span {

@@ -154,7 +154,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
       }
   
       margin: 2px 2px -0px 4px;
-      padding: 2px;
+      padding: 0px 2px;
       width: 100%;
       justify-content: flex-end;
     }
@@ -165,23 +165,25 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
       
 
     > div {
+      padding-right: 2px;
       box-sizing: border-box;
-      margin: 4px 2px 0px 4px;
+      margin: 2px 2px 0px 4px;
       flex-direction: row;
       border-radius: 0px;
       border-radius: 4px;
+      height: 21px;
   
       span {
         margin-right: 2px;
         font-size: 14px;
         font-weight: 700;
+        line-height: 21px;
       }
   
       svg {
         margin-right: 3px;
       }
 
-      padding: 0px 2px;
       width: 100%;
       justify-content: flex-end;
     }

@@ -27,7 +27,7 @@ export default styled(ClipDurationBadge)`
   // align-self: flex-end;
   font-size: 16px;
   line-height: 21px;
-  color: ${p => p.theme.colors.gray.light};
+  color: white;
   border-radius: 4px;
   
   background-color: ${p => p.theme.colors.primary.dark};
@@ -37,7 +37,6 @@ export default styled(ClipDurationBadge)`
     margin-top: auto;
     margin-bottom: auto;
     font-weight: bold;
-    padding-bottom: 1px;
   }
 
   svg {

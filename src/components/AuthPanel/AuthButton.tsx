@@ -81,7 +81,7 @@ const LogoutIndicatorLayer = styled(({className, onClick}: {className?: string, 
 
     svg {
       margin-top: 0px;
-      margin-left: 2px;
+      margin-left: 1px;
 
       transition: margin-left 0.1s, margin-top 0.1s;
     }
