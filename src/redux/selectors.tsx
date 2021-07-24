@@ -1,9 +1,15 @@
 import memoize, { getUntrackedObject } from 'proxy-memoize'
 import { RootState } from './store'
 import { CaughtClipV2 } from './clips'
-import { ICatcherChannel, Sort, SortTypes } from '../types'
+import { ICatcherChannel, Sort, SortTypes, UserTypes } from '../types'
+import { ChatUser } from './users'
 
 // SINGLE-VALUE SELECTORS
+
+  // USERS
+  export const selectChannelUserType = memoize(({user, channel}: {user: ChatUser, channel: ICatcherChannel}): UserTypes => {
+    return user.userTypes[channel.name][0]
+  }, { size: 500 })
 
   // CHANNELS
   export const selectChannelSort = memoize((channel: ICatcherChannel) => channel.sort, { size: 500 })
@@ -16,7 +22,30 @@ import { ICatcherChannel, Sort, SortTypes } from '../types'
   export const selectDuration = memoize(({clip}: { clip: CaughtClipV2 }) => clip.duration, { size: 500})
   export const selectStreamerName = memoize(({clip}: { clip: CaughtClipV2 }) => clip.broadcaster.name, { size: 500})
 
+  export const selectClipMetaedBy = memoize(({ clip, channel }: {
+    clip: CaughtClipV2,
+    channel: ICatcherChannel
+  }): null | string[] => {
+    return clip.metaedIn && clip.metaedIn[channel.name] ? clip.metaedIn[channel.name].by : null
+  }, { size: 500 })
+
+  export const selectClipDramaedBy = memoize(({ clip, channel }: {
+    clip: CaughtClipV2,
+    channel: ICatcherChannel
+  }): null | string[] => {
+    return clip.dramaedIn && clip.dramaedIn[channel.name] ? clip.dramaedIn[channel.name].by : null
+  }, { size: 500 })
+
+  export const selectClipVetoedBy = memoize(({ clip, channel }: {
+    clip: CaughtClipV2,
+    channel: ICatcherChannel
+  }): null | string[] => {
+    return clip.vetoedIn && clip.vetoedIn[channel.name] ? clip.vetoedIn[channel.name].by : null
+  }, { size: 500 })
+
+
   // STACKS
+
   export const selectStackDuration = memoize(({sort, clips}: {sort: Sort, clips: CaughtClipV2[]}) => {
     if (sort.direction === 'asc') {
       return clips.reduce((shortest: number | null, clip: CaughtClipV2) => {
@@ -66,6 +95,88 @@ import { ICatcherChannel, Sort, SortTypes } from '../types'
       })
     })
     return results
+  }, { size: 500 })
+
+  // META, DRAMA, VETO
+  export const selectStackMetas = memoize(({ clipStack, channel }: { 
+    clipStack: CaughtClipV2[],
+    channel: ICatcherChannel
+  }) => {
+    return clipStack.reduce(
+      ( 
+        returnObj: { 
+        metaUsers: string[]
+        keyedUsersList: { 
+          [userName: string]: 1 
+        }
+      }, 
+        clip: CaughtClipV2
+      ) => {
+        let clipMetaedBy = selectClipMetaedBy({clip, channel})
+        if (clipMetaedBy) {
+          clipMetaedBy.forEach(user => {
+            if (!returnObj.keyedUsersList[user]) {
+              returnObj.keyedUsersList[user] = 1
+              returnObj.metaUsers.push(user)
+            } 
+          })
+        }
+        return returnObj
+    }, { metaUsers: [] as string[], keyedUsersList: {}} ).metaUsers
+  }, { size: 500 })
+
+  export const selectStackDramas = memoize(({ clipStack, channel }: { 
+    clipStack: CaughtClipV2[],
+    channel: ICatcherChannel
+  }) => {
+    return clipStack.reduce(
+      ( 
+        returnObj: { 
+        dramaUsers: string[]
+        keyedUsersList: { 
+          [userName: string]: 1 
+        }
+      }, 
+        clip: CaughtClipV2
+      ) => {
+        let clipDramaedBy = selectClipDramaedBy({clip, channel})
+        if (clipDramaedBy) {
+          clipDramaedBy.forEach(user => {
+            if (!returnObj.keyedUsersList[user]) {
+              returnObj.keyedUsersList[user] = 1
+              returnObj.dramaUsers.push(user)
+            } 
+          })
+        }
+        return returnObj
+    }, { dramaUsers: [] as string[], keyedUsersList: {}} ).dramaUsers
+  }, { size: 500 })
+
+  export const selectStackVetos = memoize(({ clipStack, channel }: { 
+    clipStack: CaughtClipV2[],
+    channel: ICatcherChannel
+  }) => {
+    return clipStack.reduce(
+      ( 
+        returnObj: { 
+        vetoUsers: string[]
+        keyedUsersList: { 
+          [userName: string]: 1 
+        }
+      }, 
+        clip: CaughtClipV2
+      ) => {
+        let clipVetoedBy = selectClipVetoedBy({clip, channel})
+        if (clipVetoedBy) {
+          clipVetoedBy.forEach(user => {
+            if (!returnObj.keyedUsersList[user]) {
+              returnObj.keyedUsersList[user] = 1
+              returnObj.vetoUsers.push(user)
+            } 
+          })
+        }
+        return returnObj
+    }, { vetoUsers: [] as string[], keyedUsersList: {}} ).vetoUsers
   }, { size: 500 })
 
   export const selectStackViews = memoize(( {clips}: { clips: CaughtClipV2[]} ) => {
@@ -123,6 +234,8 @@ import { ICatcherChannel, Sort, SortTypes } from '../types'
             )
     }, { size: 500 })
 
+
+
     // VIEWS
     export const selectAscendingClipViewsSort = memoize(({ clipA, clipB }: { clipA: CaughtClipV2, clipB: CaughtClipV2 }) => {
       return selectViews(({ clip: (getUntrackedObject(clipA) || clipA)})) - selectViews(({clip: (getUntrackedObject(clipB) || clipB)}))
@@ -150,6 +263,11 @@ import { ICatcherChannel, Sort, SortTypes } from '../types'
       return selectStreamerName(({ clip: (getUntrackedObject(clipB) || clipB)})).localeCompare(selectStreamerName(({clip: (getUntrackedObject(clipA) || clipA)})))
     }, { size: 500})
 
+    // USER PRIVILEGES
+    export const selectDescendingPrivilegesSort = memoize(({userA, userB, channel}: { userA: ChatUser, userB: ChatUser, channel: ICatcherChannel }) => {
+      return selectChannelUserType({user: userB, channel}) - selectChannelUserType({user: userA, channel})
+    }, { size: 500 })
+
   // STACKS
 
     // VOTES
@@ -172,7 +290,7 @@ import { ICatcherChannel, Sort, SortTypes } from '../types'
           return (stackVotersB.up.length - stackVotersB.down.length) - (stackVotersA.up.length - stackVotersA.down.length)
         }
     }, { size: 500 })
-
+    
     // VIEWS
     export const selectStackViewsSort = memoize(
       ({sort, clipStackA, clipStackB}:
@@ -264,7 +382,36 @@ import { ICatcherChannel, Sort, SortTypes } from '../types'
       }
     )
 
+
 // MEMOIZED OTHER
+export const selectSortedUserList = memoize(({ state, channel, userList }: {
+  state: RootState
+  channel: ICatcherChannel
+  userList: string[]
+}): string[] => {
+  return userList.sort((userNameA, userNameB) => selectDescendingPrivilegesSort({userA: state.users.users[userNameA], userB: state.users.users[userNameB], channel}))
+}, { size: 500 })
+
+export const selectSortedSeparatedUserList = memoize(({ state, channel, userList }: {
+  state: RootState
+  channel: ICatcherChannel
+  userList: string[]
+}): [ string[], string[] ] => {
+  let sortedUserList = selectSortedUserList({state, channel, userList})
+  let foundRegularUser = false
+  let checkingUser = 0
+  while (!foundRegularUser && checkingUser < sortedUserList.length) {
+    if (state.users.users[sortedUserList[checkingUser]].userTypes[channel.name][0] <= 2) {
+      foundRegularUser = true
+    }
+    checkingUser++
+  }
+  return [
+    sortedUserList.slice(0, checkingUser),
+    (sortedUserList.length > 0 || checkingUser === 0) ? sortedUserList.slice(checkingUser, sortedUserList.length) : []
+  ]
+}, { size: 500 })
+
 export const doAscendingClipsOverlap = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
   return clipA.broadcaster.name === clipB.broadcasterName && clipA.startEpoch + (clipA.duration * 1000) >= clipB.startEpoch
 }, { size: 500})
@@ -375,3 +522,28 @@ export const selectSortedStacks =
           Array.isArray(clipIdsB) ? clipIdsB.map(clipId => state.clips.clips[clipId]) : state.clips.clips[clipIdsB]))
     return channelSort
   }
+
+  
+export const selectStackModerationReport = memoize(
+  ({ state, clipSlugs, channel }:
+    {
+      state: RootState,
+      clipSlugs: string[],
+      channel: ICatcherChannel
+    }
+  ) => {
+
+    let clipStack = clipSlugs.map(clipSlug => state.clips.clips[clipSlug])
+
+    let stackMetas = selectStackMetas({clipStack, channel})
+    let stackDramas = selectStackDramas({clipStack, channel})
+    let stackVetos = selectStackVetos({clipStack, channel})
+    let sortedMetas = selectSortedSeparatedUserList({ state, channel, userList: stackMetas })
+    let sortedDramas = selectSortedSeparatedUserList({state, channel, userList: stackDramas})
+
+    return {
+      sortedMetas,
+      sortedDramas,
+      vetos: stackVetos
+    }
+}, { size: 500 })

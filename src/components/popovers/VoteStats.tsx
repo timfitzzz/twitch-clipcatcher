@@ -1,10 +1,11 @@
 import React from 'react'
-import { shallowEqual } from 'react-redux'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import {UserPip} from '../badges/UserPip'
 import { SectionTitle } from '../typography/SectionTitle'
 import { Popover } from 'rendition'
+import { selectVotersByClipIds } from '../../redux/clips'
+import { selectStackModerationReport } from '../../redux/selectors'
 
 const VoteStatsUserPip = styled(UserPip)`
 
@@ -33,61 +34,91 @@ const VoteStatsUserPip = styled(UserPip)`
 
 const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target: HTMLDivElement, clipSlugs: string[], channelName: string, className?: string}) => {
 
-  let upVoters = useAppSelector(state => clipSlugs.reduce(
-    (upvoters, clipSlug) => {
-      state.clips.clips[clipSlug].votes[channelName].up.forEach(userName => {
-          if (upvoters.indexOf(userName) === -1) {
-            upvoters.push(userName)
-          }
-      })
-      return upvoters
-    }, [] as string[]).sort(
-    (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-                              Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  ), shallowEqual)
+  const { upVoters, downVoters } = useAppSelector(state => 
+    selectVotersByClipIds({ state, clipSlugs, channelName })
+  )
 
-  let downVoters = useAppSelector(state => clipSlugs.reduce(
-    (downvoters, clipSlug) => {
-      state.clips.clips[clipSlug].votes[channelName].down.forEach(userName => {
-          if (downvoters.indexOf(userName) === -1) {
-            downvoters.push(userName)
-          }
-      })
-      return downvoters
-    }, [] as string[]).sort(
-    (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-                              Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  ), shallowEqual)
-
-  // let posters = useAppSelector(state => clipSlugs.reduce(
-  //   (posters, clipSlug) => {
-  //     state.clips.clips[clipSlug].postedBy[channelName].forEach(userName => {
-  //         if (posters.indexOf(userName) === -1) {
-  //           posters.push(userName)
-  //         }
-  //     })
-  //     return posters
-  //   }, [] as string[]).sort(
-  //   (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-  //                             Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  // ), shallowEqual)
+  const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 
+    selectStackModerationReport({state, clipSlugs, channel: state.channels[channelName]})
+  )
 
   return (
     <Popover placement={'right'} onDismiss={() => null} target={target}>
       <div className={className}>
-        {/* {posters.length > 0 && (
+        { vetos.length > 0 && (
+            <div id={'sectiondiv'}>
+              <SectionTitle>{vetos.length} veto{vetos.length !== 1 && `s`}:</SectionTitle>
+              {vetos.map(userName => (
+                <div key={clipSlugs.join("")+'vetolistitem'+userName+channelName}>
+                  <VoteStatsUserPip key={clipSlugs.join("")+'vetouserpip'+userName+channelName} userName={userName} channelName={channelName}/>
+                  <span>
+                    {userName}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )
+        }
+        { (sortedDramas[0].length > 0 || sortedDramas[1].length) > 1 && (
           <div id={'sectiondiv'}>
-            <SectionTitle>submitted by {posters.length}:</SectionTitle>
-            { posters.map(userName => (
-              <div>
-                <UserPip userName={userName} channelName={channelName}/>
-                <span>
-                  {userName}
-                </span>
-              </div>
-            ))}
+            {sortedDramas[0].length > 0 && (
+              <>
+                <SectionTitle>{sortedDramas[0].length} drama confirmation{sortedDramas[0].length !== 1 && `s`}:</SectionTitle>
+                {sortedDramas[0].map(userName => (
+                  <div key={clipSlugs.join("")+'dramalistitem'+userName+channelName}>
+                    <VoteStatsUserPip key={clipSlugs.join("")+'dramauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
+                    <span>
+                      {userName}
+                    </span>
+                  </div>
+                ))}
+              </>
+            )}
+            {sortedDramas[1].length > 0 && (
+              <>
+                <SectionTitle>{sortedDramas[0].length} drama confirmation{sortedDramas[0].length !== 1 && `s`}:</SectionTitle>
+                {sortedDramas[0].map(userName => (
+                  <div key={clipSlugs.join("")+'dramalistitem'+userName+channelName}>
+                    <VoteStatsUserPip key={clipSlugs.join("")+'dramauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
+                    <span>
+                      {userName}
+                    </span>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
-        )} */}
+        )}
+        { (sortedMetas[0].length > 0 || sortedMetas[1].length > 1) && (
+          <div id={'sectiondiv'}>
+            {sortedMetas[0].length > 0 && (
+              <>
+                <SectionTitle>{sortedMetas[0].length} meta confirmation{sortedMetas[0].length !== 1 && `s`}:</SectionTitle>
+                {sortedMetas[0].map(userName => (
+                  <div key={clipSlugs.join("")+'metalistitem'+userName+channelName}>
+                    <VoteStatsUserPip key={clipSlugs.join("")+'metauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
+                    <span>
+                      {userName}
+                    </span>
+                  </div>
+                ))}
+              </>
+            )}
+            {sortedMetas[1].length > 0 && (
+              <>
+                <SectionTitle>{sortedMetas[0].length} meta confirmation{sortedMetas[0].length !== 1 && `s`}:</SectionTitle>
+                {sortedMetas[0].map(userName => (
+                  <div key={clipSlugs.join("")+'metalistitem'+userName+channelName}>
+                    <VoteStatsUserPip key={clipSlugs.join("")+'metauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
+                    <span>
+                      {userName}
+                    </span>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
         {upVoters.length > 0 && (
           <div id={'sectiondiv'}>
             <SectionTitle>{upVoters.length} upvote{upVoters.length !== 1 && `s`}:</SectionTitle>

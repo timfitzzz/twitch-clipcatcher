@@ -15,7 +15,7 @@ const PipContainer = styled.div<{ userType: UserTypes }>`
         background-color: ${p.theme.colors.danger.main};
       `,
       [UserTypes['mod']]: `
-        background-color: ${p.theme.colors.success.dark};
+        background-color: #1f5f2a; // ${p.theme.colors.success.dark};
       `,
       [UserTypes['vip']]: `
         background-color: magenta;

@@ -10,7 +10,7 @@ import { UserTypes } from '../../../types';
 import { useContextSelector } from 'use-context-selector';
 import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
 
-enum PlayIconState {
+export enum PlayIconState {
   play,
   played,
   vetoed,
@@ -52,7 +52,7 @@ export const PlayIcon = styled(({className, state, onClick}: { className?: strin
 
   svg {
     position: absolute;
-    opacity: 0.4;
+    opacity: 0.7;
     stroke: none;
   }
 

@@ -1,14 +1,29 @@
 import React, { useRef, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../hooks/reduxHooks';
-import { UserTypes } from '../../types';
+import { UserTypes, SpecialState } from '../../types';
 import { DifferentiatedUserPip } from './UserPip';
 import VoteStats from '../popovers/VoteStats'
 import debounce from 'lodash/debounce';
 import { abbreviateNumber } from 'js-abbreviation-number'
 import { selectVotersByClipIds } from '../../redux/clips';
-import { SpecialBadge } from './SpecialBadge';
-import { Flex } from 'rendition';
+import { SpecialIcon } from './SpecialBadge';
+import { selectStackModerationReport } from '../../redux/selectors';
+import { Shield } from '@styled-icons/feather/Shield';
+
+const VetoIcon = styled(({className}: { className?: string }) => (
+  <div className={className}>
+    <Shield className={'shield'}/>
+  </div>
+))`
+  display: flex;
+  background-color: black;
+  svg {
+    margin: auto;
+    fill: ${({theme}) => theme.colors.danger.dark};
+  }
+`
+
 
 const VerticalVoteCount = styled.div<{charCount: number}>`
   display: flex;
@@ -50,168 +65,120 @@ const VerticalVoteCount = styled.div<{charCount: number}>`
   }
 `
 
-const StackSpecialBadge = styled(SpecialBadge)`
-  width: 16px;
-  height: 16px;
-  margin-top: 4px;
-  
-  // background-color: ${({theme}) => theme.colors.gray.dark};
-  // border: 1px solid ${({theme}) => theme.colors.gray.dark};
-  border-radius: 4px;
-  padding: 1px;
-  box-sizing: border-box;
-  svg {
-    display: flex;
-    margin: auto;
-    width: 12px;
-    height: 12px;
-  }
-`
-
-const SpecialBadgesContainer = styled(Flex)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  margin-top: auto;
-  margin-bottom: 0px;
-`
-
-
-const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
-
-  const { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
-      selectVotersByClipIds({ state, clipSlugs, channelName })
-    )
-  // let upVoters = useAppSelector(state => clipSlugs.reduce(
-  //   (upvoters, clipSlug) => {
-  //     state.clips.clips[clipSlug].votes[channelName].up.forEach(userName => {
-  //         if (upvoters.indexOf(userName) === -1) {
-  //           upvoters.push(userName)
-  //         }
-  //     })
-  //     return upvoters
-  //   }, [] as string[]).sort(
-  //   (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-  //                             Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  // ), shallowEqual)
-
-  // let downVoters = useAppSelector(state => clipSlugs.reduce(
-  //   (downvoters, clipSlug) => {
-  //     state.clips.clips[clipSlug].votes[channelName].down.forEach(userName => {
-  //         if (downvoters.indexOf(userName) === -1) {
-  //           downvoters.push(userName)
-  //         }
-  //     })
-  //     return downvoters
-  //   }, [] as string[]).sort(
-  //   (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-  //                             Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  // ), shallowEqual)
-  
-  // // let postedBy = useAppSelector(state => [...state.clips.clips[clipSlug].postedBy[channelName]].sort(
-  // //   (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-  // //                             Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  // // ), shallowEqual)
-
-  // const typesUpvotedBy = useAppSelector(state => upVoters.reduce((foundTypes, userName) => {
-  //   let maxUserType = Math.max(...state.users.users[userName].userTypes[channelName])
-  //   if (foundTypes.indexOf(maxUserType) === -1) {
-  //     foundTypes.push(maxUserType)
-  //   }
-  //   return foundTypes.sort((a, b) => b - a)
-  // }, [] as number[]), shallowEqual)
-
-
-  let popoverTarget = useRef<HTMLDivElement>(null)
-  let [showPopover, setShowPopover] = useState<any>(false)
-
-  const handlePopover = debounce(() => setShowPopover(true), 100)
-
-  const handleMouseExit = () => {
-    handlePopover.cancel()
-    setShowPopover(false)
-  }
-
-  const voteTotalText = useMemo(() => 
-    ((upVoters.length - downVoters.length) > 0 ? '+' : '') + 
-    abbreviateNumber(upVoters.length - downVoters.length), 
-  [upVoters, downVoters])
+const AdditionalPipBadge = styled(({className, count}: { className?: string, count: number }) => {
 
   return (
-    <div className={className} ref={popoverTarget} onMouseLeave={handleMouseExit} onMouseOver={handlePopover}>
-      { showPopover
-        && !!(popoverTarget.current)
-        && <VoteStats target={popoverTarget.current} clipSlugs={clipSlugs} channelName={channelName} />
-      }
-      <VerticalVoteCount charCount={voteTotalText.length}>
-        <span>{voteTotalText}</span>
-      </VerticalVoteCount>
-      {/* <PlusOrMinusIcon className={'plusorminus'}/> */}
-      <div className={'types'}>
-        {typesUpvotedBy.map((type: UserTypes) => (
-          <DifferentiatedUserPip key={Math.random()} userType={type}/>
-        ))}
-      </div>
-      <SpecialBadgesContainer>
-            <StackSpecialBadge type={'drama'} clipSlugs={clipSlugs} channelName={channelName} />
-            <StackSpecialBadge type={'meta'} clipSlugs={clipSlugs} channelName={channelName} />
-      </SpecialBadgesContainer>
-
-
+    <div className={className}>
+      <span>+{count}</span>
     </div>
   )
-  // return (<div></div>)
 
+})`
+  height: 20px;
+  width: 20px;
+  font-size: 14px;
+  margin-bottom: 2px;
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  box-sizing: border-box;
+  span {
+    margin: auto;
+    line-height: 14px;
+    padding-right: 2px;
+  }
+
+`
+
+const renderPips = (metaState: SpecialState, dramaState: SpecialState, vetoState: SpecialState, types: UserTypes[]) => {
+  let pips: React.ReactElement[] = []
+  let pipCount = types.length
+  let typesCopy = [...types]
+  typesCopy.reverse()
+
+  if (vetoState !== SpecialState['no']) {
+    pipCount++;
+    pips.push(<VetoIcon/>)
+  }
+
+  if (dramaState !== SpecialState['no']) {
+    pipCount++
+    pips.push(<SpecialIcon type={'drama'} specialState={dramaState} />)
+  }
+
+  if (metaState !== SpecialState['no']) { 
+    pipCount++; 
+    pips.push(<SpecialIcon type={'meta'} specialState={metaState}/>) 
+  }
+
+  let moderationPipCount = pips.length
+  let renderAdditional = pipCount - moderationPipCount
+  let currentUserType = 0
+  if (renderAdditional) {
+    while (pips.length <= 3 && renderAdditional > 0) {
+      pips.push(<DifferentiatedUserPip key={Math.random()} userType={types[currentUserType]}/>)
+      currentUserType++
+      renderAdditional--
+    }
+  }
+
+  if (renderAdditional) {
+    pips.push(<AdditionalPipBadge count={renderAdditional}/>)
+  }
+
+  return pips
 }
 
-
-export default styled(VerticalVoteCountBadge)`
+const VerticalVoteCountBadgeContainer = styled.div<{specialState: SpecialState}>`
   display: flex;
   flex-direction: column;
-  // justify-content: flex-end;
   margin-bottom: 0px!important;
   margin-top: 0px!important;
   width: 32px;
   border-radius: inherit;
-  background-color: #138b27; // ${({theme}) => theme.colors.success.dark}; // #82DF0A; // #294800; // #519000; // #7FE000; //  #63B000;
+  background-color: ${({specialState, theme}) => {
+
+    switch(specialState) {
+      case SpecialState['no']:
+        return `#138b27`;
+      case SpecialState['maybe']:
+        return theme.colors.warning.main
+      case SpecialState['yes']:
+        return theme.colors.danger.dark
+    }
+
+  }}; // ${({theme}) => theme.colors.success.dark}; // #82DF0A; // #294800; // #519000; // #7FE000; //  #63B000;
   border-radius: 4px;
-  padding-top: 8px;
+  padding-top: 12px;
   padding-bottom: 4px;
   box-sizing: border-box;
-  height: 100%;
-
-  // div {
-  //   // margin-left: 2px;
-  //   margin-top: 0px;
-  //   // margin-bottom: auto;
-  //   // margin-right: 0px;
-  //   height: 20px;
-  //   border-radius: 4px;
-
-  // }
+  height: 142px;
 
   .types {
     display: flex;
-    flex-direction: column-reverse;
-    flex-wrap: wrap;
+    flex-direction: column;
+    flex-wrap: no-wrap;
     margin-top: auto;
-    padding-top: 6px;
+    padding-top: 0px;
     margin-bottom: auto;
     margin-left: auto;
     margin-right: auto;
-    justify-content: flex-end;
+    justify-content: flex-start;
     justify-self: flex-end;
-    height: ${18*5}px;
+    height: ${22*4}px;
 
     > div {
-      height: 16px;
+      width: 20px;
+      height: 20px;
       margin-top: 2px!important;
       margin-left: auto;
       margin-right: auto;
       border-radius: 4px;
+      border: 1px white;
       svg {
-        height: 16px;
-        width: 16px;
+        height: 20px;
+        width: 20px;
         margin-bottom: 2px;    
       }
     }
@@ -231,7 +198,7 @@ export default styled(VerticalVoteCountBadge)`
     color: white;
 
     box-shadow: none;
-  
+
     span {
       font-weight: bold;
       font-size: 28px;
@@ -253,5 +220,70 @@ export default styled(VerticalVoteCountBadge)`
     margin-bottom: auto;
     fill: ${({theme}) => theme.colors.text.main};
   }
+`
+
+
+const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
+
+  const { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
+      selectVotersByClipIds({ state, clipSlugs, channelName })
+    )
+
+  const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 
+      selectStackModerationReport({state, clipSlugs, channel: state.channels[channelName]})
+    )
+
+  const metaState = useMemo(() => sortedMetas[0].length > 0 
+                                  ? SpecialState['yes']
+                                  : sortedMetas[1].length > 0
+                                    ? SpecialState['maybe']
+                                    : SpecialState['no'] 
+                            , [sortedMetas])
+                        
+  const dramaState = useMemo(() => sortedDramas[0].length > 0
+                                    ? SpecialState['yes']
+                                      : sortedDramas[1].length > 0
+                                      ? SpecialState['maybe']
+                                      : SpecialState['no']
+                              , [sortedDramas])
+
+  const vetoState = useMemo(() => vetos.length > 0 ? SpecialState['yes'] : SpecialState['no'], [vetos])
+
+  const specialState = useMemo(() => Math.max(metaState, dramaState, vetoState) as SpecialState, [metaState, dramaState, vetoState])
+
+  let popoverTarget = useRef<HTMLDivElement>(null)
+  let [showPopover, setShowPopover] = useState<any>(false)
+
+  const handlePopover = debounce(() => setShowPopover(true), 100)
+
+  const handleMouseExit = () => {
+    handlePopover.cancel()
+    setShowPopover(false)
+  }
+
+  const voteTotalText = useMemo(() => 
+    ((upVoters.length - downVoters.length) > 0 ? '+' : '') + 
+    abbreviateNumber(upVoters.length - downVoters.length), 
+  [upVoters, downVoters])
+
+  return (
+    <VerticalVoteCountBadgeContainer className={className} specialState={specialState} ref={popoverTarget} onMouseLeave={handleMouseExit} onMouseOver={handlePopover}>
+      { showPopover
+        && !!(popoverTarget.current)
+        && <VoteStats target={popoverTarget.current} clipSlugs={clipSlugs} channelName={channelName} />
+      }
+      <VerticalVoteCount charCount={voteTotalText.length}>
+        <span>{voteTotalText}</span>
+      </VerticalVoteCount>
+      <div className={'types'}>
+        { renderPips(metaState, dramaState, vetoState, typesUpvotedBy) }
+      </div>
+    </VerticalVoteCountBadgeContainer>
+  )
+
+}
+
+
+export default styled(VerticalVoteCountBadge)`
 
 `

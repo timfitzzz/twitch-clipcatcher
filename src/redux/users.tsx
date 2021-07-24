@@ -3,7 +3,7 @@ import { UserTypes } from '../types'
 import { annotationAdded, AnnotationAddedPayload, firstAnnotationAdded, FirstAnnotationAddedPayload } from './annotations'
 import { clipAdded, ClipAddedPayloadV2 } from './actions'
 
-interface ChatUser {
+export interface ChatUser {
   userName: string
   annotations: string[]
   userTypes: {

@@ -19,9 +19,6 @@ const MainViewContainer = styled(Flex)`
 `
 
 const MainViewSideColumn = styled(Flex)`
-  // width: 386px;
-  // max-width: 386px;
-  // min-width: 386px;
   height: 100%;
 `
 

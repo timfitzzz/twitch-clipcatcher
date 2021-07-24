@@ -10,21 +10,19 @@ import { UserPip } from './UserPip'
 import { SectionTitle } from '../typography/SectionTitle'
 import { TheaterMasks } from '@styled-icons/fa-solid/TheaterMasks'
 import { BookDead } from '@styled-icons/fa-solid/BookDead'
+import { SpecialState } from '../../types'
+import { PlayIcon, PlayIconState } from '../Catcher/ClipList/PlayButton'
 
-enum SpecialState {
-  no,
-  maybe,
-  yes
-}
 
-export const SpecialIcon = styled(({type, specialState, className}: { type: 'drama' | 'meta', specialState: SpecialState, className?: string}) => {
+export const SpecialIcon = styled(({type, specialState, className}: { type: 'drama' | 'meta' | 'veto', specialState: SpecialState, className?: string}) => {
 
   return (
     <div className={className}>
       { 
         {
           'meta': <BookDead/>,
-          'drama': <TheaterMasks/>
+          'drama': <TheaterMasks/>,
+          'veto': <PlayIcon state={PlayIconState['vetoed']}/>
         }[type]
       }
     </div>
@@ -32,19 +30,18 @@ export const SpecialIcon = styled(({type, specialState, className}: { type: 'dra
 
 })`
 
-  height: 16px;
-  width: 16px;
-  display: flex;
-  // background-color: gray;
+  background-color: black;
 
   svg {
-    display: flex;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: auto;
-    margin-right: auto;
-    height: 16px;
-    width: 16px;
+    width: unset;
+    margin-top: 2px;
+    box-sizing: border-box;
+    vertical-align: unset;
+    padding-top: 1px!important;
+    padding-bottom: 1px;
+    padding-left: 1px;
+    padding-right: 1px;
+    height: 16px!important;
     ${({specialState, theme}) => {
       switch (specialState) {
         case SpecialState.maybe:
@@ -242,9 +239,29 @@ export const SpecialBadge = ({type, clipSlugs, channelName, className}: { type: 
 
 
 export default styled(SpecialBadge)`
-  height: 16px;
-  // margin-left: 4px;
-  // margin-top: 4px;
-  z-index: 10;
+  display: flex;
+  margin-left: 4px;
+  width: 20px;
+  z-index: 100;
   cursor: pointer;
+  div {
+    display: flex;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    padding-left: 1px;
+    padding-right: 1px;
+    border-radius: 4px;
+    svg {
+      display: flex;
+      margin: auto;
+      padding-left: 1px;
+      padding-right: 1px;
+    }
+    &:not:first-of-type{
+      margin-left: 4px!important;
+    }
+    margin-top: 4px;
+  }
+
 `

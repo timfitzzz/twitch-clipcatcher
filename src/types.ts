@@ -231,3 +231,9 @@ export enum UserTypes {
   'mod',
   'broadcaster'
 }
+
+export enum SpecialState {
+  no,
+  maybe,
+  yes
+}
