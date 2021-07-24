@@ -1,7 +1,7 @@
 import { createAction, createAsyncThunk } from "@reduxjs/toolkit"
 import { ApiClient, HelixUser } from "twitch/lib"
 import { TwitchClipV5, UserTypes } from '../types'
-import { fetchUserInfo, retryClipEpochs, UpdatedClipEpoch } from "../utilities/apiMethods"
+import { fetchUserInfo, retryClipEpochs, updateClipsViews, UpdatedClipEpoch, UpdatedClipViews } from "../utilities/apiMethods"
 import { getAnnotationTypes, parseTags } from "../utilities/parsers"
 import { annotationAdded, annotationsReverted, ClipAnnotation, firstAnnotationAdded } from "./annotations"
 import { CaughtClipV2 } from "./clips"
@@ -228,6 +228,29 @@ export const intakeReply = createAsyncThunk<
     }
   )
 
+export const updateClipViews = createAsyncThunk<
+{ result: UpdatedClipViews[] | string },
+{ apiClient: ApiClient },
+{
+  dispatch: AppDispatch
+  state: RootState
+}>(
+  'updateClipViews',
+  async({ apiClient }, { dispatch, getState }) => {
+    let state = getState()
+    let updatedViews: UpdatedClipViews[] = await updateClipsViews(Object.getOwnPropertyNames(state.clips.clips), apiClient) as UpdatedClipViews[]
+    if (updatedViews && updatedViews.length > 0) {
+      updatedViews = updatedViews.filter(updateReport => updateReport.views !== state.clips.clips[updateReport.slug].views)
+      return {
+        result: updatedViews
+      }
+    } else {
+      return {
+        result: 'no updated views found'
+      }
+    }
+  }
+)
 
 export const getUserInfo = createAsyncThunk<
   Pick<HelixUser, 'name' | 'profilePictureUrl'> | null,

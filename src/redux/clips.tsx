@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TwitchClipV5, UserTypes } from '../types'
-import { UpdatedClipEpoch } from '../utilities/apiMethods'
+import { UpdatedClipEpoch, UpdatedClipViews } from '../utilities/apiMethods'
 import { isEmpowered, tagsReport } from '../utilities/parsers'
-import { clipEpochsRetry, clipAdded, ClipAddedPayloadV2 } from './actions'
+import { clipEpochsRetry, clipAdded, ClipAddedPayloadV2, updateClipViews } from './actions'
 import { annotationAdded, annotationsReverted, AnnotationsRevertedPayload, ClipAnnotation, FirstAnnotationAddedPayload } from './annotations'
 import { mutateClipByAnnotation, revertClipByAnnotation } from './mutators'
 import { RootState } from './store'
@@ -524,6 +524,13 @@ export const clipsSlice = createSlice({
         if (update.startEpoch) {
           clips.clips[update.clipSlug].startEpoch = update.startEpoch
         }})
+    })
+    builder.addCase(updateClipViews.fulfilled, (clips, action: PayloadAction<{ result: UpdatedClipViews[] | string}>) => {
+      if (Array.isArray(action.payload.result)) {
+        action.payload.result.forEach(updateReport => {
+          clips.clips[updateReport.slug].views = updateReport.views
+        })
+      }
     })
   }
 })

@@ -1,13 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rendition'
-import { useAppSelector } from '../../hooks/reduxHooks'
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 // import { useContextSelector } from 'use-context-selector'
 // import { ChannelActions, ChannelsContext } from '../../contexts/ChannelsContext'
 import ChannelSelector from './ChannelSelector/ChannelSelector'
 import AddChannelForm from './ChannelSelector/AddChannel';
 import Channel from './Channel/Channel';
 import { shallowEqual } from 'react-redux'
+import { useEffect } from 'react'
+import { updateClipViews } from '../../redux/actions'
+import useApiClient from '../../singleton-hooks/useApiClient'
 
 
 const ChannelContainer = styled(Flex).attrs(p => ({
@@ -29,6 +32,8 @@ const Catcher = styled(({  className }: { className?: string}) => {
 
   const channelNames = useAppSelector(state => Object.getOwnPropertyNames(state.channels), shallowEqual)
   const currentChannel = useAppSelector(state => state.settings.currentChannel)
+  const dispatch = useAppDispatch()
+  const apiClient = useApiClient()
   // const displayOrder = useMemo(() => {
   //   if (currentChannel && typeof currentChannel === 'string') {
   //     let newOrder = channelNames.filter(name => name !== currentChannel)
@@ -38,6 +43,22 @@ const Catcher = styled(({  className }: { className?: string}) => {
   //     return channelNames
   //   }
   // }, [channelNames, currentChannel])
+
+  useEffect(() => {
+    let interval: any;
+    if (apiClient) {
+      interval = setInterval(() => {
+        dispatch(updateClipViews({apiClient}))
+      }, 60000)
+    }
+
+    return (() => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    })
+
+  })
 
   return (
     <div className={className}>

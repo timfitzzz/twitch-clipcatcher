@@ -41,11 +41,12 @@ export const updateClipsViews = async (clipSlugs: string[], apiClient: ApiClient
   }
   clipSets.push(clipSlugs)
 
-  return Promise.all(clipSets.map(clipSet => apiClient.helix.clips.getClipsByIds(clipSet)))
+  return clipSets && clipSets.length > 0 ? Promise.all(clipSets.map(clipSet => apiClient.helix.clips.getClipsByIds(clipSet)))
                 .then(clipSets => {
                   let results: UpdatedClipViews[] = []
                   clipSets.forEach(clipSet => clipSet.forEach(clip => results.push({slug: clip.id, views: clip.views})))
-                })
+                  return results
+                }) : []
 }
 
 // retryClipEpoch: try again to get vod and calculate start time
