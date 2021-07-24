@@ -18,7 +18,7 @@ import { ChatUser } from './users'
   export const selectUpvoters = memoize(({ votesSet }: { votesSet: CaughtClipV2['votes'][0] }) => votesSet.up,  { size: 500 })
   export const selectDownvoters = memoize(({ votesSet } : { votesSet: CaughtClipV2['votes'][0] }) => votesSet.down, { size: 500})
   export const selectViews = memoize(({clip}: { clip: CaughtClipV2 }) => clip.views, { size: 500 })
-  export const selectEpoch = memoize(({clip}: { clip: CaughtClipV2 }) => clip.startEpoch, { size: 500 })
+  export const selectEpoch = memoize(({clip}: { clip: CaughtClipV2 }) => clip.startEpoch === 0 ? (new Date(clip.created_at).getTime() ) : clip.startEpoch, { size: 500 })
   export const selectDuration = memoize(({clip}: { clip: CaughtClipV2 }) => clip.duration, { size: 500})
   export const selectStreamerName = memoize(({clip}: { clip: CaughtClipV2 }) => clip.broadcaster.name, { size: 500})
 
@@ -204,11 +204,14 @@ import { ChatUser } from './users'
     // START EPOCH
     export const selectAscendingEpochalSort = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
       // console.log('running ascending sort')
-      return clipA.startEpoch - clipB.startEpoch
+      return (clipA.startEpoch === 0 ? (new Date(clipA.created_at).getTime() ) : clipA.startEpoch) - 
+             (clipB.startEpoch === 0 ? (new Date(clipB.created_at).getTime() ) : clipB.startEpoch)
     }, { size: 500 })
 
     export const selectDescendingEpochalSort = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {
-      return clipB.startEpoch - clipA.startEpoch
+      return (clipB.startEpoch === 0 ? (new Date(clipB.created_at).getTime() ) : clipB.startEpoch) -
+             (clipA.startEpoch === 0 ? (new Date(clipA.created_at).getTime() ) : clipA.startEpoch)  
+             
     }, { size: 500 })
 
     // VOTERS

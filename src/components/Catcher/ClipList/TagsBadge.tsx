@@ -46,7 +46,7 @@ const PopoverContentsContainer = styled.div`
   }
 `
 
-export const TagsBadge = ({channelName, clipSlugs, className}: { channelName: string, clipSlugs: string[], className?: string }) => {
+export const TagsBadge = ({channelName, hideIcon = true, clipSlugs, className}: { channelName: string, hideIcon?: boolean, clipSlugs: string[], className?: string }) => {
 
   let [tagsExpanded, setTagsExpanded] = useState<boolean>(false)
 
@@ -109,7 +109,7 @@ export const TagsBadge = ({channelName, clipSlugs, className}: { channelName: st
         </Popover>
       )}
       <span>{displayTagElements.length}</span>
-      <TagIcon />
+      {!hideIcon && <TagIcon />}
     </div>
   )
 }
@@ -119,13 +119,15 @@ export default styled(TagsBadge)`
   flex-direction: row;
   margin: 4px 4px 4px auto;
   background-color: ${({theme}) => theme.colors.warning.dark};
-  padding: 0px 4px;
+  padding: 0px 2px;
   border-radius: 4px;
   z-index: 10;
   line-height: 21px;
+  cursor: default;
 
   svg {
     margin-left: 4px;
+    margin-right: 2px;
     margin-top: auto;
     margin-bottom: auto;
     height: 13px;
@@ -136,10 +138,11 @@ export default styled(TagsBadge)`
 
   span {
     color: ${p => p.theme.colors.gray.light};
-    font-weight: bold;
-    margin-right: 4px;
+    font-weight: 700;
+    margin-right: ${p => typeof p.hideIcon === 'boolean' && p.hideIcon === false ? '2px' : '0px'};
+    margin-right: 2px;
     margin-left: 2px;
-    font-size: 16px;
+    font-size: 14px;
 
     padding-bottom: 1px;
   }

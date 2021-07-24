@@ -3,13 +3,13 @@ import React from 'react'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
 
-const ClipDurationBadge = ({clipSlug, className, zIndex}: {clipSlug: string, zIndex?: number, className?: string}) => {
+const ClipDurationBadge = ({clipSlug, className, hideIcon = true, zIndex}: {clipSlug: string, zIndex?: number, hideIcon?: boolean, className?: string}) => {
   
   let duration = useAppSelector(s => s.clips.clips[clipSlug].duration)
   
   return (
     <div className={className}>
-      <span>{duration}s</span><Stopwatch />
+      <span>{Math.round(duration)}s</span>{!hideIcon && (<Stopwatch />)}
     </div>
   )
 }
@@ -33,17 +33,16 @@ export default styled(ClipDurationBadge)`
   background-color: ${p => p.theme.colors.primary.dark};
 
   span {
-    margin-left: 2px;
-    margin-top: auto;
-    margin-bottom: auto;
-    font-weight: bold;
+    margin-right: ${p => typeof p.hideIcon === 'boolean' && p.hideIcon === false ? '2px' : '0px'};
+    font-size: 14px;
+    font-weight: 700;
   }
 
   svg {
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 2px;
-    margin-right: 3px!important;
+    margin-right: 2px;
     height: 14px;
     line-weight: 2px;
   }

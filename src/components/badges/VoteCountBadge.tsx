@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { UserTypes } from '../../types';
 import { DifferentiatedUserPip } from './UserPip';
-import { PlusOrMinusIcon } from './PlusOrMinusIcon';
 import VoteStats from '../popovers/VoteStats'
 import debounce from 'lodash/debounce';
 import { selectVotersByClipIds } from '../../redux/clips';
@@ -76,7 +75,7 @@ const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: strin
       ))}
       <div className={'badgeinner'}>
         <span>{upVoters.length - downVoters.length}</span>
-        <PlusOrMinusIcon className={'plusorminus'}/>
+        {/* <PlusOrMinusIcon className={'plusorminus'}/> */}
       </div>
     </div>
   )
@@ -121,14 +120,16 @@ export default styled(VoteCountBadge)`
     margin-right: 0px;
     // margin: 4px 4px 4px auto;
     height: unset;
-    background-color: ${({theme}) => theme.colors.success.semilight};
+    background-color: #138b27; // ${({theme}) => theme.colors.success.semilight};
     width: fit-content;
     box-shadow: none;
+    color: white;
+    cursor: default;
   
     span {
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 21px;
+      font-weight: 700;
+      font-size: 14px;
+      font-weight: 700;
       margin-top: auto;
       margin-bottom: auto;
       padding-bottom: 1px;

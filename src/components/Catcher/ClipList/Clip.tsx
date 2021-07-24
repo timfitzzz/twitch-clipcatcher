@@ -11,6 +11,7 @@ import ClipTitle from './ClipTitle';
 // badges
 import StreamerBadge from '../../badges/StreamerBadge';
 import SpecialBadge from '../../badges/SpecialBadge';
+import ClipDurationBadge from '../../badges/ClipDurationBadge';
 import ClipUpperRightOverlay from './ClipUpperRightOverlay';
 import ClipLowerRightOverlay from './ClipLowerRightOverlay';
 
@@ -81,7 +82,7 @@ const ClipOverlayLowerLeft = styled(Flex).attrs(p => ({
   height: 50%;
 `
 
-const Clip = ({clipSlug, channelName, hideStats = false, className}: { clipSlug: string, channelName: string, hideStats?: boolean, className?: string}) => {
+const Clip = ({clipSlug, channelName, showDuration = false, hideStats = false, className}: { clipSlug: string, channelName: string, showDuration?: boolean, hideStats?: boolean, className?: string}) => {
 
   return (
          <ClipThumbContainer className={className}>
@@ -101,11 +102,15 @@ const Clip = ({clipSlug, channelName, hideStats = false, className}: { clipSlug:
                       <ClipTitle clipSlug={clipSlug}/>
                   </ClipOverlayLowerLeft>
                 </ClipOverlayLeft>
-                { !hideStats && (
+                { !hideStats ? (
                                 <ClipOverlayRight >
                                   <ClipUpperRightOverlay clipSlug={clipSlug} channelName={channelName}/>
                                   <ClipLowerRightOverlay clipSlug={clipSlug} channelName={channelName}/>
                                </ClipOverlayRight>
+                ) : showDuration && (
+                  <ClipOverlayRight>
+                    <ClipDurationBadge clipSlug={clipSlug} key={'duration'+clipSlug}/>
+                  </ClipOverlayRight>
                 )}
              </Flex>
            </ClipOverlay>

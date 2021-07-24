@@ -30,7 +30,11 @@ export const SpecialIcon = styled(({type, specialState, className}: { type: 'dra
 
 })`
 
-  background-color: black;
+  ${({specialState}) => {
+    if (specialState === SpecialState.no) {
+      return `display: none!important;`
+    }
+  }}
 
   svg {
     width: unset;
@@ -47,17 +51,17 @@ export const SpecialIcon = styled(({type, specialState, className}: { type: 'dra
         case SpecialState.maybe:
           return `
             color: ${theme.colors.warning.main};
+            background-color: black;
             opacity: 0.8;
           `
         case SpecialState.yes:
           return `
             color: ${theme.colors.danger.dark};
+            background-color: black;
             opacity: 1;
           `
         default:
           return `
-            color: ${theme.colors.gray.light};
-            opacity: 0.1;
           `
       }
     }}

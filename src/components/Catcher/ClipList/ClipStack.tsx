@@ -54,13 +54,15 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
       switch (sort.type) {
         case SortTypes.views:
-          component = <ViewCountBadge clipSlugs={clipSlugs} key={'summaryviews'+clipSlugs.join("")} zIndex={10 - index}/>
+          component = <ViewCountBadge hideIcon={false} clipSlugs={clipSlugs} key={'summaryviews'+clipSlugs.join("")} zIndex={10 - index}/>
           break;
         case SortTypes.date:
-          component = <Delay clipSlug={clipSlugs[0]} key={'summarywhen'+clipSlugs} zIndex={10 - index}/>
+          component = <Delay hideIcon={false} clipSlug={clipSlugs[0]} key={'summarywhen'+clipSlugs} zIndex={10 - index}/>
           break;
         case SortTypes.length:
-          component = clipSlugs.length > 1 ? <StackDurationBadge direction={sort.direction} clipSlugs={clipSlugs} key={'duration'+clipSlugs.join("")} zIndex={10 - index}/> : <ClipDurationBadge clipSlug={clipSlugs[0]} key={'duration'+clipSlugs[0]} zIndex={10 - index}/>
+          component = clipSlugs.length > 1 
+                      ? <StackDurationBadge direction={sort.direction} clipSlugs={clipSlugs} key={'duration'+clipSlugs.join("")} zIndex={10 - index}/> 
+                      : <ClipDurationBadge clipSlug={clipSlugs[0]} hideIcon={false} key={'duration'+clipSlugs[0]} zIndex={10 - index}/>
           break;
         default:
           component = null
@@ -90,7 +92,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
         { renderBadges() }
       </div>
       <div className={'otherBadges'}>
-        <TagsBadge clipSlugs={clipSlugs} channelName={channelName}/>
+        <TagsBadge hideIcon={false} clipSlugs={clipSlugs} channelName={channelName}/>
         <ExpandButtonBadge expandToggle={toggleExpandStack} expanded={expandStack} clipsCount={clipSlugs.length}/>
       </div>
     </div>
@@ -218,7 +220,7 @@ export const ClipStack = ({clipSlugs, stackIndex, toggleExpandStack, isExpanded,
         <Flex flexDirection={'column'}>
           <VerticalVoteCountBadge clipSlugs={clipSlugs} channelName={channelName} />
         </Flex>
-        <Clip key={channelName+sortedSlugs[0]} clipSlug={sortedSlugs[0]} channelName={channelName} hideStats={!isExpanded(clipSlugs)}/>
+        <Clip showDuration={clipSlugs.length > 1} key={channelName+sortedSlugs[0]} clipSlug={sortedSlugs[0]} channelName={channelName} hideStats={!isExpanded(clipSlugs)}/>
         <StackSummary clipSlugs={clipSlugs} channelName={channelName} expandStack={!!isExpanded(clipSlugs)} toggleExpandStack={toggleExpand}/>
       </FirstClipContainer>
 

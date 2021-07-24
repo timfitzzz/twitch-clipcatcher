@@ -9,7 +9,7 @@ import useApiClient from '../../singleton-hooks/useApiClient'
 import { clipEpochsRetry } from '../../redux/actions'
 import { useEffect } from 'react'
 
-const DelayBadge = styled.div`
+const DelayBadge = styled.div<{hideIcon: boolean}>`
 
   display: flex;
   flex-direction: row;
@@ -32,10 +32,13 @@ const DelayBadge = styled.div`
   text-wrap: none;
 
   span {
-    margin-left: 2px;
-    margin-top: auto;
-    margin-bottom: auto;
-    padding-bottom: 1px;
+    // margin-left: 2px;
+    // margin-top: auto;
+    // margin-bottom: auto;
+    // padding-bottom: 1px;
+    margin-right: ${p => typeof p.hideIcon === 'boolean' && p.hideIcon === false ? '2px' : '0px'};
+    font-size: 14px;
+    font-weight: 700;
   }
   
 
@@ -70,13 +73,13 @@ const DelaySometimesButton = styled(({activate, clickHandler, className}: {activ
     // padding-top: 2px;
     margin-top: auto;
     margin-bottom: auto;
-    margin-left: 4px;
+    margin-right: 2px;
     height: 16px;
     z-index: 10;
   }
 `
 
-const Delay = ({className, clipSlug, zIndex}: { className?: string, zIndex?: number, clipSlug: string }) => {
+const Delay = ({className, clipSlug, hideIcon = true, zIndex}: { hideIcon?: boolean, className?: string, zIndex?: number, clipSlug: string }) => {
   
   let timeAgo = useMemo(() => {
     return TimeAgoUtil.instance.timeAgo
@@ -117,9 +120,9 @@ const Delay = ({className, clipSlug, zIndex}: { className?: string, zIndex?: num
   }, [redrawInterval, createdAt, retryDelay, startEpoch])
 
   return (
-    <DelayBadge className={className}>
+    <DelayBadge hideIcon={hideIcon} className={className}>
       <span>{startEpoch > 0 ? delayText : `(${delayText})`}</span>
-      <DelaySometimesButton activate={startEpoch === 0} clickHandler={retryDelay}/>
+      {(!hideIcon || startEpoch === 0) && <DelaySometimesButton activate={startEpoch === 0} clickHandler={retryDelay}/> }
     </DelayBadge>
 )}
 
