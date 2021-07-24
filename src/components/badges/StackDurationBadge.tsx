@@ -1,16 +1,21 @@
-import { Timer } from '@styled-icons/material/Timer'
 import { Stopwatch } from '@styled-icons/fa-solid/Stopwatch'
 import React from 'react'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
+import memoize from 'proxy-memoize'
 
-const StackDurationBadge = ({clipSlugs, className, zIndex}: {clipSlugs: string[], zIndex?: number, className?: string}) => {
+const StackDurationBadge = ({clipSlugs, className, direction }: {clipSlugs: string[], direction: 'asc' | 'desc', zIndex?: number, className?: string}) => {
   
-  let durations = useAppSelector(s => clipSlugs.map(clipSlug => s.clips.clips[clipSlug].duration))
+  let durations = useAppSelector(memoize(s => clipSlugs.map(clipSlug => s.clips.clips[clipSlug].duration)))
   
   return (
     <div className={className}>
-      <span>{Math.round(Math.min(...durations))}s - {Math.round(Math.max(...durations))}s</span><Stopwatch />
+      { direction === 'asc' ? (
+        <span>{Math.round(Math.min(...durations))}-{Math.round(Math.max(...durations))}s</span>
+      ) : (
+        <span>{Math.round(Math.max(...durations))}-{Math.round(Math.min(...durations))}s</span>
+      )}
+      <Stopwatch />
     </div>
   )
 }

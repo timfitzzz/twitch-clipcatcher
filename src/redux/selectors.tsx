@@ -62,7 +62,7 @@ import { ChatUser } from './users'
         if (longest === null) {
           return duration
         } else {
-          return duration < longest ? duration : longest
+          return duration > longest ? duration : longest
         }
       }, null as number | null)
     }

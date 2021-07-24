@@ -117,7 +117,7 @@ const renderPips = (metaState: SpecialState, dramaState: SpecialState, vetoState
   let currentUserType = 0
   if (renderAdditional) {
     while (pips.length <= 3 && renderAdditional > 0) {
-      pips.push(<DifferentiatedUserPip key={Math.random()} userType={types[currentUserType]}/>)
+      pips.push(<DifferentiatedUserPip key={Math.random()} userType={typesCopy[currentUserType]}/>)
       currentUserType++
       renderAdditional--
     }
@@ -150,7 +150,7 @@ const VerticalVoteCountBadgeContainer = styled.div<{specialState: SpecialState}>
 
   }}; // ${({theme}) => theme.colors.success.dark}; // #82DF0A; // #294800; // #519000; // #7FE000; //  #63B000;
   border-radius: 4px;
-  padding-top: 12px;
+  padding-top: 10px;
   padding-bottom: 4px;
   box-sizing: border-box;
   height: 142px;
@@ -171,7 +171,7 @@ const VerticalVoteCountBadgeContainer = styled.div<{specialState: SpecialState}>
     > div {
       width: 20px;
       height: 20px;
-      margin-top: 2px!important;
+      margin-bottom: 4px!important;
       margin-left: auto;
       margin-right: auto;
       border-radius: 4px;

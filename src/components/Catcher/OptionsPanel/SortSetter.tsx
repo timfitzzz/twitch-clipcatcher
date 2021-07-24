@@ -208,7 +208,7 @@ const DraggableIcon = styled(({ onClick, id, index, moveIcon, className, channel
     }
 
     svg {
-      z-index: 100;
+      z-index: 10;
       display: block;
       margin-top: auto;
       margin-bottom: auto;

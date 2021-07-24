@@ -5,7 +5,7 @@ import { FiberManualRecord } from '@styled-icons/material/FiberManualRecord'
 export const RecordingIcon = styled(FiberManualRecord).attrs(p => ({
   ...p,
   viewBox: "0 0 24 24"
-}))<{ scanning: boolean }>`
+}))<{ scanning: boolean, noHoverChange?: boolean }>`
   height: 21px;
   margin-top: auto;
   margin-bottom: auto;
@@ -20,7 +20,7 @@ export const RecordingIcon = styled(FiberManualRecord).attrs(p => ({
   ${p => p.scanning ? `
   animation: blink 1s cubic-bezier(.5, 1, 1, 1) infinite alternate;
   fill: #e80404;
-  `:`
+  `: !p.noHoverChange && `
   &:hover {
       opacity: 1;
   `}

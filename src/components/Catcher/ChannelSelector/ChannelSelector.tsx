@@ -15,9 +15,6 @@ const AddIcon = styled(Add)`
   margin-bottom: auto;
   padding-top: 0px;
   padding-bottom: 0px;
-  &:hover {
-    fill: green
-  }
 `
 
 const ChannelButtonContainer = styled(Flex).attrs(p => ({

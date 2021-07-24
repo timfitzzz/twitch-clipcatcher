@@ -28,6 +28,8 @@ const ChannelButtonBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
 
   }
 
+   
+
   &:first-of-type {
 
   }
@@ -47,9 +49,10 @@ const ChannelButtonBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
       color: black;
     }
   ` : `
-    border: 1px solid ${p.theme.colors.primary.light};
+
+    border: 1px solid ${p.theme.colors.primary.semilight}; ${p.theme.colors.primary.light};
     background-color: ${p.theme.colors.quartenary.light};
-    color: ${p.theme.colors.gray.dark};
+    color: ${p.theme.colors.primary.main}; // ${p.theme.colors.gray.dark};
   `}
 
   ${p => p.buttonOnly && !p.current ? `
@@ -60,6 +63,23 @@ const ChannelButtonBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
     background-color: unset;
     fill: none;
     color: unset;
+    cursor: pointer;
+    svg {
+      &:hover {
+        fill: ${p.theme.colors.success.dark};
+      }
+    }
+
+  `: ``}
+
+  ${p => !p.buttonOnly && !p.current ? `
+    &:hover {
+      border-top: 1px solid ${p.theme.colors.primary.light};
+      border-left: 1px solid ${p.theme.colors.primary.light};
+      border-right: 1px solid ${p.theme.colors.primary.light};
+      border-bottom: 1px solid ${p.theme.colors.primary.light};
+      cursor: pointer;
+    }
   `: ``}
 
   ${p => p.current && p.buttonOnly ? `
@@ -71,8 +91,10 @@ const ChannelButtonBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
     padding-left: 6px;
     svg {
       margin-top: -4px;
+      fill: ${p.theme.colors.primary.dark};
     }
     height: 35px;
+
   ` : ``}
 
   ${p => p.buttonOnly ? `
@@ -102,7 +124,7 @@ const ChannelButton = ({title, hidden, onClick, icon, current, className}: {titl
           <ChannelButtonTitleText>{title}</ChannelButtonTitleText>
         )}
         { typeof scanning !== 'undefined' && scanning !== false ? (
-          <SteadyRecordingIcon fade={!current} scanning={false}/>
+          <SteadyRecordingIcon fade={!current} scanning={false} noHoverChange={true}/>
         ) : (<></>)}
         { typeof title !== 'undefined' && (
           <ClipsCount channelName={title} inverted={current}/>
@@ -115,8 +137,10 @@ const ChannelButton = ({title, hidden, onClick, icon, current, className}: {titl
 }
 
 export default styled(ChannelButton)`
- > div {
-   margin-top: auto;
-   margin-bottom: auto;
- }
+
+  > div {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
 `

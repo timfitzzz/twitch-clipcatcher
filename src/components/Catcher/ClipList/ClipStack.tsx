@@ -8,6 +8,7 @@ import TagsBadge from './TagsBadge'
 import { useAppSelector } from '../../../hooks/reduxHooks'
 import { SortTypes } from '../../../types'
 import Delay from '../../badges/WhenAgoBadge'
+import StackDurationBadge from '../../badges/StackDurationBadge';
 import ClipDurationBadge from '../../badges/ClipDurationBadge';
 import ExpandButtonBadge from '../../badges/ExpandButtonBadge'
 import { Flex } from 'rendition'
@@ -31,7 +32,7 @@ const OtherClipsContainer = styled.div`
 
   margin-right: 68px;
   align-content: flex-end;
-  margin-left: 42px;
+  margin-left: 32px;
 `
 
 const OtherClip = styled(Clip)`
@@ -59,7 +60,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
           component = <Delay clipSlug={clipSlugs[0]} key={'summarywhen'+clipSlugs} zIndex={10 - index}/>
           break;
         case SortTypes.length:
-          component = <ClipDurationBadge clipSlug={clipSlugs[0]} key={'duration'+clipSlugs[0]} zIndex={10 - index}/>
+          component = clipSlugs.length > 1 ? <StackDurationBadge direction={sort.direction} clipSlugs={clipSlugs} key={'duration'+clipSlugs.join("")} zIndex={10 - index}/> : <ClipDurationBadge clipSlug={clipSlugs[0]} key={'duration'+clipSlugs[0]} zIndex={10 - index}/>
           break;
         default:
           component = null
