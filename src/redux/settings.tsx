@@ -12,12 +12,14 @@ interface SettingsSliceState {
   userLoading: boolean
   currentChannel: string | -1
   leftColumnWidth: number
+  popoutPlayer: boolean
 }
 
 const initialState: SettingsSliceState = {
   userLoading: false,
   currentChannel: -1,
-  leftColumnWidth: 312
+  leftColumnWidth: 312,
+  popoutPlayer: false
 }
 
 interface ChannelChangedPayload {
@@ -31,6 +33,12 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    playerPoppedOut(settings, action: PayloadAction<undefined>) {
+      settings.popoutPlayer = true
+    },
+    playerPoppedIn(settings, action: PayloadAction<undefined>) {
+      settings.popoutPlayer = false
+    },
     leftColumnWidthAdjusted(settings, action: PayloadAction<LeftColumnWidthAdjustedPayload>) {
       settings.leftColumnWidth =
         (action.payload > 312) ? action.payload : 312
@@ -65,5 +73,5 @@ const settingsSlice = createSlice({
   }
 })
 
-export const { channelChanged, userLoggedOut, leftColumnWidthAdjusted } = settingsSlice.actions
+export const { channelChanged, userLoggedOut, leftColumnWidthAdjusted, playerPoppedOut, playerPoppedIn } = settingsSlice.actions
 export default settingsSlice.reducer

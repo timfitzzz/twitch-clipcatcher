@@ -26,6 +26,7 @@ export default styled(ViewCountBadge)`
   
   color: white;
   border-radius: 4px;
+  cursor: default;
 
   background-color: #3151FC; // #001584; // #0023DD; //${p => p.theme.colors.success.dark};
 

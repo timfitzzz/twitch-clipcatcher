@@ -6,6 +6,9 @@ import { ChatUser } from './users'
 
 // SINGLE-VALUE SELECTORS
 
+  // SETTINGS
+  export const selectPlayerPoppedout = memoize(({settings}: { settings: RootState['settings'] }) => settings.popoutPlayer)
+
   // USERS
   export const selectChannelUserType = memoize(({user, channel}: {user: ChatUser, channel: ICatcherChannel}): UserTypes => {
     return user.userTypes[channel.name][0]

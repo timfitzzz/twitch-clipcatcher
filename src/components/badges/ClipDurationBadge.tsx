@@ -22,6 +22,7 @@ export default styled(ClipDurationBadge)`
 
   margin: 4px 4px 4px auto;
   padding: 0px 4px;
+  cursor: default;
 
   
   // align-self: flex-end;

@@ -13,7 +13,7 @@ const DelayBadge = styled.div<{hideIcon: boolean}>`
 
   display: flex;
   flex-direction: row;
-  
+  cursor: default;
 
   padding-left: 4px;
   padding-right: 4px;

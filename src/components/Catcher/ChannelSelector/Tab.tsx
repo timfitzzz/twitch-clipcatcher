@@ -52,7 +52,7 @@ const ChannelButtonBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
 
     border: 1px solid ${p.theme.colors.primary.semilight}; ${p.theme.colors.primary.light};
     background-color: ${p.theme.colors.quartenary.light};
-    color: ${p.theme.colors.primary.main}; // ${p.theme.colors.gray.dark};
+    color: unset;
   `}
 
   ${p => p.buttonOnly && !p.current ? `
