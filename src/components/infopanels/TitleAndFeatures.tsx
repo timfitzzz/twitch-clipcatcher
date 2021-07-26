@@ -2,44 +2,134 @@
 import React from 'react'
 import styled from 'styled-components'
 import IntroCard from './IntroCard'
-import { Heading, Txt, List } from 'rendition'
+import { Heading, Txt } from 'rendition'
 import { TitleLogo } from '../AuthPanel/AuthCard'
+import Feature from './Feature'
+
+const TopContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+const TitleAndFeaturesContainer = styled.div`
+  display: column;
+`
 
 const BigTitleLogo = styled(TitleLogo)`
-  height: 50px;
+  height: 100px;
   margin-left: 0px;
   padding-left: 0px;
   padding-bottom: 8px;
   path {
-    stroke: ${p => p.theme.colors.secondary.light};
+    stroke: ${p => p.theme.colors.primary.light};
     stroke-width: 10px;
   }
 `
 
+const BigTitleLogoContainer = styled.div`
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 16px;
+  // background-color: ${p => p.theme.colors.primary.dark};
+  border-radius: 4px;
+  margin-right: 32px;
+
+`
+
+const FeaturesContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+
+`
+
 export const TitleAndFeatures = ({className}: { className?: string }) => (
-  <IntroCard className={className}>
-    <BigTitleLogo/>
-    {/* <Heading.h2>ClipsTime!</Heading.h2> */}
-    <Heading.h4>Watch clips with your chat -- but only the good ones.</Heading.h4>
-    <Txt.p>Many streamers and their communities exchange Twitch clips every day, but quality control and safety issues often arise. ClipsTime! is here to help solve them.</Txt.p>
-    <List>
-      <Txt>
-        <Txt.span bold={true}>Browse, sort, and play Twitch clips</Txt.span> linked in Twitch chat
-      </Txt>
-      <Txt>
-        <Txt.span bold={true}>Avoid exposure to unwanted content</Txt.span> (DMCA, drama, meta) with the help of chat moderators and users
-      </Txt>
-      <Txt>
-        <Txt.span bold={true}>Know which clips are from the same moments</Txt.span> in real time
-      </Txt>
-      <Txt>
-        <Txt.span bold={true}>Runs in your browser using your Twitch account</Txt.span> -- no third-party server or data collection
-      </Txt>
-      <Txt>
-        <Txt.span bold={true}>No Ads for streamers or chat moderators</Txt.span> -- ever
-      </Txt>
-    </List>
-  </IntroCard>
+  <TitleAndFeaturesContainer className={className}>
+    <TopContainer>
+      <BigTitleLogoContainer>
+        <BigTitleLogo/>
+          {/* <Heading.h2>ClipsTime!</Heading.h2> */}
+          
+        </BigTitleLogoContainer>
+      <IntroCard>
+        <Heading.h3>Watch clips with your chat -- but only the good ones.</Heading.h3>
+        <Txt.p>Many streamers and their communities exchange Twitch clips every day, but quality control and safety issues often arise. ClipsTime! is here to help solve them.</Txt.p>
+      </IntroCard>
+    </TopContainer>
+      <FeaturesContainer>
+        <Feature
+          body={
+            <>
+              <Heading.h4>Collect and play Twitch clips linked by Twitch chatters</Heading.h4>
+            </>
+          }
+          screenshot={
+            <img alt={'full-size view of clipstime panel'} src={'/screenshots/fullsize-screenshot-buddha-2k.png'}/> 
+          }
+        />
+        <Feature
+          body={
+            <>
+              <Heading.h4>Sort in up to five ways, by your preference:</Heading.h4>
+              <span>when  • how long  • who • viewcount • votes from your chat</span>
+            </>
+          }
+          screenshot={
+            <img alt={'zoomed-in view of clipstime options panel'} src="/screenshots/options-panel.PNG"/>
+          }
+        />
+        <Feature
+          body={
+            <>
+              <Heading.h4>Browse overlapping clips</Heading.h4>
+              <span>Find the best version of a great moment</span>
+            </>
+          }
+          screenshot={
+            <img alt={'zoomed-in view of multiple-clip expander'} src="/screenshots/multipleclipselector-retry3.png"/>
+          }
+        />
+        <Feature
+          body={
+            <>
+              <Heading.h4>Avoid unwanted meta or drama</Heading.h4>
+            </>
+          }
+          screenshot={
+            <>
+              <img alt={'zoomed in view of a clip that has been tagged as meta'} src="/screenshots/meta-vote-count-alt.png "/>
+            </>
+          }
+        />
+        <Feature
+          body={
+            <>
+              <Heading.h4>Let mods screen for DMCA and TOS risks</Heading.h4>
+            </>
+          }
+          screenshot={
+            <>
+              <img alt={'view of a clip that has been vetoed due to DMCA violation'} src="/screenshots/vetoed-clip.png"/>
+            </>
+          }
+        />
+        <Feature
+          body={
+            <>
+            <Heading.h3>And more!</Heading.h3>
+            <ul>
+              <li>Pop-out player</li>
+              <li>Runs in your browser (no download)</li>
+              <li>No invasive data collection</li>
+              <li>No ads for streamers or chat mods, ever</li>
+              <li>Created by and for the Twitch and GTARP communities</li>
+              <li>Open-source development: <a href="https://github.com/timfitzzz/twitch-clipcatcher">scrutinize the code</a> -- or get involved!</li>
+            </ul>
+            </>
+          }/>
+    </FeaturesContainer>
+  </TitleAndFeaturesContainer>
 )
 
 export default styled(TitleAndFeatures)`
@@ -50,5 +140,13 @@ export default styled(TitleAndFeatures)`
   li {
     font-size: 15px; 
   }
+
+  a {
+    color: ${({theme}) => theme.colors.primary.light};
+    &:visited {
+      color: ${({theme}) => theme.colors.primary.dark};
+    }
+  }
+
 
 `

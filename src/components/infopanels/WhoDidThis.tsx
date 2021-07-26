@@ -2,16 +2,40 @@
 import React from 'react'
 import { Txt } from 'rendition'
 import styled from 'styled-components'
-import IntroCard from './IntroCard'
 
-export const WhoDidThis = ({className}: { className?: string}) => (
-  <IntroCard>
+export const WhoDidThis = styled(({className}: { className?: string}) => (
+  <div className={className}>
+      <div className={'imagecontainer'}>
+        <img alt={'grossly self-promotional shot of unemployed clipstime creator tim fitzgerald'} src={"/tim-photo-cutout-bw.png"}/>
+      </div>
     <Txt.span>
-      <Txt.span bold={true}>Brought to you by Manapool Engineering,</Txt.span> a.k.a. Tim Fitzgerald, who noticed streamers and their chats frequently running into issues sharing and watching clips together. He's currently looking for full-time employment, and you can hire him!
+
+      <Txt.span bold={true}>Brought to you by Manapool Engineering,</Txt.span> a.k.a. <a href={"https://timfitz.dev"}>Tim Fitzgerald</a>, who noticed streamers and their chats frequently running into issues sharing and watching clips together. <a href="mailto:timothyliamfitzgerald@gmail.com">Email him!</a>
+
     </Txt.span>
-  </IntroCard>
-)
+  </div>
+))`
 
-export default styled(WhoDidThis)`
+background-color: ${({theme}) => theme.colors.primary.semilight};
+  padding: 8px;
+  border-radius: 4px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 400px;
 
+  .imagecontainer {
+    float: right;
+    display: inline-block;
+    img {
+      height: 100px;
+      width: 140px;
+      object-fit: cover;
+      object-position: 0 0;
+      float: right:
+      display: inline-block;
+    }
+  }
+  
 `
+
+export default WhoDidThis

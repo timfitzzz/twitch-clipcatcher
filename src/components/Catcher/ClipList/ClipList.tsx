@@ -141,7 +141,7 @@ const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
         { clipStacks && clipStacks.length > 0 && (
             <VariableSizeList
             ref={listRef}
-            height={740}
+            height={850}
             overscanCount={2}
             estimatedItemSize={176}
             itemCount={clipStacks.length}

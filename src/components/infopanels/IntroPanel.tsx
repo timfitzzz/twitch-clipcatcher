@@ -8,6 +8,7 @@ export const IntroPanelOuterContainer = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
+  overflow-y: auto;
 `
 
 
@@ -15,17 +16,16 @@ export const IntroPanelOuterContainer = styled.div`
 export const IntroPanelContainer = styled.div`
   margin: 32px 32px;
   color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
-  > div {
-    background-color: ${({theme}) => theme.colors.primary.semilight};
-    border-left: 5px solid ${({theme}) => theme.colors.primary.light};
-    border-top: 5px solid ${({theme}) => theme.colors.primary.light};
-  }
+
 `
 
 export const IntroPanel = ({className}: { className?: string }) => {
   return (
-    <IntroPanelOuterContainer>
+    <IntroPanelOuterContainer className={className}>
       <IntroPanelContainer>
         <TitleAndFeatures/>
         <WhoDidThis/>
