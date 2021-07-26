@@ -14,7 +14,7 @@ export const IntroPanelOuterContainer = styled.div`
 
 
 export const IntroPanelContainer = styled.div`
-  margin: 32px 32px;
+  margin: 16px 16px;
   color: black;
   display: flex;
   flex-direction: column;

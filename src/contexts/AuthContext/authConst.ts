@@ -19,7 +19,7 @@ export const IDENTITY_CONFIG: ExtendedOidcClientSettings  = {
   redirect_uri: process.env.REACT_APP_REDIRECT_URL,
   loadUserInfo: true,
   response_type: "token id_token",
-  scope: "openid chat:read chat:edit",
+  scope: "openid",
   webAuthResponseType: "token id_token",
   nonce: '58008',
   claims: {

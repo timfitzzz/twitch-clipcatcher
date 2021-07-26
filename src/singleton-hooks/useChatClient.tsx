@@ -23,7 +23,7 @@ const useChatClientImpl = () => {
 
   useEffect(() => {
     if (authProvider && !chatClient) {
-      const chatClient = new ChatClient(authProvider, { webSocket: true});
+      const chatClient = ChatClient.anonymous({webSocket: true}) //new ChatClient(authProvider, { webSocket: true});
       if (chatClient) {
         setChatClient(chatClient);
       }
