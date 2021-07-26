@@ -224,6 +224,7 @@ export interface ICatcherChannel {
     [clipSlug: string]: string[]
   }
   stackClips: boolean
+  error: string | null
 }
 
 export enum UserTypes {

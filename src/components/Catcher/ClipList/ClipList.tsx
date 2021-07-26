@@ -12,8 +12,9 @@ import { VariableSizeList } from 'react-window'
 import { memo } from 'react'
 import { useState } from 'react'
 import { useRef } from 'react'
-import { selectChannelSort } from '../../../redux/selectors'
+import { selectChannelError, selectChannelSort } from '../../../redux/selectors'
 import { useAppSelector } from '../../../hooks/reduxHooks'
+import ErrorCard from './ErrorCard'
 
 const collapsedStackHeight = 176
 const additionalHeightPerExpandedClip = 146
@@ -83,6 +84,7 @@ const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
   const currentClipStacks = useClipStacks({channelName})
   const clipStacks = useUpdateLock(currentClipStacks, channelName)
   const sort = useAppSelector(state => selectChannelSort(state.channels[channelName]))
+  const error = useAppSelector(state => selectChannelError(state.channels[channelName]))
   const [expandedStacks, setExpandedStacks] = useState<{ [key: string]: 1 }>({})
   const listRef = useRef<VariableSizeList>(null)
 
@@ -167,7 +169,10 @@ const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
             return <ClipStack key={channelName+clipStack} clipSlugs={[clipStack]} channelName={channelName} />
           }
         })} */}
-        { clipStacks && clipStacks.length === 0 ? (
+        { error && (
+          <ErrorCard channelName={channelName}/>
+        )}
+        { !error && clipStacks && clipStacks.length === 0 ? (
           <NoClips/>
         ) : (<></>)}
       </ClipsContainer>

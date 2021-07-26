@@ -28,6 +28,8 @@ type ChannelStackingToggledPayload = string
 type ChannelClearedPayload = string
 type ChannelUpdatesHeldPayload = string
 type ChannelUpdatesReleasedPayload = string
+type ChannelErrorSetPayload = string
+type ChannelErrorClearedPayload = string
 
 interface ChannelClipRemovedPayload {
   channelName: string
@@ -56,7 +58,8 @@ export function initChannelState(channelName: string): ICatcherChannel {
     sort: defaultSort,
     filters: defaultFilters,
     postersByClip: {},
-    stackClips: true
+    stackClips: true,
+    error: null
   };
 }
 
@@ -96,6 +99,7 @@ const channelsSlice = createSlice({
       delete channels[action.payload]
     },
     scanningStarted(channels, action: PayloadAction<ScanningStartedPayload>) {
+      channels[action.payload].error = null
       channels[action.payload].scanning = true
     },
     scanningStopped(channels, action: PayloadAction<ScanningStoppedPayload>) {
@@ -103,6 +107,12 @@ const channelsSlice = createSlice({
     },
     channelCleared(channels, action: PayloadAction<ChannelClearedPayload>) {
       channels[action.payload].clips = []
+    },
+    channelErrorSet(channels, action: PayloadAction<ChannelErrorSetPayload> ) {
+      channels[action.payload].error = action.payload
+    },
+    channelErrorCleared(channels, action: PayloadAction<ChannelErrorClearedPayload>) {
+      channels[action.payload].error = null
     },
     channelClipRemoved(channels, action: PayloadAction<ChannelClipRemovedPayload>) {
       channels[action.payload.channelName].clips = channels[action.payload.channelName].clips.filter(clipSlug => clipSlug !== action.payload.clipSlug)
@@ -167,5 +177,5 @@ const channelsSlice = createSlice({
   }
 })
 
-export const { channelAdded, channelRemoved, scanningStarted, scanningStopped, channelCleared, sortMoved, sortToggled, channelUpdatesHeld, channelUpdatesReleased } = channelsSlice.actions;
+export const { channelAdded, channelErrorSet, channelErrorCleared, channelRemoved, scanningStarted, scanningStopped, channelCleared, sortMoved, sortToggled, channelUpdatesHeld, channelUpdatesReleased } = channelsSlice.actions;
 export default channelsSlice.reducer

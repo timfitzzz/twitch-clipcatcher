@@ -16,6 +16,7 @@ import { ChatUser } from './users'
 
   // CHANNELS
   export const selectChannelSort = memoize((channel: ICatcherChannel) => channel.sort, { size: 500 })
+  export const selectChannelError = memoize((channel: ICatcherChannel) => channel.error, { size: 500 })
 
   // CLIPS
   export const selectUpvoters = memoize(({ votesSet }: { votesSet: CaughtClipV2['votes'][0] }) => votesSet.up,  { size: 500 })

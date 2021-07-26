@@ -32,8 +32,6 @@ export const clipAdded = createAction('clipAdded', (payload: ClipAddedPayloadV2)
   return {payload}
 })
 
-
-
 // intakeClip: handle message with detected clip.
 // ----------------------------------------------
 // possible results: clipAdded || clipAnnotated

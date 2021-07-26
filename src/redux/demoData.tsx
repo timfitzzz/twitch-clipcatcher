@@ -29,7 +29,8 @@ export const channelsDemoData: ICatcherChannel = {
       'seanlai01'
     ],
   },
-  stackClips: true
+  stackClips: true,
+  error: null
 }
 
 export const clipsDemoData: Partial<ClipsSliceState> = {
