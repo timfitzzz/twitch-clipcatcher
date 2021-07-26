@@ -82,7 +82,7 @@ const MainView = () => {
 
   return (
     <MainViewContainer flexDirection={"row"} ref={viewContainer} onMouseMove={draggingDivider ? handleDrag : undefined} onMouseUp={draggingDivider ? handleDividerDragEnd : undefined}>
-      <MainViewSideColumn flexDirection={"column"} width={leftColumnWidth}>
+      <MainViewSideColumn flexDirection={"column"} width={leftColumnWidth} minWidth={leftColumnWidth}>
         <AuthCard />
         <MainViewDivider />
         { isAuthenticated ? (
