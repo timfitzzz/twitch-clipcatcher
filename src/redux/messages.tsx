@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { annotationAdded, AnnotationAddedPayload } from './annotations'
 import { clipAdded, ClipAddedPayloadV2 } from './actions'
 
-interface MessagesSliceState {
+export interface MessagesSliceState {
   messages: {
     [messageId: string]: string
   }

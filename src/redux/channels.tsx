@@ -7,7 +7,18 @@ export interface ChannelsSliceState {
   [channelName: string]: ICatcherChannel
 }
 
-const initialState: ChannelsSliceState = {}
+const initialState: ChannelsSliceState = {
+  // clipstime: {                                // demo data for generating example visuals
+  //   name: 'clipstime',
+  //   scanning: false,
+  //   holdUpdates: false,
+  //   clips: [],
+  //   sort: defaultSort,
+  //   filters: defaultFilters,
+  //   postersByClip: {},
+  //   stackClips: true
+  // }
+}
 
 type ChannelAddedPayload = string
 export type ChannelRemovedPayload = string

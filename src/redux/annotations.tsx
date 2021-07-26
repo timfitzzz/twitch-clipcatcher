@@ -26,7 +26,7 @@ export interface ClipAnnotation {
   reverted?: boolean
 }
 
-interface AnnotationsSliceState {
+export interface AnnotationsSliceState {
   annotations: {
     [messageId: string]: ClipAnnotation
   }

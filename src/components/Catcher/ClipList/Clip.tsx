@@ -82,6 +82,14 @@ const ClipOverlayLowerLeft = styled(Flex).attrs(p => ({
   height: 50%;
 `
 
+const ClipSpecialBadgeContainer = styled.div<{hideStats: boolean}>`
+  display: flex;
+  flex-direction: row;
+  ${({hideStats}) => hideStats && `
+  display: none;
+  `}
+`
+
 const Clip = ({clipSlug, channelName, showDuration = false, hideStats = false, className}: { clipSlug: string, channelName: string, showDuration?: boolean, hideStats?: boolean, className?: string}) => {
 
   return (
@@ -93,13 +101,14 @@ const Clip = ({clipSlug, channelName, showDuration = false, hideStats = false, c
                 <ClipOverlayLeft fullWidth={hideStats}>
                   <ClipOverlayUpperLeft>
                     <StreamerBadge clipSlug={clipSlug}/>
-                    <Flex flexDirection={'row'}>
+                    <ClipSpecialBadgeContainer hideStats={hideStats}>
                       <SpecialBadge type={'meta'} clipSlugs={[clipSlug]} channelName={channelName}/>
                       <SpecialBadge type={'drama'} clipSlugs={[clipSlug]} channelName={channelName}/>
-                    </Flex>
+                    </ClipSpecialBadgeContainer>
                   </ClipOverlayUpperLeft>
                   <ClipOverlayLowerLeft>
                       <ClipTitle clipSlug={clipSlug}/>
+                      <div></div>
                   </ClipOverlayLowerLeft>
                 </ClipOverlayLeft>
                 { !hideStats ? (

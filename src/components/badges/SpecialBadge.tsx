@@ -31,8 +31,19 @@ export const SpecialIcon = styled(({type, specialState, className}: { type: 'dra
 })`
 
   ${({specialState}) => {
-    if (specialState === SpecialState.no) {
-      return `display: none!important;`
+    switch(specialState) {
+      case SpecialState.no:
+        return `display: none!important;`
+      case SpecialState.yes:
+        return `
+        background-color: black;
+        `
+      case SpecialState.maybe:
+        return `
+        background-color: black;
+      `
+      default:
+        return ``
     }
   }}
 
@@ -225,7 +236,7 @@ export const SpecialBadge = ({type, clipSlugs, channelName, className}: { type: 
   }
 
   return (
-    <div className={className} ref={popoverTarget} onMouseLeave={handleMouseExit} onMouseOver={handlePopover}>
+    <div className={className} style={{display: specialState > 0 ? undefined : 'none' }} ref={popoverTarget} onMouseLeave={handleMouseExit} onMouseOver={handlePopover}>
       { showPopover 
         && !!(popoverTarget.current)
         && <SpecialBadgePopover 

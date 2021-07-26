@@ -25,13 +25,13 @@ export const TagsPanel = ({channelName, clipSlugs, className}: { channelName: st
   let [tagsExpanded, setTagsExpanded] = useState<boolean>(false)
 
   let tags = useAppSelector(state => clipSlugs.reduce((agg: { tags: string[], byTag: { [tagName: string]: string[] }}, clipSlug) => {
-      if (state.clips.clips[clipSlug].taggedIn && state.clips.clips[clipSlug].taggedIn[channelName]) {
-        agg.tags = agg.tags.concat(state.clips.clips[clipSlug].taggedIn[channelName].as.tags)
-        state.clips.clips[clipSlug].taggedIn[channelName].as.tags.forEach(tag => {
+      if (state.clips.clips[clipSlug].taggedIn && state.clips.clips[clipSlug].taggedIn![channelName]) {
+        agg.tags = agg.tags.concat(state.clips.clips[clipSlug].taggedIn![channelName].as.tags)
+        state.clips.clips[clipSlug].taggedIn![channelName].as.tags.forEach(tag => {
           if (agg.byTag[tag]) {
-            agg.byTag[tag].concat(state.clips.clips[clipSlug].taggedIn[channelName].as.byTag[tag])
+            agg.byTag[tag].concat(state.clips.clips[clipSlug].taggedIn![channelName].as.byTag[tag])
           } else {
-            agg.byTag[tag] = state.clips.clips[clipSlug].taggedIn[channelName].as.byTag[tag]
+            agg.byTag[tag] = state.clips.clips[clipSlug].taggedIn![channelName].as.byTag[tag]
           }
         })
       }

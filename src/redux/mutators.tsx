@@ -24,13 +24,13 @@ export const mutateClipTags = (clip: CaughtClipV2, annotation: ClipAnnotation) =
     newTags.forEach(tag => {
       
       // if the tag is new:
-      if (!taggedIn[channelName].as.byTag[tag]) {
-        taggedIn[channelName].as.tags.push(tag)
-        taggedIn[channelName].as.byTag[tag] = [by]
+      if (!taggedIn![channelName].as.byTag[tag]) {
+        taggedIn![channelName].as.tags.push(tag)
+        taggedIn![channelName].as.byTag[tag] = [by]
 
       } else { // if the tag is not new
-        taggedIn[channelName].as.byTag[tag].indexOf(by) === -1 && 
-          taggedIn[channelName].as.byTag[tag].push(by)
+        taggedIn![channelName].as.byTag[tag].indexOf(by) === -1 && 
+          taggedIn![channelName].as.byTag[tag].push(by)
       }
     })
   }
@@ -39,10 +39,10 @@ export const mutateClipTags = (clip: CaughtClipV2, annotation: ClipAnnotation) =
 export const revertClipTags = (clip: CaughtClipV2, annotation: ClipAnnotation) => {
   let { tags: annotationTags, by } = annotation
   
-  if (!annotationTags || annotationTags.length === 0) {
+  if (!annotationTags || annotationTags.length === 0 || !clip.taggedIn) {
     return
   } else {
-    let { taggedIn: { [annotation.channelName]: { as: channelTags } } } = clip
+    let { as: channelTags } = clip.taggedIn[annotation.channelName]
     for (let i = 0; i < annotationTags.length; i++) {
       let isLastTagger = channelTags.byTag[annotationTags[i]].length === 1
       let tagIdx = channelTags.tags.indexOf(annotationTags[i])

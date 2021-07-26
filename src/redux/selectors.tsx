@@ -406,16 +406,19 @@ export const selectSortedSeparatedUserList = memoize(({ state, channel, userList
   let sortedUserList = selectSortedUserList({state, channel, userList})
   let foundRegularUser = false
   let checkingUser = 0
+  let results: [string[], string[]] = [
+    [],[]
+  ]
   while (!foundRegularUser && checkingUser < sortedUserList.length) {
-    if (state.users.users[sortedUserList[checkingUser]].userTypes[channel.name][0] <= 2) {
+    if (state.users.users[sortedUserList[checkingUser]].userTypes[channel.name][0] >= 2) {
+      results[0].push(sortedUserList[checkingUser])
+    } else {
       foundRegularUser = true
+      results[1] = sortedUserList.slice(checkingUser, sortedUserList.length)
     }
     checkingUser++
   }
-  return [
-    sortedUserList.slice(0, checkingUser),
-    (sortedUserList.length > 0 || checkingUser === 0) ? sortedUserList.slice(checkingUser, sortedUserList.length) : []
-  ]
+  return results
 }, { size: 500 })
 
 export const doAscendingClipsOverlap = memoize(({clipA, clipB}: {clipA: CaughtClipV2, clipB: CaughtClipV2}) => {

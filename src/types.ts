@@ -25,7 +25,9 @@ export interface TwitchClipV5 {
     id: string
     url: string
     offset: number
+    preview_image_url: string
   }
+  broadcast_id: string
   game: string
   language: string
   title: string

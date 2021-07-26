@@ -37,13 +37,14 @@ export interface CaughtClipV2 extends TwitchClipV5 {
   vod: {
     id: string,
     url: string,
-    offset: number
+    offset: number,
+    preview_image_url: string
   }
   firstSeenAnnotation: MessageId
   postedBy: {
     [channelName: string]: UserName[]
   }
-  taggedIn: {
+  taggedIn?: {
     [channelName: string]: {
       // overall: {
       as: {
@@ -161,7 +162,7 @@ export interface CaughtClipV2 extends TwitchClipV5 {
 //   return clipsByDuration.splice(newIndex, 0, clipSlug)
 // }
 
-interface ClipsSliceState {
+export interface ClipsSliceState {
   clips: {
     [clipSlug: string]: CaughtClipV2
   }

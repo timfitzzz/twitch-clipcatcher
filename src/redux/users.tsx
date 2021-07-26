@@ -11,7 +11,7 @@ export interface ChatUser {
   }
 }
 
-interface UsersSliceState {
+export interface UsersSliceState {
   users: {
     [userName: string]: ChatUser
   }

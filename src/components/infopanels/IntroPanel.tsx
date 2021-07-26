@@ -10,6 +10,8 @@ export const IntroPanelOuterContainer = styled.div`
   width: 100%;
 `
 
+
+
 export const IntroPanelContainer = styled.div`
   margin: 32px 32px;
   color: black;

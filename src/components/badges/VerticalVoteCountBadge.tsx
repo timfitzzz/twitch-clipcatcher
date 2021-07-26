@@ -174,7 +174,7 @@ const VerticalVoteCountBadgeContainer = styled.div<{specialState: SpecialState}>
       margin-bottom: 4px!important;
       margin-left: auto;
       margin-right: auto;
-      border-radius: 4px;
+      border-radius: 4px!important;
       border: 1px white;
       svg {
         height: 20px;

@@ -59,7 +59,7 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
             </div>
           )
         }
-        { (sortedDramas[0].length > 0 || sortedDramas[1].length) > 1 && (
+        { (sortedDramas[0].length > 0 || sortedDramas[1].length) > 0 && (
           <div id={'sectiondiv'}>
             {sortedDramas[0].length > 0 && (
               <>
@@ -76,8 +76,8 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
             )}
             {sortedDramas[1].length > 0 && (
               <>
-                <SectionTitle>{sortedDramas[0].length} drama confirmation{sortedDramas[0].length !== 1 && `s`}:</SectionTitle>
-                {sortedDramas[0].map(userName => (
+                <SectionTitle>{sortedDramas[1].length} drama suggestion{sortedDramas[1].length !== 1 && `s`}:</SectionTitle>
+                {sortedDramas[1].map(userName => (
                   <div key={clipSlugs.join("")+'dramalistitem'+userName+channelName}>
                     <VoteStatsUserPip key={clipSlugs.join("")+'dramauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
                     <span>
@@ -89,7 +89,7 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
             )}
           </div>
         )}
-        { (sortedMetas[0].length > 0 || sortedMetas[1].length > 1) && (
+        { (sortedMetas[0].length > 0 || sortedMetas[1].length > 0) && (
           <div id={'sectiondiv'}>
             {sortedMetas[0].length > 0 && (
               <>
@@ -106,8 +106,8 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
             )}
             {sortedMetas[1].length > 0 && (
               <>
-                <SectionTitle>{sortedMetas[0].length} meta confirmation{sortedMetas[0].length !== 1 && `s`}:</SectionTitle>
-                {sortedMetas[0].map(userName => (
+                <SectionTitle>{sortedMetas[1].length} meta suggestion{sortedMetas[1].length !== 1 && `s`}:</SectionTitle>
+                {sortedMetas[1].map(userName => (
                   <div key={clipSlugs.join("")+'metalistitem'+userName+channelName}>
                     <VoteStatsUserPip key={clipSlugs.join("")+'metauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
                     <span>
