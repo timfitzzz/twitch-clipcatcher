@@ -36,17 +36,7 @@ opacity: 1;
 `
 
 const AuthButtonCard = styled(ButtonCard)`
-  border-color: black;
-  border-width: 2px;
-  border-color: ${p => p.theme.colors.quartenary.dark};
-  border-radius: 50%;
-  margin: 4px;
-  width: 39.5px;
-  height: 39.5px;
 
-  &:hover {
-    border-color: white;
-  }
 `
 
 const LogoutIndicatorLayer = styled(({className, onClick}: {className?: string, onClick?: () => void}) => {
@@ -94,7 +84,7 @@ const LoginIndicatorLayer = styled(({className, onClick}: {className?: string, o
     <div onClick={onClick} className={className}>
       <div id={'outer'}></div>
       <div id={'inner'}></div>
-      <TwitchLoginIcon/>
+      <TwitchLoginIcon className={'AuthButton'}/>
     </div>)
 })`
 position: absolute;
@@ -178,7 +168,7 @@ svg {
 // transition: opacity 0.1s, border-width 0.1s;
 `
 
-export const AuthButton = () => {
+export const AuthButton = styled(({className}: { className?: string }) => {
   let isAuthenticated = useContextSelector(AuthContext, ctx => ctx.isAuthenticated)
   let logIn = useContextSelector(AuthContext, ctx => ctx.signinRedirect)
   let logout = useContextSelector(AuthContext, ctx => ctx.logout)
@@ -187,7 +177,7 @@ export const AuthButton = () => {
   let loggedIn = useMemo(() => isAuthenticated ? isAuthenticated() : false, [isAuthenticated])
 
   return (
-    <AuthButtonCard>
+    <AuthButtonCard className={className}>
       { loggedIn && user && user.profilePicUrl ? (
         <TwitchUserIcon src={user.profilePicUrl}/>
       ) : (
@@ -200,6 +190,19 @@ export const AuthButton = () => {
       )}
     </AuthButtonCard>
   )
+})`
+
+border-color: black;
+border-width: 2px;
+border-color: ${p => p.theme.colors.quartenary.dark};
+border-radius: 50%;
+margin: 4px;
+width: 39.5px;
+height: 39.5px;
+
+&:hover {
+  border-color: white;
 }
+`
 
 export default AuthButton

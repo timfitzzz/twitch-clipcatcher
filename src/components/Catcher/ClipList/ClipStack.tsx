@@ -88,10 +88,10 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
   return (
     <div className={className}>
-      <div className={'stackedBadges'}>
+      <div className={'StackedBadges'}>
         { renderBadges() }
       </div>
-      <div className={'otherBadges'}>
+      <div className={'OtherBadges'}>
         <TagsBadge hideIcon={false} clipSlugs={clipSlugs} channelName={channelName}/>
         <ExpandButtonBadge expandToggle={toggleExpandStack} expanded={expandStack} clipsCount={clipSlugs.length}/>
       </div>
@@ -107,7 +107,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
   justify-content: stretch;
   height: 142px;
   box-sizing: border-box;
-  .stackedBadges {
+  .StackedBadges {
 
     margin-right: 2px;
     display: flex;
@@ -162,7 +162,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
       justify-content: flex-end;
     }
   }
-  .otherBadges {
+  .OtherBadges {
     margin-top: auto;
     margin-bottom: 0px;
       

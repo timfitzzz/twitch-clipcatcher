@@ -13,13 +13,15 @@ interface SettingsSliceState {
   currentChannel: string | -1
   leftColumnWidth: number
   popoutPlayer: boolean
+  helpViewActive: boolean
 }
 
 const initialState: SettingsSliceState = {
   userLoading: false,
   currentChannel: -1,
   leftColumnWidth: 312,
-  popoutPlayer: false
+  popoutPlayer: false,
+  helpViewActive: false
 }
 
 interface ChannelChangedPayload {
@@ -33,6 +35,12 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    helpViewActivated(settings, action: PayloadAction<undefined>) {
+      settings.helpViewActive = true
+    },
+    helpViewDeactivated(settings, action: PayloadAction<undefined>) {
+      settings.helpViewActive = false
+    },
     playerPoppedOut(settings, action: PayloadAction<undefined>) {
       settings.popoutPlayer = true
     },
@@ -73,5 +81,5 @@ const settingsSlice = createSlice({
   }
 })
 
-export const { channelChanged, userLoggedOut, leftColumnWidthAdjusted, playerPoppedOut, playerPoppedIn } = settingsSlice.actions
+export const { helpViewActivated, helpViewDeactivated, channelChanged, userLoggedOut, leftColumnWidthAdjusted, playerPoppedOut, playerPoppedIn } = settingsSlice.actions
 export default settingsSlice.reducer

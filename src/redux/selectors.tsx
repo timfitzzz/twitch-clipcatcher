@@ -8,7 +8,7 @@ import { ChatUser } from './users'
 
   // SETTINGS
   export const selectPlayerPoppedout = memoize(({settings}: { settings: RootState['settings'] }) => settings.popoutPlayer)
-
+  export const selectHelpViewActive = memoize((settings: RootState['settings']) => settings.helpViewActive)
   // USERS
   export const selectChannelUserType = memoize(({user, channel}: {user: ChatUser, channel: ICatcherChannel}): UserTypes => {
     return user.userTypes[channel.name][0]

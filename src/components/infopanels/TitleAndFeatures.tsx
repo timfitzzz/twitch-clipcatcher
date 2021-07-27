@@ -72,7 +72,7 @@ export const TitleAndFeatures = ({className}: { className?: string }) => (
           body={
             <>
               <Heading.h4>Sort in up to five ways, by your preference:</Heading.h4>
-              <span>when  • how long  • who • viewcount • votes from your chat</span>
+              <span>when • how long • who • viewcount • votes from your chat</span>
             </>
           }
           screenshot={

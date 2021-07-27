@@ -23,7 +23,7 @@ const ChannelCloseButton = ({channelName, className}: { channelName: string, cla
 
   return (
     <div className={className} onClick={(e) => dispatch(channelRemoved(channelName))}>
-        <CloseIcon />      
+        <CloseIcon className={'ChannelCloseButton'} />      
     </div>
   )
 

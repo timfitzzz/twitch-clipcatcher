@@ -8,7 +8,6 @@ const AddChannelInputContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   border-top: 1px solid ${({theme}) => theme.colors.primary.light};
@@ -73,7 +72,7 @@ const AddChannelForm = ({className}: {className?: string}) => {
   }
 
   return (
-    <Flex flexDirection={'column'} className={className}>
+    <Flex flexDirection={'column'} className={'AddButton ' + className}>
       <AddChannelInputContainer>
         <h5>add channel</h5>
         <AddChannelInput onChange={handleFormTextChange} placeholder={'Channel name'}/>

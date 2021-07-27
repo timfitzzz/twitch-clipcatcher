@@ -15,6 +15,7 @@ import { leftColumnWidthAdjusted } from '../redux/settings'
 import { useRef } from 'react'
 import { selectPlayerPoppedout } from '../redux/selectors'
 import PlayerPaneUndertray from '../components/PlayerPane/PlayerPaneUndertray'
+import HelpOverlay from '../components/HelpOverlay'
 
 const MainViewContainer = styled(Flex)`
   height: 100%;
@@ -82,6 +83,7 @@ const MainView = () => {
 
   return (
     <MainViewContainer flexDirection={"row"} ref={viewContainer} onMouseMove={draggingDivider ? handleDrag : undefined} onMouseUp={draggingDivider ? handleDividerDragEnd : undefined}>
+      <HelpOverlay/>
       <MainViewSideColumn flexDirection={"column"} width={leftColumnWidth} minWidth={leftColumnWidth}>
         <AuthCard />
         <MainViewDivider />

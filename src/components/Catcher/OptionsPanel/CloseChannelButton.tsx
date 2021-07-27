@@ -19,7 +19,7 @@ const CloseChannelButton = ({channelName, className}: { channelName: string, cla
   const dispatch = useAppDispatch()
 
   return (
-    <div className={className} onClick={(e) => dispatch(channelRemoved(channelName))}>
+    <div className={'CloseChannelButton ' + className} onClick={(e) => dispatch(channelRemoved(channelName))}>
       <div style={{height: '100%'}}>
         <CloseIcon />
       </div>

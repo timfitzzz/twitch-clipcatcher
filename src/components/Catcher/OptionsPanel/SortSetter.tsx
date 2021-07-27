@@ -399,7 +399,7 @@ export const SortSetter = ({channelName, className}: {
 
 
   return (
-    <SortSetterOuterContainer className={className}>
+    <SortSetterOuterContainer className={'SortControls ' + className}>
       <OptionsPanelSectionTitle isActive={currentSort.reduce((sortIs, sort) => sortIs ? true : sort.active, false as boolean)}>sort</OptionsPanelSectionTitle>
       <SortSetterContainer>
         <AscendingContainer>

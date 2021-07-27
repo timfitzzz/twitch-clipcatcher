@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { OpenInNew } from '@styled-icons/material/OpenInNew'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import { selectPlayerPoppedout } from '../../redux/selectors'
+import { selectHelpViewActive, selectPlayerPoppedout } from '../../redux/selectors'
 import { playerPoppedOut } from '../../redux/settings'
 
 const PlayerPaneOverlayContainer = styled.div<{draggingDivider: boolean}>`
@@ -61,6 +61,7 @@ export const PlayerPaneOverlay = styled(({className, mouseIsOver = false, draggi
 
 
   let playerPopped = useAppSelector(state => selectPlayerPoppedout({settings: state.settings}))
+  let helpViewActivated = useAppSelector(state => selectHelpViewActive(state.settings))
   let dispatch = useAppDispatch()
 
   let handlePopOut = () => { console.log('popping player out'); dispatch(playerPoppedOut()) }
@@ -68,10 +69,10 @@ export const PlayerPaneOverlay = styled(({className, mouseIsOver = false, draggi
 
   return (
     <PlayerPaneOverlayContainer draggingDivider={draggingDivider}>
-      <PlayerPaneOverlayUpperSection showButtons={mouseIsOver}>
+      <PlayerPaneOverlayUpperSection showButtons={mouseIsOver || helpViewActivated}>
         { !playerPopped && (
           <PlayerPaneOverlayButton onClick={handlePopOut}>
-            <OpenInNew/>
+            <OpenInNew className={'OpenInNew'} />
           </PlayerPaneOverlayButton>
         )}
         { playerPopped && (

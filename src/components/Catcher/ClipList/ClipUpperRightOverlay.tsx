@@ -54,7 +54,7 @@ export const UpperRightOverlay = ({clipSlug, channelName, className}: { clipSlug
   }
 
   return (
-    <div className={className}>
+    <div className={'ClipUpperRightOverlay ' + className}>
       { renderBadges() }
     </div>
   )

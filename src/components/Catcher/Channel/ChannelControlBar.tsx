@@ -65,7 +65,7 @@ const ReusableChannelControls = ({channelName, className}: {channelName: string,
 
   
   return (
-    <div className={className}>
+    <div className={className + ' ChannelControlBar'}>
       <LargerRecordingButton recording={scanning} toggleRecording={toggleScanning} />
       <LockButton locked={holdUpdates} toggleLock={toggleUpdateHold}/>
       <ClearIcon onClick={() => resetChannel()}/>

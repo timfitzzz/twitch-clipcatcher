@@ -67,7 +67,7 @@ const ReusableCollectionControls = ({channelName, className}: {channelName: stri
 
   
   return (
-    <div className={className}>
+    <div className={'CollectionControls ' + className}>
       <OptionsPanelSectionTitle isActive={true}>
         ctrl
       </OptionsPanelSectionTitle>

@@ -267,7 +267,7 @@ const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlug
   [upVoters, downVoters])
 
   return (
-    <VerticalVoteCountBadgeContainer className={className} specialState={specialState} ref={popoverTarget} onMouseLeave={handleMouseExit} onMouseOver={handlePopover}>
+    <VerticalVoteCountBadgeContainer className={'VerticalVoteCountBadge ' + className} specialState={specialState} ref={popoverTarget} onMouseLeave={handleMouseExit} onMouseOver={handlePopover}>
       { showPopover
         && !!(popoverTarget.current)
         && <VoteStats target={popoverTarget.current} clipSlugs={clipSlugs} channelName={channelName} />
