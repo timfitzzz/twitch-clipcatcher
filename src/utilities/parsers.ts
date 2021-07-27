@@ -31,9 +31,20 @@ export const parseTags = (words: string[]): tagsReport => ({
 
 export const getAnnotationTypes = (tagReport: tagsReport, hasLink: boolean): AnnotationTypes[] => {
   let types = []
-  hasLink && types.push(AnnotationTypes['link'])
-  hasLink && !tagReport.downvote && types.push(AnnotationTypes['upvote'])
-  !hasLink && tagReport.upvote && !tagReport.downvote && types.push(AnnotationTypes['upvote'])
+
+  if (hasLink) {
+    if (!tagReport.downvote && !tagReport.meta && !tagReport.drama && !tagReport.veto) {
+      types.push(AnnotationTypes['link'])
+      types.push(AnnotationTypes['upvote'])
+    } else {
+      types.push(AnnotationTypes['link'])
+    }
+  } else {
+    if (tagReport.upvote && !tagReport.downvote) {
+      types.push(AnnotationTypes['upvote'])
+    }
+  }
+  
   tagReport.downvote && !tagReport.upvote && types.push(AnnotationTypes['downvote'])
   tagReport.veto && types.push(AnnotationTypes['veto']);
   (tagReport.drama || tagReport.meta || tagReport.tags.length > 0) && types.push(AnnotationTypes['tag'])
