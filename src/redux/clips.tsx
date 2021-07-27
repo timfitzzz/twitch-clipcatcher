@@ -9,14 +9,6 @@ import { RootState } from './store'
 import memoize, { getUntrackedObject } from 'proxy-memoize'
 import { selectStackVoters } from './selectors'
 
-// export interface ClipPostedBy {
-//   broadcaster?: boolean,
-//   mods?: string[],
-//   vips?: string[],
-//   subs?: string[],
-//   users?: string[]
-// }
-
 export type UserName = string
 export type MessageId = string
 
@@ -34,6 +26,9 @@ export interface CaughtClipV2 extends TwitchClipV5 {
       by: UserName[]
     }
   }
+  watchedIn: {
+    [channelName: string]: boolean
+  }
   vod: {
     id: string,
     url: string,
@@ -46,56 +41,12 @@ export interface CaughtClipV2 extends TwitchClipV5 {
   }
   taggedIn?: {
     [channelName: string]: {
-      // overall: {
       as: {
         tags: string[],
         byTag: {
           [tag: string]: UserName[]
         }
       }
-      // }
-      // byUsers?: {
-      //   as: {
-      //     tags: string[],
-      //     countByTag: {
-      //       [tag: string]: number
-      //     }
-      //     in: string[]
-      //   }
-      // }
-      // bySubs?: {
-      //   as: {
-      //     tags: string[],
-      //     countByTag: {
-      //       [tag: string]: number
-      //     }
-      //     in: string[]
-      //   }
-      // }
-      // byVips?: {
-      //   as: {
-      //     tags: string[],
-      //     countByTag: {
-      //       [tag: string]: number
-      //     }
-      //     in: string[]
-      //   }
-      // }
-      // byMods?: {
-      //   as: {
-      //     tags: string[],
-      //     countByTag: {
-      //       [tag: string]: number
-      //     }
-      //     in: string[]
-      //   }
-      // }
-      // byBroadcaster?: {
-      //   as: {
-      //     tags: string[]
-      //     in: string[]
-      //   }
-      // }
     }
   }
   metaedIn?: {
@@ -109,58 +60,6 @@ export interface CaughtClipV2 extends TwitchClipV5 {
     }
   }
 }
-
-// function recursiveSearch<key extends keyof CaughtClipV2>(
-//   targetArray: string[], 
-//   referenceObject: { [key: string]: CaughtClipV2 }, 
-//   referenceProp: key,
-//   targetValue: CaughtClipV2[key],
-//   left: number = 0, 
-//   right: number = targetArray.length - 1
-//   ): number {
-
-//   // console.log(left, right, targetArray.length)
-
-//   if (targetArray.length === 0 || left >= right) {
-//     return left
-//   }
-
-//   let mid = left + Math.floor(right - left / 2)
-
-//   if (referenceObject[targetArray[mid]][referenceProp] === targetValue) {
-//     return mid
-//   } else {
-//     if (typeof targetValue === 'number') {
-//       if (referenceObject[targetArray[mid]][referenceProp] > targetValue) {
-//         return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid-1)
-//       } else {
-//         return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid+1, right)
-//       }
-//     } else {
-//       if ((referenceObject[targetArray[mid]][referenceProp] as string).localeCompare(targetValue as string) < 0 ) {
-//         return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, left, mid-1)
-//       } else {
-//         return recursiveSearch(targetArray, referenceObject, referenceProp, targetValue, mid+1, right)
-//       }
-//     }
-//   }
-// }
-
-
-// const insertEpoch = (clipsByStartEpoch: string[], startEpoch: number, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
-//   const newIndex = recursiveSearch(clipsByStartEpoch, clips, 'startEpoch', startEpoch)
-//   return clipsByStartEpoch.splice(newIndex, 0, clipSlug)
-// }
-
-// const insertStream = (clipsByStream: string[], broadcasterName: string, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
-//   const newIndex = recursiveSearch(clipsByStream, clips, 'broadcasterName', broadcasterName)
-//   return clipsByStream.splice(newIndex, 0, clipSlug)
-// }
-
-// const insertDuration = (clipsByDuration: string[], duration: number, clipSlug: string, clips: {[key: string]: CaughtClipV2}): string[] => {
-//   const newIndex = recursiveSearch(clipsByDuration, clips, 'duration', duration)
-//   return clipsByDuration.splice(newIndex, 0, clipSlug)
-// }
 
 export interface ClipsSliceState {
   clips: {
@@ -303,10 +202,6 @@ export const stackDurationsSelector = memoize(({ state, clipSlugs }: { state: Ro
   return clipSlugs.map(clipSlug => state.clips.clips[clipSlug].duration)
 })
 
-// export const stackDurationRangeSelector = memoize(({ state, clipSlugs }: { state: RootState, clipSlugs: string[] }) => {
-//   let durations = 
-// })
-
 export const specialTagsMaxUserTypeSelector = memoize((obj: SpecialTagsSelectorInput) => {
   let [state, clipSlugs, channelName, type] = obj
   let maxType = -1
@@ -359,18 +254,6 @@ export const selectVotersByClipIds = memoize(({state, clipSlugs, channelName}: {
 
   output.upVoters = stackVoters.up
   output.downVoters = stackVoters.down
-  // obj.clipSlugs.forEach(clipSlug => {
-  //   obj.state.clips.clips[clipSlug].votes[obj.channelName].up.forEach(userName => {
-  //     if (output.upVoters.indexOf(userName) === -1) {
-  //       output.upVoters.push(userName)
-  //     }
-  //   })
-  //   obj.state.clips.clips[clipSlug].votes[obj.channelName].down.forEach(userName => {
-  //     if (output.downVoters.indexOf(userName) === -1) {
-  //       output.downVoters.push(userName)
-  //     }
-  //   })
-  // }) 
 
   output.upVoters = output.upVoters.sort((usernameA, usernameB) => 
     state.users.users[usernameB].userTypes[channelName][0] -
@@ -469,45 +352,17 @@ export const doPresortedClipsOverlap = memoize(
           : false
 })
 
-// let ascendingSortCount = 0
-
-// let chronologySortCount = 0
-
-
-
-// const selectSortedClips = memoize((obj: ChannelClipsSelectorInput) => {
-
-//   const sortersTable = {
-//     [SortTypes['frogscount']]: (obj: ChannelClipSelectorInput) => selectVoteTotalByClipId({ obj.}),
-//     [SortTypes['views']]: selectViewsByClipId,
-//     [SortTypes['date']]: selectLengthByClipId,
-//     [SortTypes['length']]: 'tbd'
-//   }
-
-//   let { state, clipSlugs, channelName } = obj
-
-
-
-
-// })
-
 export const clipsSlice = createSlice({ 
   name: 'clips',
   initialState,
   reducers: {
-    // clipAdded(clips, action: PayloadAction<ClipAddedPayloadV2>) {
-    //   clips.clips[action.payload.clip.slug] = action.payload.clip
-    //   insertEpoch(clips.clipsByStartEpoch, action.payload.clip.startEpoch || 0, action.payload.clip.slug, clips.clips)
-    //   insertStream(clips.clipsByStream, action.payload.clip.broadcasterName, action.payload.clip.slug, clips.clips)
-    //   insertDuration(clips.clipsByDuration, action.payload.clip.duration, action.payload.clip.slug, clips.clips)
-    // }
+    clipPlayed(clips, action: PayloadAction<{clipSlug: string, channelName: string}>) {
+      clips.clips[action.payload.clipSlug].watchedIn[action.payload.channelName] = true
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(clipAdded, (clips, action: PayloadAction<ClipAddedPayloadV2>) => {
       clips.clips[action.payload.clip.slug] = action.payload.clip
-      // insertEpoch(clips.clipsByStartEpoch, action.payload.clip.startEpoch || 0, action.payload.clip.slug, clips.clips)
-      // insertStream(clips.clipsByStream, action.payload.clip.broadcasterName, action.payload.clip.slug, clips.clips)
-      // insertDuration(clips.clipsByDuration, action.payload.clip.duration, action.payload.clip.slug, clips.clips)
     })
     builder.addCase(annotationAdded.type, (clips, action: PayloadAction<FirstAnnotationAddedPayload>) => {
       let { clipSlug } = action.payload.annotation
@@ -536,4 +391,5 @@ export const clipsSlice = createSlice({
   }
 })
 
+export const { clipPlayed } = clipsSlice.actions
 export default clipsSlice.reducer

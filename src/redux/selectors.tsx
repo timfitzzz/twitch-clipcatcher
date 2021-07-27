@@ -25,6 +25,7 @@ import { ChatUser } from './users'
   export const selectEpoch = memoize(({clip}: { clip: CaughtClipV2 }) => clip.startEpoch === 0 ? (new Date(clip.created_at).getTime() ) : clip.startEpoch, { size: 500 })
   export const selectDuration = memoize(({clip}: { clip: CaughtClipV2 }) => clip.duration, { size: 500})
   export const selectStreamerName = memoize(({clip}: { clip: CaughtClipV2 }) => clip.broadcaster.name, { size: 500})
+  export const selectWatchedInChannel = memoize(([clip, channel]: [clip: CaughtClipV2, channel: ICatcherChannel]) => !!clip.watchedIn[channel.name], { size: 500 })
 
   export const selectClipMetaedBy = memoize(({ clip, channel }: {
     clip: CaughtClipV2,

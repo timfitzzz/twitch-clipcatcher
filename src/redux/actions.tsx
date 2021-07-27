@@ -108,6 +108,7 @@ export const intakeClip = createAsyncThunk<
           broadcasterName: clipMeta!.broadcaster!.name,
           postedBy: {},
           votes: { [channelName]: { up: [], down: [] }},
+          watchedIn: {}
           // votes: { [channelName]: newAnnotation.upvote ? { up: [userName], down: [] } : newAnnotation.downvote ? { down: [userName], up: [] } : { up: [], down: [] } }
         }
         mutateClipByAnnotation(preProcessedClip, newAnnotation)

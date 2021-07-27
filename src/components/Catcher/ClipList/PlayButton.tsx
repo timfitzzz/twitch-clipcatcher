@@ -5,10 +5,12 @@ import { Circle } from '@styled-icons/feather/Circle'
 import { RotateCcw } from '@styled-icons/feather/RotateCcw'
 import { Shield } from '@styled-icons/feather/Shield'
 import styled from 'styled-components';
-import { useAppSelector } from '../../../hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
 import { UserTypes } from '../../../types';
 import { useContextSelector } from 'use-context-selector';
 import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
+import { selectWatchedInChannel } from '../../../redux/selectors';
+import { clipPlayed } from '../../../redux/clips';
 
 export enum PlayIconState {
   play,
@@ -196,9 +198,11 @@ const PlayButton = ({
 
   let vetoed = useMemo(() => vetoedByRanked ? true : false, [vetoedByRanked])
   let [vetoOverridden, setVetoOverridden] = useState<boolean>(false)
-  let [played, setPlayed] = useState<boolean>(false)
+  let played = useAppSelector(state => selectWatchedInChannel([state.clips.clips[clipSlug], state.channels[channelName]]))
   let playClip = useContextSelector(PlayerContext, (c) => c.playClip)
   let stopPlaying = useContextSelector(PlayerContext, (c) => c.stopPlaying)
+
+  let dispatch = useAppDispatch()
 
   const handlePlayClick = () => {
     if (vetoed && !vetoOverridden) {
@@ -209,7 +213,7 @@ const PlayButton = ({
     } else {
       stopPlaying && stopPlaying()
       playClip && playClip(clipSlug)
-      setPlayed(true)
+      dispatch(clipPlayed({clipSlug, channelName}))
     }
   }
 
