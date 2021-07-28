@@ -16,7 +16,7 @@ ClipsTime! is a single-page web application intended to enhance the experience o
 ## How to use
 
 1. **Access the ClipsTime! interface** -- the current version is available [here at https://clipstime.manapool.nyc](https://clipstime.manapool.nyc), or deploy it yourself using the development instructions below.
-2. **Log in with Twitch.** (A quick note on permissions: Although the authentication message will ask for permission to view your email, ClipsTime! is never aware of it, and neither are its developers. Additionally, it will request permission to read and write chat messages on your behalf. At present, it only uses these permissions to read chat messages and never writes them; in the future, broadcasters and moderators will be able to access the chat API using the GUI.)
+2. **Log in with Twitch.** (A quick note on permissions: Although the authentication message will ask for permission to view your email, ClipsTime! is never aware of it, and neither are its developers.)
 3. **Add a channel to collect activity from** using the "add channel" box. Now, as clips and related messages are posted, the activity will be reflected in the ClipsTime! interface.
 
 For more on how users, moderators, and broadcasters can take advantage of ClipsTime! by tagging, voting on, and taking moderation actions on clips posted in chat, please read on for a breakdown of available chat commands.
