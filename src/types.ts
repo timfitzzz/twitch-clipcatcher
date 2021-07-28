@@ -58,41 +58,6 @@ export interface CaughtClip extends TwitchClipV5 {
   startEpoch?: number
 }
 
-// export interface CaughtClipV2 extends TwitchClipV5 {
-//   broadcasterName: string
-//   postedBy: {
-//     [channelName: string]: {
-//       userId: TwitchPrivateMessage['userInfo']['userId']
-//       userName: TwitchPrivateMessage['userInfo']['userName']
-//       isMod: boolean
-//       isVip: boolean
-//       isBroadcaster: boolean
-//     }[]
-//   }
-//   annotations: {
-//     [channelName: string]: ClipAnnotation[]
-//   }
-//   startEpoch?: number
-//   postedByBroadcaster?: boolean
-//   postedByMod?: boolean
-//   postedByVip?: boolean
-//   vod: {
-//     id: string,
-//     url: string,
-//     offset: number
-//   }
-// }
-
-
-// export interface ChannelClip {
-//   postedBy: {
-//     userId: TwitchPrivateMessage['userInfo']['userId']
-//     userName: TwitchPrivateMessage['userInfo']['userName']
-//     isMod: boolean
-//     isVip: boolean
-//     isBroadcaster: boolean
-//   }[]
-// }
 
 export interface OIDCUserData {
   id_token: string

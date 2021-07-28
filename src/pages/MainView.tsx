@@ -16,6 +16,7 @@ import { useRef } from 'react'
 import { selectPlayerPoppedout } from '../redux/selectors'
 import PlayerPaneUndertray from '../components/PlayerPane/PlayerPaneUndertray'
 import HelpOverlay from '../components/HelpOverlay'
+import WeAreJustSoSoSorry from './MobileApology'
 
 const MainViewContainer = styled(Flex)`
   height: 100%;
@@ -58,6 +59,8 @@ const MainView = () => {
   let [ draggingDivider, setDraggingDivider ] = useState<boolean>(false)
   let viewContainer = useRef<HTMLDivElement>(null)
 
+  let hoverSupported = Modernizr.hovermq
+
   let handleDividerDragStart = (e: React.MouseEvent) => {
     if (viewContainer && viewContainer.current) {
       setDraggingDivider(true)
@@ -83,21 +86,28 @@ const MainView = () => {
 
   return (
     <MainViewContainer flexDirection={"row"} ref={viewContainer} onMouseMove={draggingDivider ? handleDrag : undefined} onMouseUp={draggingDivider ? handleDividerDragEnd : undefined}>
-      <HelpOverlay/>
-      <MainViewSideColumn flexDirection={"column"} width={leftColumnWidth} minWidth={leftColumnWidth}>
-        <AuthCard />
-        <MainViewDivider />
-        { isAuthenticated ? (
-          <Catcher />
-        ) : (
-          <LoggedOutConsolePanel/>
-        )}
-      </MainViewSideColumn>
-      <VerticalDraggableDivider handleDragStart={handleDividerDragStart}/>
-      <PlayerPaneContainer >
-        <PlayerPane key={'playerpane'} draggingDivider={draggingDivider} />
-      </PlayerPaneContainer>
-      { playerPoppedOut && <PlayerPaneUndertray/>}
+      { hoverSupported ? (
+        <>
+        <HelpOverlay/>
+        <MainViewSideColumn flexDirection={"column"} width={leftColumnWidth} minWidth={leftColumnWidth}>
+          <AuthCard />
+          <MainViewDivider />
+          { isAuthenticated ? (
+            <Catcher />
+          ) : (
+            <LoggedOutConsolePanel/>
+          )}
+        </MainViewSideColumn>
+        <VerticalDraggableDivider handleDragStart={handleDividerDragStart}/>
+        <PlayerPaneContainer >
+          <PlayerPane key={'playerpane'} draggingDivider={draggingDivider} />
+        </PlayerPaneContainer>
+        { playerPoppedOut && <PlayerPaneUndertray/>}
+        </>
+      ) : (
+        <WeAreJustSoSoSorry/>
+      )}
+      
     </MainViewContainer>
   )
 }

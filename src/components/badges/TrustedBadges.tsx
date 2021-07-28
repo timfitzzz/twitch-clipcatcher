@@ -19,7 +19,6 @@ const TrustedBadges = styled(Flex)`
   background-color: ${p => p.theme.colors.success.light};
   width: fit-content;
 
-
   span {
     margin-top: auto;
     margin-bottom: auto;
