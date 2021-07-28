@@ -6,6 +6,7 @@ import { channelCleared, channelUpdatesHeld, channelUpdatesReleased, scanningSta
 import { OptionsPanelSectionTitle } from '.'
 import { RecordingButton } from '../../badges/RecordingButton'
 import { LockButton } from '../../badges/LockButton'
+import ClearButton from '../../badges/ClearButton'
 import memoize from 'proxy-memoize'
 
 
@@ -22,22 +23,6 @@ const LargerRecordingButton = styled(RecordingButton)`
   margin-bottom: auto;
 `
 
-const ClearIcon = styled(DeleteForever).attrs((p) => ({
-  ...p,
-  viewBox: '0 0 20 21'
-}))`
-  height: 29px;
-  margin-top: -1.5px;
-  margin-bottom: auto;
-  margin-right: 0px;
-  fill: ${p => p.theme.colors.warning.light};
-  width: 29px;
-  cursor: pointer;
-
-  &:hover {
-    fill: red;
-  }
-`
 
 const ReusableCollectionControls = ({channelName, className}: {channelName: string, className?: string}) => {
 
@@ -73,7 +58,7 @@ const ReusableCollectionControls = ({channelName, className}: {channelName: stri
       </OptionsPanelSectionTitle>
       <LargerRecordingButton recording={scanning} toggleRecording={toggleScanning} />
       <LockButton locked={holdUpdates} toggleLock={toggleUpdateHold}/>
-      <ClearIcon onClick={() => resetChannel()}/>
+      <ClearButton resetChannel={resetChannel}/>
     </div>
   )
 

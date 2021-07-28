@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Close } from '@styled-icons/material/Close'
 import { useAppDispatch } from '../../../hooks/reduxHooks'
 import { channelRemoved } from '../../../redux/channels'
+import Tooltip from '../../popovers/Tooltip'
+import debounce from 'lodash/debounce'
 
 const CloseIcon = styled(Close)`
   width: 18px;
@@ -11,19 +13,38 @@ const CloseIcon = styled(Close)`
 
   margin-left: -1px;
   margin-top: -7px;
-
+  cursor: pointer;
   &:hover {
     fill: red;
   } 
 `
+const ChannelCloseButtonText = styled.span`
+  color: ${p => p.theme.colors.danger.main};
+`
+
 
 const ChannelCloseButton = ({channelName, className}: { channelName: string, className?: string}) => {
 
   const dispatch = useAppDispatch()
 
+  let popoverTarget = useRef<HTMLDivElement>(null)
+  let [showPopover, setShowPopover] = useState<any>(false)
+
+  const handlePopover = debounce(() => setShowPopover(true), 100)
+
+  const handleMouseExit = () => {
+    handlePopover.cancel()
+    setShowPopover(false)
+  }
+
   return (
-    <div className={className} onClick={(e) => dispatch(channelRemoved(channelName))}>
-        <CloseIcon className={'ChannelCloseButton'} />      
+    <div className={className} onMouseEnter={handlePopover} onMouseLeave={handleMouseExit} ref={popoverTarget} onClick={(e) => dispatch(channelRemoved(channelName))}>
+      {showPopover && !!(popoverTarget.current) && (
+        <Tooltip target={popoverTarget.current} placement={'top'} onDismiss={() => {}}>
+          <ChannelCloseButtonText>Close Channel (Irreversible!)</ChannelCloseButtonText>
+       </Tooltip>
+      )}
+      <CloseIcon className={'ChannelCloseButton'} />      
     </div>
   )
 

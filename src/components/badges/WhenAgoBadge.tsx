@@ -106,7 +106,7 @@ const Delay = ({className, clipSlug, hideIcon = true, zIndex}: { hideIcon?: bool
     let interval: number = window.setTimeout(() => {
       if (startEpoch === 0) {
         let now = (new Date()).getTime()
-        if (createdAt < now - 2*60000 && createdAt > now - 5*60000 ) {
+        if (createdAt < now - 2*60000 && createdAt > now - 8*60000 ) {
           retryDelay()
         }
       }

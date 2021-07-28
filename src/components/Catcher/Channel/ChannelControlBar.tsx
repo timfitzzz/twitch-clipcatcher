@@ -1,10 +1,10 @@
 import React from 'react'
-import { DeleteForever } from '@styled-icons/material/DeleteForever'
 import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
 import { channelCleared, channelUpdatesHeld, channelUpdatesReleased, scanningStarted, scanningStopped } from '../../../redux/channels'
 import { RecordingButton } from '../../badges/RecordingButton'
 import { LockButton } from '../../badges/LockButton'
+import ClearButton from '../../badges/ClearButton'
 import memoize from 'proxy-memoize'
 
 
@@ -19,23 +19,6 @@ const LargerRecordingButton = styled(RecordingButton)`
   margin-bottom: auto;
 `
 
-const ClearIcon = styled(DeleteForever).attrs((p) => ({
-  ...p,
-  viewBox: '0 0 22 22'
-}))`
-  height: 22px;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 2px;
-  padding-bottom: 2px;
-  fill: ${p => p.theme.colors.warning.light};
-  width: 23px;
-  cursor: pointer;
-
-  &:hover {
-    fill: red;
-  }
-`
 
 const ReusableChannelControls = ({channelName, className}: {channelName: string, className?: string}) => {
 
@@ -68,7 +51,7 @@ const ReusableChannelControls = ({channelName, className}: {channelName: string,
     <div className={className + ' ChannelControlBar'}>
       <LargerRecordingButton recording={scanning} toggleRecording={toggleScanning} />
       <LockButton locked={holdUpdates} toggleLock={toggleUpdateHold}/>
-      <ClearIcon onClick={() => resetChannel()}/>
+      <ClearButton resetChannel={resetChannel}/>
     </div>
   )
 
