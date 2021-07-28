@@ -82,7 +82,6 @@ export const Feature = styled((
 })`
   margin: 2%;
   max-width: 25%;
-  max-height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: left;

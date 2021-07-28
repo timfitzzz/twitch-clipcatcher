@@ -9,6 +9,10 @@ import Feature from './Feature'
 const TopContainer = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
 `
 
 const TitleAndFeaturesContainer = styled.div`
@@ -51,7 +55,7 @@ export const TitleAndFeatures = ({className}: { className?: string }) => (
         <BigTitleLogo/>
           {/* <Heading.h2>ClipsTime!</Heading.h2> */}
           
-        </BigTitleLogoContainer>
+      </BigTitleLogoContainer>
       <IntroCard>
         <Heading.h3>Watch clips with your chat -- but only the good ones.</Heading.h3>
         <Txt.p>Many streamers and their communities exchange Twitch clips every day, but quality control and safety issues often arise. ClipsTime! is here to help solve them.</Txt.p>
@@ -133,6 +137,8 @@ export const TitleAndFeatures = ({className}: { className?: string }) => (
 )
 
 export default styled(TitleAndFeatures)`
+  display: flex;
+  flex-direction: column;
   p {
     font-size: 16px;
   }
