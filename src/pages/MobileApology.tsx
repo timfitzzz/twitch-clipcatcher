@@ -29,7 +29,7 @@ const WeAreJustSoSoSorry = styled(({className}: { className?: string }) => {
       <AgainCommaPleaseAcceptOurSincerestRegrets>
         { /* eslint-disable-next-line react/jsx-pascal-case */ }
         <Heading.h4>ClipsTime! currently does not support use on mobile devices. </Heading.h4>
-        At some future point, we do hope to support mobile devices as read/write interfaces via chat, so we can help our favorite streamers exchange free content from the comfort of our thrones. In the meantime, please accept a small token of our appreciation for your visit, and go check us out on your desktop or laptop computing device.
+        At some future point, we do hope to support mobile devices as read/write interfaces via chat, so we can help our favorite streamers exchange free content from the comfort of our thrones. In the meantime, please check us out on your desktop or laptop computing device.
       </AgainCommaPleaseAcceptOurSincerestRegrets>
     </div>
   )
