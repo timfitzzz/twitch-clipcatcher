@@ -40,6 +40,9 @@ const WeAreJustSoSoSorry = styled(({className}: { className?: string }) => {
   flex-direction: column;
   height: calc(100vh);
   width: calc(100vw);
+  svg {
+    padding: 16px;
+  }
 
 `
 
