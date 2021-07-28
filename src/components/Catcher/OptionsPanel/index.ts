@@ -2,7 +2,6 @@
 import styled from 'styled-components'
 import { Button, Flex } from 'rendition'
 import { SectionTitle } from '../../typography/SectionTitle'
-// import { StyledIcon } from '@styled-icons/styled-icon'
 
 export * from './OptionsPanel'
 

@@ -41,9 +41,9 @@ To upvote or downvote a clip, a user can:
 
 Tags must be 3 or more characters long, and separated from each other and a clip link (if included in the same message) by a space.
 
-To tag a clip, a user can:
-* reply to the message with tags (words)
-* repost the link and add tags (words)
+To tag a clip:
+* reply to the message (any words included will be applied as tags)
+* repost the link and append tags (any words included will be applied as tags)
 
 ### Mark a clip as Meta or Drama (All chatters, kind of)
 
