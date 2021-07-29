@@ -16,94 +16,113 @@ display: flex;
   margin-right: 4px;
 `
 
-const ChannelButtonBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
-  display: flex;
-  flex-direction: row;
-  padding: 0px 4px;
-  margin-top: 4px;
-  margin-left: 2px;
-  margin-right: 2px;
-  border-radius: 4px;
-  height: 31px;
-  > div {
-
-  }
-
-   
-
-  &:first-of-type {
-
-  }
-
+const ChannelButtonInnerBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
+display: flex;
+flex-direction: row;
+padding: 0px 4px;
+margin-top: 4px;
+margin-right: 2px;
+border-radius: 4px;
+height: 31px;
   
-  &:last-of-type {
+${p => p.current ? `
+border-top: 1px solid ${p.theme.colors.primary.light};
+border-left: 1px solid ${p.theme.colors.primary.light};
+border-right: 1px solid ${p.theme.colors.primary.light};
+border-bottom: 1px solid ${p.theme.colors.primary.light};
+background-color: ${p.theme.colors.primary.semilight};
+h5 {
+  color: black;
+}
+` : `
 
+border: 1px solid ${p.theme.colors.primary.semilight}; //${p.theme.colors.primary.light};
+background-color: ${p.theme.colors.quartenary.light};
+color: unset;
+`}
+
+${p => p.buttonOnly && !p.current ? `
+box-sizing: border-box;
+height: 31px;
+border-top: 1px solid transparent;
+border-left: 1px solid transparent;
+border-right: 1px solid transparent;
+border-bottom: 0px;
+background: unset;
+background-color: unset;
+fill: none;
+color: unset;
+cursor: pointer;
+padding-top: 0px!important;
+padding-bottom: 0px!important;
+svg {
+  &:hover {
+    fill: ${p.theme.colors.success.dark};
   }
+}
 
-  ${p => p.current ? `
-    border-top: 1px solid ${p.theme.colors.primary.light};
-    border-left: 1px solid ${p.theme.colors.primary.light};
-    border-right: 1px solid ${p.theme.colors.primary.light};
-    border-bottom: 1px solid ${p.theme.colors.primary.light};
-    background-color: ${p.theme.colors.primary.semilight};
-    h5 {
-      color: black;
-    }
-  ` : `
+`: ``}
 
-    border: 1px solid ${p.theme.colors.primary.semilight}; ${p.theme.colors.primary.light};
-    background-color: ${p.theme.colors.quartenary.light};
-    color: unset;
-  `}
+${p => !p.buttonOnly && !p.current ? `
+&:hover {
+  border-top: 1px solid ${p.theme.colors.primary.light};
+  border-left: 1px solid ${p.theme.colors.primary.light};
+  border-right: 1px solid ${p.theme.colors.primary.light};
+  border-bottom: 1px solid ${p.theme.colors.primary.light};
+  cursor: pointer;
+}
+`: ``}
 
-  ${p => p.buttonOnly && !p.current ? `
-    height: 31px;
-    border: 1px solid transparent;
-    padding-left: 6px;
-    background: unset;
-    background-color: unset;
-    fill: none;
-    color: unset;
-    cursor: pointer;
-    svg {
-      &:hover {
-        fill: ${p.theme.colors.success.dark};
-      }
-    }
+${p => p.current && p.buttonOnly ? `
+border-bottom: none;
+border-bottom-left-radius: 0px;
+border-bottom-right-radius: 0px;
+z-index: 1;
+padding-left: 4px;
+svg {
+  margin-top: 0px;
+  fill: ${p.theme.colors.primary.dark};
+}
+height: 30px;
 
-  `: ``}
+` : ``}
 
-  ${p => !p.buttonOnly && !p.current ? `
-    &:hover {
-      border-top: 1px solid ${p.theme.colors.primary.light};
-      border-left: 1px solid ${p.theme.colors.primary.light};
-      border-right: 1px solid ${p.theme.colors.primary.light};
-      border-bottom: 1px solid ${p.theme.colors.primary.light};
-      cursor: pointer;
-    }
-  `: ``}
+${p => p.buttonOnly ? `
+margin-top: 4px;
+padding-top: 6px;
 
-  ${p => p.current && p.buttonOnly ? `
-    margin-bottom: -4px;
-    border-bottom: 1px solid ${p.theme.colors.primary.semilight};
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-    z-index: 1;
-    padding-left: 6px;
-    svg {
-      margin-top: -4px;
-      fill: ${p.theme.colors.primary.dark};
-    }
-    height: 35px;
+` : ``}
+`
 
-  ` : ``}
+const ChannelButtonBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
+display: flex;
+flex-direction: row;
+margin-top: 4px;
+margin-bottom: 2px;
+margin-right: 2px;
+border-radius: 4px;
+height: 31px;
 
-  ${p => p.buttonOnly ? `
-    margin-top: 4px;
-    padding-left: 4px;
-    padding-right: 4px;
+${p => !p.current && p.buttonOnly ? `
+  height: 30px;
 
-  ` : ``}
+`: ``}
+
+${p => p.current && p.buttonOnly ? `
+margin-bottom: -2px;
+height: 35px;
+border-bottom-left-radius: 0px;
+border-bottom-right-radius: 0px;
+
+` : ``}
+
+${p => p.buttonOnly ? `
+margin-top: auto;
+margin-left: 0px;
+margin-right: 0px;
+padding-right: 1px;
+padding-left: 0px;
+` : ``}
 
 `
 
@@ -119,20 +138,23 @@ const ChannelButton = ({title, hidden, onClick, icon, current, className}: {titl
   const Icon = icon ? icon : null
 
   return (
+    
     <ChannelButtonBox hidden={hidden} className={className} current={current} onClick={onClick} buttonOnly={icon ? true : false }>
-      <Flex flexDirection={"row"}>
-        { Icon ? (
-          <Icon/>
-        ) : (
-          <ChannelButtonTitleText>{channelDisplayName}</ChannelButtonTitleText>
-        )}
-        { typeof scanning !== 'undefined' && scanning !== false ? (
-          <SteadyRecordingIcon fade={!current} scanning={false} noHoverChange={true}/>
-        ) : (<></>)}
-        { typeof title !== 'undefined' && (
-          <ClipsCount channelName={title} inverted={current}/>
-        )}
-      </Flex>
+      <ChannelButtonInnerBox  current={current} buttonOnly={icon ? true : false }>
+        <Flex flexDirection={"row"}>
+          { Icon ? (
+            <Icon/>
+          ) : (
+            <ChannelButtonTitleText>{channelDisplayName}</ChannelButtonTitleText>
+          )}
+          { typeof scanning !== 'undefined' && scanning !== false ? (
+            <SteadyRecordingIcon fade={!current} scanning={false} noHoverChange={true}/>
+          ) : (<></>)}
+          { typeof title !== 'undefined' && (
+            <ClipsCount channelName={title} inverted={current}/>
+          )}
+        </Flex>
+      </ChannelButtonInnerBox>
     </ChannelButtonBox>
   )
 
