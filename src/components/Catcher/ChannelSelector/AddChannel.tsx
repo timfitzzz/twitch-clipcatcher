@@ -58,11 +58,13 @@ const AddChannelButton = styled(Button)`
 
 const ValidationErrorBox = styled.div`
   font-size: 10px;
+  line-height: 12px;
   background-color: ${({theme}) => theme.colors.warning.light};
   color: ${({theme}) => theme.colors.warning.dark};
-  padding: 4px;
+  padding: 2px 4px!important;
   margin-left: 4px;
   border-radius: 4px;
+  box-sizing: border-box;
 `
 
 const CharacterRegExp: RegExp = /[^A-Za-z0-9_]+/g
