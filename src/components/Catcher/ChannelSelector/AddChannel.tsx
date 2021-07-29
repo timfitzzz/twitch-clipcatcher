@@ -126,7 +126,6 @@ const AddChannelForm = ({className}: {className?: string}) => {
   const handleAddChannel = () => {
     if (formText && formText.length > 0) {
       let validatedText = formText.replace("#","")
-      console.log(validatedText)
       dispatch(channelAdded(validatedText))
     }
   }
