@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TwitchClipV5, UserTypes } from '../types'
 import { UpdatedClipEpoch, UpdatedClipViews } from '../utilities/apiMethods'
 import { isEmpowered, tagsReport } from '../utilities/parsers'
-import { clipEpochsRetry, clipAdded, ClipAddedPayloadV2, updateClipViews } from './actions'
+import { clipAdded, ClipAddedPayloadV2, updateClipViews, clipEpochRetry } from './actions'
 import { annotationAdded, annotationsReverted, AnnotationsRevertedPayload, ClipAnnotation, FirstAnnotationAddedPayload } from './annotations'
 import { mutateClipByAnnotation, revertClipByAnnotation } from './mutators'
 import { RootState } from './store'
@@ -375,12 +375,18 @@ export const clipsSlice = createSlice({
         revertClipByAnnotation(clip, action.payload.annotations[i], action.payload.otherLinkRemains)
       }
     })
-    builder.addCase(clipEpochsRetry.fulfilled, (clips, action: PayloadAction<UpdatedClipEpoch[]>) => {
-      action.payload.forEach(update => {
-        if (update.startEpoch) {
-          clips.clips[update.clipSlug].startEpoch = update.startEpoch
-        }})
+    builder.addCase(clipEpochRetry.fulfilled, (clips, action: PayloadAction<UpdatedClipEpoch>) => {
+        if (action.payload.startEpoch) {
+          clips.clips[action.payload.clipSlug].startEpoch = action.payload.startEpoch
+        }
     })
+    // builder.addCase(updateClipEpochs.fulfilled, (clips, action: PayloadAction<UpdatedClipEpoch[]>) => {
+    //   action.payload.forEach(update => {
+    //     if (update.startEpoch) {
+    //       clips.clips[update.clipSlug].startEpoch = update.startEpoch
+    //     }
+    //   })
+    // })
     builder.addCase(updateClipViews.fulfilled, (clips, action: PayloadAction<{ result: UpdatedClipViews[] | string}>) => {
       if (Array.isArray(action.payload.result)) {
         action.payload.result.forEach(updateReport => {

@@ -19,7 +19,7 @@ import { parseUserType } from '../utilities/parsers';
 // 7/10: adding {6,} to specify that clip name will be at least 6 characters, to avoid falsely matching channelname/clips
 // 7/10: removing . from capture group to avoid confusion if user adds period to end of link (end of sentence) under assumption
 //       that probably there's not going to be a period in a clip url
-let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[-a-zA-Z0-9~!@#$%^&*()_=+/:;',]{6,})/g;
+let ClipRegExp: RegExp = /(?:(?:https:\/\/)*(?:clips.twitch.tv\/|www.twitch.tv\/.*\/))+(?<clipSlug>[-a-zA-Z0-9~!@#$%^&*()_=+:;',]{6,})/g;
 let wordsRegExp: RegExp = /(?:@)+|(?:\?.*=.*)+/gm
 
 interface ModerationListeners {
@@ -60,15 +60,6 @@ const SingletonLoader = () => {
       }
     }, (err) => { console.log(err); return undefined})
   } : null, [apiClient])
-
-  // use msg.tags.get('${tagName}') to discover these
-  //   {"reply-parent-display-name" => "yolson_13"}
-  // 10: {"reply-parent-msg-body" => "but I enjoyed the rp"}
-  // 11: {"reply-parent-msg-id" => "e6f55087-a031-456c-8657-9c9f74d1015a"}
-  // 12: {"reply-parent-user-id" => "273265751"}
-  // 13: {"reply-parent-user-login" => "y
-  // 15: {"subscriber" => "0"}
-
 
   useEffect(() => {
 

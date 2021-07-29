@@ -1,26 +1,28 @@
 import { ApiClient, HelixUser, TwitchApiCallType } from "twitch/lib";
 import { TwitchClipV5 } from "../types";
-import PromiseThrottle from 'promise-throttle'
 
 export const getClipMeta = async (clipSlug: string, apiClient: ApiClient): Promise<TwitchClipV5> => {
-  return apiClient
+  return await apiClient
     .callApi({
       type: TwitchApiCallType.Kraken,
       url: `/clips/${clipSlug}`,
     })
     .then((clip) => {
+      // console.log('found clip: ', clip)
       return clip; 
     });
 };
 
 export const getClipEpoch = async (vodId: string, offset: number, apiClient: ApiClient): Promise<number | null> => {
-  return apiClient.helix.videos.getVideoById(vodId).then((video) => {
-    if (video) {
-      return video.creationDate.getTime() + offset * 1000
+  // console.log('getting clip epoch for vodId', vodId, 'offset ', offset, ' using apiclient ', apiClient)
+  let epoch = apiClient.callApi({ type: TwitchApiCallType.Helix, url: `/videos?id=${vodId}`}).then(({data}) => {
+    if (data && data[0]) {
+      return (new Date(data[0].created_at)).getTime() + offset * 1000
     } else {
       return null
     }
-  })
+  }).catch(err => {console.log(err); return null})
+  return epoch
 }
 
 
@@ -41,7 +43,7 @@ export const updateClipsViews = async (clipSlugs: string[], apiClient: ApiClient
   }
   clipSets.push(clipSlugs)
 
-  return clipSets && clipSets.length > 0 ? Promise.all(clipSets.map(clipSet => apiClient.helix.clips.getClipsByIds(clipSet)))
+  return clipSets && clipSets.length > 0 ? await Promise.all(clipSets.map(clipSet => apiClient.helix.clips.getClipsByIds(clipSet)))
                 .then(clipSets => {
                   let results: UpdatedClipViews[] = []
                   clipSets.forEach(clipSet => clipSet.forEach(clip => results.push({slug: clip.id, views: clip.views})))
@@ -58,16 +60,24 @@ export interface UpdatedClipEpoch {
 
 export const retryClipEpoch = async (clipSlug: string, apiClient: ApiClient): Promise<UpdatedClipEpoch> => {
 
-  return getClipMeta(clipSlug, apiClient).then(clipMeta => {
+  return await getClipMeta(clipSlug, apiClient).then(async (clipMeta) => {
+    // console.log('got clipMeta ', clipMeta)
     if (clipMeta.vod) {
       // console.log(clipMeta.vod)
-      return getClipEpoch(clipMeta.vod.id, clipMeta.vod.offset, apiClient).then(epoch => epoch ? {
-        clipSlug,
-        startEpoch: epoch
-      } : {
-        clipSlug,
-        startEpoch: 0
-      } )
+      let epochReport = await getClipEpoch(clipMeta.vod.id, clipMeta.vod.offset, apiClient).then(epoch => {
+
+        // console.log('got epoch: ', epoch, ' for clipslug ', clipSlug)
+        return epoch ? {
+          clipSlug,
+          startEpoch: epoch
+        } : {
+          clipSlug,
+          startEpoch: 0
+        }
+      })
+      // console.log('got epochreport, ', epochReport)
+      return epochReport
+
     } else {
       return {
         clipSlug,
@@ -78,19 +88,36 @@ export const retryClipEpoch = async (clipSlug: string, apiClient: ApiClient): Pr
 
 }
 
-export const retryClipEpochs = async (clipSlugs: string[], apiClient: ApiClient): Promise<UpdatedClipEpoch[]> => {
+// export const retryClipEpochs = async (clipSlugs: string[], apiClient: ApiClient): Promise<UpdatedClipEpoch> => {
 
-  let promises: Promise<UpdatedClipEpoch>[] = []
-  let promiseThrottle = new PromiseThrottle({
-    requestsPerSecond: 1
-  })
+//   return await Promise.all(clipSlugs.map(clipSlug => getClipMeta(clipSlug, apiClient))).then(async (clipMetas) => {
+//     console.log('got clipMeta ', clipMetas)
+//     return await getClipEpoch().map()
+//     if (clipMeta.vod) {
+//       console.log(clipMeta.vod)
+//       let epochReport = await getClipEpoch(clipMeta.vod.id, clipMeta.vod.offset, apiClient).then(epoch => {
 
-  for (let i = 0; i < clipSlugs.length; i++) {
-    promises.push(promiseThrottle.add(() => retryClipEpoch(clipSlugs[i], apiClient)))
-  }
+//         console.log('got epoch: ', epoch, ' for clipslug ', clipSlug)
+//         return epoch ? {
+//           clipSlug,
+//           startEpoch: epoch
+//         } : {
+//           clipSlug,
+//           startEpoch: 0
+//         }
+//       })
+//       console.log('got epochreport, ', epochReport)
+//       return epochReport
 
-  return Promise.all(promises)
-}
+//     } else {
+//       return {
+//         clipSlug,
+//         startEpoch: 0
+//       }
+//     }
+//   })
+
+// }
 
 export const fetchUserInfo = async (userName: string, apiClient: ApiClient): Promise<Pick<HelixUser, 'name' | 'profilePictureUrl'> | null> => {
   return apiClient.helix.users.getUserByName(userName).then(userInfo => userInfo ? { name: userInfo.name, profilePictureUrl: userInfo.profilePictureUrl } : null)

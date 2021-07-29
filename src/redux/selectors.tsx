@@ -9,10 +9,12 @@ import { ChatUser } from './users'
   // SETTINGS
   export const selectPlayerPoppedout = memoize(({settings}: { settings: RootState['settings'] }) => settings.popoutPlayer)
   export const selectHelpViewActive = memoize((settings: RootState['settings']) => settings.helpViewActive)
+
   // USERS
   export const selectChannelUserType = memoize(({user, channel}: {user: ChatUser, channel: ICatcherChannel}): UserTypes => {
     return user.userTypes[channel.name][0]
   }, { size: 500 })
+  export const selectAppUser = memoize((state: RootState) => state.settings.user)
 
   // CHANNELS
   export const selectChannelSort = memoize((channel: ICatcherChannel) => channel.sort, { size: 500 })
@@ -448,24 +450,27 @@ export const selectChannelChronologyWithStacksIfDesired = memoize(
     if (channel.stackClips) {
       // console.log('current channel chronology: ', channelChronology)
       return channelChronology.reduce((output, clip, index) => {
-        if (!output.broadcasters[clip.broadcasterName]) {    // if we haven't seen this broadcaster yet we can create a new clip stack.
-          output.clipStacks.push([clip.slug])
-          output.broadcasters[clip.broadcasterName] = output.clipStacks.length - 1                  
-          return output
-        } else {
-          let lastClipStackIndex = output.broadcasters[clip.broadcasterName] // get the last stack saved for this broadcaster.
-          let lastClipStack = output.clipStacks[lastClipStackIndex]
-          let overlap = clip.startEpoch === 0 ? false : doAscendingClipsOverlap({clipA: state.clips.clips[lastClipStack[lastClipStack.length - 1]],
-                                                                                        clipB: clip})
-          if (overlap) {  // if the clips overlap, add it to their last stack.
-            output.clipStacks[lastClipStackIndex].push(clip.slug)
-            return output
-          } else {      // if the clips don't overlap, create a new stack and mark it as the last one for this broadcaster.
-            output.broadcasters[clip.broadcasterName] = output.clipStacks.length
+        if (clip) {
+          if (!output.broadcasters[clip.broadcasterName]) {    // if we haven't seen this broadcaster yet we can create a new clip stack.
             output.clipStacks.push([clip.slug])
+            output.broadcasters[clip.broadcasterName] = output.clipStacks.length - 1                  
             return output
+          } else {
+            let lastClipStackIndex = output.broadcasters[clip.broadcasterName] // get the last stack saved for this broadcaster.
+            let lastClipStack = output.clipStacks[lastClipStackIndex]
+            let overlap = clip.startEpoch === 0 ? false : doAscendingClipsOverlap({clipA: state.clips.clips[lastClipStack[lastClipStack.length - 1]],
+                                                                                          clipB: clip})
+            if (overlap) {  // if the clips overlap, add it to their last stack.
+              output.clipStacks[lastClipStackIndex].push(clip.slug)
+              return output
+            } else {      // if the clips don't overlap, create a new stack and mark it as the last one for this broadcaster.
+              output.broadcasters[clip.broadcasterName] = output.clipStacks.length
+              output.clipStacks.push([clip.slug])
+              return output
+            }
           }
         }
+        return output
       }, { clipStacks: [], broadcasters: { }} as { clipStacks: string[][], broadcasters: { [broadcasterName: string]: number } }).clipStacks
     } else {
       return channelChronology.map(clip => [clip.slug])

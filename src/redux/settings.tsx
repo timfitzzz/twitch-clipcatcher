@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { HelixUser } from 'twitch/lib'
 import { getUserInfo } from './actions'
 import { channelRemoved, ChannelRemovedPayload } from './channels'
-import { RootState } from './store'
 
 interface SettingsSliceState {
   user?: {
@@ -29,7 +28,7 @@ interface ChannelChangedPayload {
 }
 type LeftColumnWidthAdjustedPayload = number
 
-export const selectAppUser = (state: RootState) => state.settings.user
+
 
 const settingsSlice = createSlice({ 
   name: 'settings',

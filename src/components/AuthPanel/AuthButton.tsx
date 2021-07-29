@@ -6,7 +6,7 @@ import { ButtonCard } from './ButtonCards'
 import { useContextSelector } from 'use-context-selector'
 import { AuthContext } from '../../contexts/AuthContext'
 import { useAppSelector } from '../../hooks/reduxHooks'
-import { selectAppUser } from '../../redux/settings'
+import { selectAppUser } from '../../redux/selectors'
 
 const TwitchUserIcon = styled.img`
   width: 35px;

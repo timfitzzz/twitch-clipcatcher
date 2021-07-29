@@ -1,7 +1,7 @@
 import { createAction, createAsyncThunk } from "@reduxjs/toolkit"
 import { ApiClient, HelixUser } from "twitch/lib"
 import { TwitchClipV5, UserTypes } from '../types'
-import { fetchUserInfo, retryClipEpochs, updateClipsViews, UpdatedClipEpoch, UpdatedClipViews } from "../utilities/apiMethods"
+import { fetchUserInfo, retryClipEpoch, UpdatedClipEpoch, UpdatedClipViews } from "../utilities/apiMethods"
 import { getAnnotationTypes, parseTags } from "../utilities/parsers"
 import { annotationAdded, annotationsReverted, ClipAnnotation, firstAnnotationAdded } from "./annotations"
 import { CaughtClipV2 } from "./clips"
@@ -210,10 +210,10 @@ export const intakeReply = createAsyncThunk<
     }
   )
 
-  export const clipEpochsRetry = createAsyncThunk<
-  UpdatedClipEpoch[],
+  export const clipEpochRetry = createAsyncThunk<
+  UpdatedClipEpoch,
   {
-    clipSlugs: string[],
+    clipSlug: string,
     apiClient: ApiClient
   },
   {
@@ -221,9 +221,55 @@ export const intakeReply = createAsyncThunk<
     state: RootState
     rejectValue: Error
   }>(
-    'clipEpochsRetry',
-    async({clipSlugs, apiClient}, {getState, rejectWithValue, requestId, dispatch}) => {
-      return await retryClipEpochs(clipSlugs, apiClient)
+    'clipEpochRetry',
+    async({clipSlug, apiClient}, {getState, rejectWithValue, requestId, dispatch}) => {
+      let newClipEpoch = retryClipEpoch(clipSlug, apiClient)
+      // console.log(newClipEpoch)
+      await newClipEpoch
+      // console.log('awaited for ', newClipEpoch)
+      return newClipEpoch
+    }
+  )
+
+
+  export const updateClipEpochs = createAsyncThunk<
+  string,
+  {
+    apiClient: ApiClient
+  },
+  { state: RootState, dispatch: AppDispatch }>(
+    'updateClipEpochs',
+    async({ apiClient}, { getState, dispatch }) => {
+      let { clips: { clips } } = getState()
+  
+      let epochsToRefresh = Object.getOwnPropertyNames(clips).reduce((clipSlugs: string[], clipSlug: string) => {
+  
+        if (clips[clipSlug].startEpoch === 0) {
+          if ((new Date(clips[clipSlug].created_at)).getTime() > (new Date()).getTime() - 3600000) {
+            clipSlugs.push(clipSlug)
+          }
+        }
+  
+        return clipSlugs
+  
+      }, [])
+      
+      function refreshNextEpoch() {
+        if (epochsToRefresh.length > 0) {
+          dispatch(clipEpochRetry({clipSlug: epochsToRefresh.shift()!, apiClient}))
+          if (epochsToRefresh.length > 0) {
+            setTimeout( () => refreshNextEpoch(), 2000)
+          }
+        }
+      }
+
+      refreshNextEpoch()
+
+      while(epochsToRefresh.length > 0){
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+      
+      return 'refreshing epochs'
     }
   )
 
@@ -236,10 +282,25 @@ export const updateClipViews = createAsyncThunk<
 }>(
   'updateClipViews',
   async({ apiClient }, { dispatch, getState }) => {
-    let state = getState()
-    let updatedViews: UpdatedClipViews[] = await updateClipsViews(Object.getOwnPropertyNames(state.clips.clips), apiClient) as UpdatedClipViews[]
+    let { clips: { clips } } = getState()
+    let clipSlugs = Object.getOwnPropertyNames(clips)
+    // generate sets of 100
+    let clipSets: string[][] = []
+
+    while (clipSlugs.length > 100) {
+      clipSets.push(clipSlugs.splice(0, 100))
+    }
+    clipSets.push(clipSlugs)
+
+    let updatedViews: UpdatedClipViews[] = []
+
+    while (clipSets.length > 0) {
+      let clips = await apiClient.helix.clips.getClipsByIds(clipSets.shift()!)
+      updatedViews = updatedViews.concat(clips.map(clip => ({ slug: clip.id, views: clip.views })))
+    }
+
+    updatedViews = updatedViews.filter(updateReport => updateReport.views !== clips[updateReport.slug].views)
     if (updatedViews && updatedViews.length > 0) {
-      updatedViews = updatedViews.filter(updateReport => updateReport.views !== state.clips.clips[updateReport.slug].views)
       return {
         result: updatedViews
       }
@@ -352,77 +413,3 @@ export const userTimedOut = createAsyncThunk<
 
     }
   )
-
-
-
-  // export const userTimedOut = createAsyncThunk<
-  // {
-  //   result: string
-  // },
-  // {
-  //   channelName: string
-  //   userName: string
-
-  // },
-  // { 
-  //   dispatch: AppDispatch
-  //   state: RootState
-  //   rejectValue: Error
-  // }>(
-  //   'userTimedOut',
-  //   async({clipSlug, channelName, parentMessageId, messageId, words, userName, userTypes, getClipMeta, getVodEpoch}, { getState, rejectWithValue, requestId, dispatch}) => {
-  //     let { clips: { clips }, messages: { messages }} = getState()
-
-  //     let messageRecord = messages[parentMessageId]
-      
-  //     // handle possibility that this is all in reference to a brand new clip, in which case
-  //     // we want to switch to the regular intakeClip flow.
-  //     if (clipSlug && !clips[clipSlug]) {
-  //       dispatch(intakeClip({
-  //         channelName,
-  //         userName,
-  //         words,
-  //         clipSlug,
-  //         userTypes,
-  //         messageId,
-  //         getClipMeta,
-  //         getVodEpoch
-  //       }))
-  //       return { result: 'new clip found, forwarded to intakeclip'}
-  //     } else {
-  //       let parentClipSlug = messageRecord && clips[messageRecord] ? clips[messageRecord].slug : rejectWithValue(new Error('Not clip reply')) && null
-
-  //       if (clipSlug || parentClipSlug) {     // prefer clipSlug if there is a difference
-
-  //         let tagReport = parseTags(words)
-  //         let annotationTypes = getAnnotationTypes(tagReport, false)
-      
-  //         let newAnnotation: ClipAnnotation = {
-  //           annotationTypes,
-  //           clipSlug: (clipSlug || parentClipSlug)!,
-  //           channelName,
-  //           by: userName,
-  //           userTypes,
-  //           messageId,
-  //           messageEpoch: new Date().getTime(),
-  //           ...tagReport
-  //         }
-
-  //         dispatch(annotationAdded({
-  //           annotation: newAnnotation
-  //         }))
-    
-  //         return {
-  //           result: 'annotation saved'
-  //         }
-          
-  //       } else {
-  //         return {
-  //           result: 'no annotation found'
-  //         }
-  //       }
-  //     }
-      
-      
-  //   }
-  // )

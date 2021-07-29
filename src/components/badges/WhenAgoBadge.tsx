@@ -6,8 +6,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import useApiClient from '../../singleton-hooks/useApiClient'
-import { clipEpochsRetry } from '../../redux/actions'
-import { useEffect } from 'react'
+import { clipEpochRetry } from '../../redux/actions'
 
 const DelayBadge = styled.div<{hideIcon: boolean}>`
 
@@ -85,7 +84,6 @@ const Delay = ({className, clipSlug, hideIcon = true, zIndex}: { hideIcon?: bool
     return TimeAgoUtil.instance.timeAgo
   }, [])
 
-  const [redrawInterval, setRedrawInterval] = useState<number | null>(null)
   const apiClient = useApiClient()
   const dispatch = useAppDispatch()
   const startEpoch = useAppSelector(state => state.clips.clips[clipSlug].startEpoch)
@@ -98,26 +96,9 @@ const Delay = ({className, clipSlug, hideIcon = true, zIndex}: { hideIcon?: bool
 
   const retryDelay = useMemo(() => () => {
     if (startEpoch === 0 && apiClient) {
-      dispatch(clipEpochsRetry({ clipSlugs: [clipSlug], apiClient }))
+      dispatch(clipEpochRetry({ clipSlug, apiClient }))
     }
   }, [clipSlug, apiClient, startEpoch, dispatch])
-
-  useEffect(() => {
-    let interval: number = window.setTimeout(() => {
-      if (startEpoch === 0) {
-        let now = (new Date()).getTime()
-        if (createdAt < now - 2*60000 && createdAt > now - 8*60000 ) {
-          retryDelay()
-        }
-      }
-        setRedrawInterval(interval)
-    }, 60000)
-    
-    return (() => {
-      window.clearTimeout(interval)
-    })
-
-  }, [redrawInterval, createdAt, retryDelay, startEpoch])
 
   return (
     <DelayBadge hideIcon={hideIcon} className={className}>

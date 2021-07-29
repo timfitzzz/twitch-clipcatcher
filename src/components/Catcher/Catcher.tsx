@@ -9,7 +9,7 @@ import AddChannelForm from './ChannelSelector/AddChannel';
 import Channel from './Channel/Channel';
 import { shallowEqual } from 'react-redux'
 import { useEffect } from 'react'
-import { updateClipViews } from '../../redux/actions'
+import { updateClipEpochs, updateClipViews } from '../../redux/actions'
 import useApiClient from '../../singleton-hooks/useApiClient'
 
 
@@ -49,6 +49,7 @@ const Catcher = styled(({  className }: { className?: string}) => {
     if (apiClient) {
       interval = setInterval(() => {
         dispatch(updateClipViews({apiClient}))
+        dispatch(updateClipEpochs({apiClient}))
       }, 60000)
     }
 
