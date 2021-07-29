@@ -15,10 +15,12 @@ import { ChatUser } from './users'
     return user.userTypes[channel.name][0]
   }, { size: 500 })
   export const selectAppUser = memoize((state: RootState) => state.settings.user)
+  export const selectAppUserFollows = memoize((state: RootState) => state.settings.user ? state.settings.user.follows : null )
 
   // CHANNELS
   export const selectChannelSort = memoize((channel: ICatcherChannel) => channel.sort, { size: 500 })
   export const selectChannelError = memoize((channel: ICatcherChannel) => channel.error, { size: 500 })
+  export const selectChannelDisplayName = memoize((channel: ICatcherChannel) => channel.displayName, { size: 500 })
 
   // CLIPS
   export const selectUpvoters = memoize(({ votesSet }: { votesSet: CaughtClipV2['votes'][0] }) => votesSet.up,  { size: 500 })

@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Button, Flex, Input } from 'rendition'
 import styled from 'styled-components'
-import { useAppDispatch } from '../../../hooks/reduxHooks'
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
 import { channelAdded } from '../../../redux/channels'
+import { selectAppUser } from '../../../redux/selectors'
 
 const AddChannelInputContainer = styled.div`
   display: flex;
@@ -17,9 +18,8 @@ const AddChannelInputContainer = styled.div`
   background-color: ${({theme}) => theme.colors.primary.semilight};
 
   > div {
-    width: 144px;
+    width: 200px;
     height: 28px;
-    margin-right: 8px;
     margin-top: 4px;
     margin-bottom: 4px;
     padding: 0px;
@@ -32,23 +32,43 @@ const AddChannelInputContainer = styled.div`
     margin-left: 8px;
   }
 `
-
-const AddChannelInput = styled(Input)`
+const AddChannelInputFieldContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   margin-left: 8px;
-  margin-right: 8px;
+  margin-right: 4px;
+  position: relative;
+`
+const AddChannelInput = styled(Input)`
   margin-top: auto;
   margin-bottom: auto;
   padding-left: 8px;
   padding-right: 8px;
   height: 28px;
+  background-color: transparent;
+`
+
+const AddChannelInputBackground = styled.div`
+  position: absolute;
+  left: 0px;
+  border-radius: 4px;
+  height: 28px;
+  width: 200px;
   background-color: white;
 `
 
+const AddChannelSuggestedText = styled.div`
+  position: absolute;
+  left: 9px;
+  top: 4px;
+  color: ${({theme}) => theme.colors.gray.dark};
+`
+
 const AddChannelButton = styled(Button)`
-  margin-left: 8px;
+  margin-left: 0px;
   margin-top: auto;
   margin-bottom: auto;
-  padding-left: 7px;
+  padding-left: 8px;
   padding-right: 8px;
   height: 24px;
   width: 24px;
@@ -57,13 +77,15 @@ const AddChannelButton = styled(Button)`
 `
 
 const ValidationErrorBox = styled.div`
-  font-size: 10px;
-  line-height: 12px;
+  font-size: 12px;
+  line-height: 14px;
   background-color: ${({theme}) => theme.colors.warning.light};
   color: ${({theme}) => theme.colors.warning.dark};
-  padding: 2px 4px!important;
-  margin-left: 4px;
-  border-radius: 4px;
+  padding: 8px 8px!important;
+  margin-left: 2px;
+  margin-right: 2px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
   box-sizing: border-box;
 `
 
@@ -74,6 +96,7 @@ const AddChannelForm = ({className}: {className?: string}) => {
   let [ formText, setFormText ] = useState<string>("")
   let [ validationError, setValidationError ] = useState<string | null>(null)
   let dispatch = useAppDispatch()
+  let { userName, follows } = useAppSelector(selectAppUser) || { userName: null, follows: [] }
 
   const handleFormTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // name can't begin with an underscore
@@ -108,14 +131,40 @@ const AddChannelForm = ({className}: {className?: string}) => {
     }
   }
 
+  const getPlaceholderText = () => {
+    if (formText.length === 0 && userName) {
+      return 'Channel name'
+    } else {
+      let matches = [...follows, userName].filter(name => formText.substr(0, formText.length).toLocaleLowerCase() === name?.substr(0, formText.length).toLocaleLowerCase())
+      return matches.length > 0 ? matches[0] : ''
+    }
+  }
+
+  const handleKeydown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Tab' && !e.shiftKey) {
+      let placeholderText = getPlaceholderText()
+      if (placeholderText && placeholderText !== 'Channel name' && placeholderText.length > 0) {
+        setFormText(placeholderText)
+      }
+    }
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const placeholderText = useMemo(() => getPlaceholderText(), [getPlaceholderText, formText, userName, follows])
+
   return (
     <Flex flexDirection={'column'} className={'AddButton ' + className}>
       <AddChannelInputContainer>
         <h5>add channel</h5>
-        <AddChannelInput value={formText} onChange={handleFormTextChange} placeholder={'Channel name'}/>
-        <AddChannelButton disabled={!!validationError} onClick={validationError ? () => {} : handleAddChannel}>+</AddChannelButton>
-        {validationError ? (<ValidationErrorBox>{validationError}</ValidationErrorBox>) : <></>}
+        <AddChannelInputFieldContainer>
+          <AddChannelInputBackground/>
+          <AddChannelSuggestedText>{placeholderText}</AddChannelSuggestedText>
+          <AddChannelInput onKeyDown={handleKeydown} value={placeholderText && placeholderText.length > 0 ? placeholderText.substr(0, formText.length) : formText} onChange={handleFormTextChange}/>
+          {validationError ? (<ValidationErrorBox>{validationError}</ValidationErrorBox>) : <></>}
+        </AddChannelInputFieldContainer>
+        <AddChannelButton onClick={validationError ? () => {} : handleAddChannel}>+</AddChannelButton>
       </AddChannelInputContainer>
+
     </Flex>
     
   )

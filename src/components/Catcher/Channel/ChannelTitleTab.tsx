@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Flex, Box } from 'rendition'
+import { useAppSelector } from '../../../hooks/reduxHooks'
+import { selectChannelDisplayName } from '../../../redux/selectors'
 
 const ChannelTabTitleText = styled.h5`
   padding-top: 0px;
@@ -34,10 +36,12 @@ const ChannelTabBox = styled(Box)`
 
 const ChannelTitleTab = ({channelName, children, className}: {channelName: string, children?: JSX.Element | JSX.Element[], className?: string}) => {
 
+  const channelDisplayName = useAppSelector(state => selectChannelDisplayName(state.channels[channelName]))
+
   return (
     <ChannelTabBox className={className}>
       <Flex flexDirection={"row"}>
-        <ChannelTabTitleText>{channelName}</ChannelTabTitleText>
+        <ChannelTabTitleText>{channelDisplayName}</ChannelTabTitleText>
         {children}
       </Flex>
     </ChannelTabBox>

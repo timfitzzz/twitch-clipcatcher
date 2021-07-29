@@ -55,7 +55,7 @@ const MainView = () => {
   let savedleftColumnWidth = useAppSelector(memoize(({settings}) => settings.leftColumnWidth))
   let playerPoppedOut = useAppSelector(state => selectPlayerPoppedout({settings: state.settings}))
   let dispatch = useAppDispatch()
-  let [ leftColumnWidth, setLeftColumnWidth ] = useState<number>(savedleftColumnWidth || 312)
+  let [ leftColumnWidth, setLeftColumnWidth ] = useState<number>(savedleftColumnWidth || 321)
   let [ draggingDivider, setDraggingDivider ] = useState<boolean>(false)
   let viewContainer = useRef<HTMLDivElement>(null)
 
@@ -69,7 +69,7 @@ const MainView = () => {
 
   let handleDrag = (e: React.MouseEvent) => {
     if (draggingDivider) {
-      if (e.clientX > 305) {
+      if (e.clientX >= 321) {
         setLeftColumnWidth(e.clientX)
       }
     }

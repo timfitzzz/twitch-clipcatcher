@@ -51,7 +51,8 @@ interface SortToggledPayload {
 
 export function initChannelState(channelName: string): ICatcherChannel {
   return {
-    name: channelName,
+    name: channelName.toLocaleLowerCase(),
+    displayName: channelName,
     scanning: true,
     holdUpdates: false,
     clips: [],
@@ -93,7 +94,7 @@ const channelsSlice = createSlice({
       channels[action.payload].holdUpdates = false
     },
     channelAdded(channels, action: PayloadAction<ChannelAddedPayload>) {
-      channels[action.payload] = initChannelState(action.payload)
+      channels[action.payload.toLocaleLowerCase()] = initChannelState(action.payload)
     },
     channelRemoved(channels, action: PayloadAction<ChannelRemovedPayload>) {
       delete channels[action.payload]

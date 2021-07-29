@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { HelixUser } from 'twitch/lib'
-import { getUserInfo } from './actions'
+import { getUserInfo, GetUserInfoPayload } from './actions'
 import { channelRemoved, ChannelRemovedPayload } from './channels'
 
 interface SettingsSliceState {
   user?: {
     userName: string
     profilePicUrl: string
+    follows: string[]
   }
   userLoading: boolean
   currentChannel: string | -1
@@ -18,7 +18,7 @@ interface SettingsSliceState {
 const initialState: SettingsSliceState = {
   userLoading: false,
   currentChannel: -1,
-  leftColumnWidth: 312,
+  leftColumnWidth: 321,
   popoutPlayer: false,
   helpViewActive: false
 }
@@ -26,6 +26,8 @@ const initialState: SettingsSliceState = {
 interface ChannelChangedPayload {
   newChannel: string | -1
 }
+
+
 type LeftColumnWidthAdjustedPayload = number
 
 
@@ -48,7 +50,7 @@ const settingsSlice = createSlice({
     },
     leftColumnWidthAdjusted(settings, action: PayloadAction<LeftColumnWidthAdjustedPayload>) {
       settings.leftColumnWidth =
-        (action.payload > 312) ? action.payload : 312
+        (action.payload >= 321) ? action.payload : 321
     },
     channelChanged(settings, action: PayloadAction<ChannelChangedPayload>) {
       settings.currentChannel = action.payload.newChannel
@@ -64,9 +66,9 @@ const settingsSlice = createSlice({
     builder.addCase(getUserInfo.rejected, (settings) => {
       settings.userLoading = false
     })
-    builder.addCase(getUserInfo.fulfilled, (settings, action: PayloadAction<Pick<HelixUser, 'name' | 'profilePictureUrl'> | null>) => {
+    builder.addCase(getUserInfo.fulfilled, (settings, action: PayloadAction<GetUserInfoPayload | null>) => {
       if (action.payload) {
-        settings.user = { userName: action.payload.name, profilePicUrl: action.payload.profilePictureUrl }
+        settings.user = { userName: action.payload.name, profilePicUrl: action.payload.profilePictureUrl, follows: action.payload.follows }
       }
       settings.userLoading = false
     })

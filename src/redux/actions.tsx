@@ -312,8 +312,12 @@ export const updateClipViews = createAsyncThunk<
   }
 )
 
+export interface GetUserInfoPayload extends Pick<HelixUser, 'name' | 'profilePictureUrl'> {
+  follows: string[]
+}
+
 export const getUserInfo = createAsyncThunk<
-  Pick<HelixUser, 'name' | 'profilePictureUrl'> | null,
+  GetUserInfoPayload | null,
 {
   userName: string,
   apiClient: ApiClient
@@ -325,7 +329,7 @@ export const getUserInfo = createAsyncThunk<
 }>(
   'getUserInfo',
   async({userName, apiClient}, { getState, rejectWithValue, requestId, dispatch}) => {
-    return await fetchUserInfo(userName, apiClient)
+    return fetchUserInfo(userName, apiClient)
   }
 )
 

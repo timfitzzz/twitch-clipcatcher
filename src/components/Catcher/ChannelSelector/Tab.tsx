@@ -4,6 +4,7 @@ import { Flex } from 'rendition'
 import ClipsCount from '../../badges/ClipsCount'
 import { RecordingIcon } from '../../badges/RecordingIcon'
 import { useAppSelector } from '../../../hooks/reduxHooks'
+import { selectChannelDisplayName } from '../../../redux/selectors'
 
 const ChannelButtonTitleText = styled.h5`
 display: flex;
@@ -98,7 +99,9 @@ const ChannelButtonBox = styled.div<{ current: boolean, buttonOnly?: boolean}>`
   ` : ``}
 
   ${p => p.buttonOnly ? `
-    margin-top: auto;
+    margin-top: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
 
   ` : ``}
 
@@ -112,7 +115,7 @@ const ChannelButton = ({title, hidden, onClick, icon, current, className}: {titl
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const scanning = useAppSelector(state => icon || !title ? undefined: state.channels[title].scanning)
-
+  const channelDisplayName = useAppSelector(state => icon || !title ? null : selectChannelDisplayName(state.channels[title]))
   const Icon = icon ? icon : null
 
   return (
@@ -121,7 +124,7 @@ const ChannelButton = ({title, hidden, onClick, icon, current, className}: {titl
         { Icon ? (
           <Icon/>
         ) : (
-          <ChannelButtonTitleText>{title}</ChannelButtonTitleText>
+          <ChannelButtonTitleText>{channelDisplayName}</ChannelButtonTitleText>
         )}
         { typeof scanning !== 'undefined' && scanning !== false ? (
           <SteadyRecordingIcon fade={!current} scanning={false} noHoverChange={true}/>

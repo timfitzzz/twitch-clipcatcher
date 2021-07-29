@@ -180,6 +180,7 @@ export const defaultSort: SortList = [{
 
 export interface ICatcherChannel {
   name: string
+  displayName: string
   scanning: boolean
   holdUpdates: boolean
   clips: string[]

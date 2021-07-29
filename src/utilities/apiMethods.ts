@@ -1,4 +1,5 @@
-import { ApiClient, HelixUser, TwitchApiCallType } from "twitch/lib";
+import { ApiClient, HelixFollowData, HelixPaginatedResponseWithTotal, TwitchApiCallType } from "twitch/lib";
+import { GetUserInfoPayload } from "../redux/actions";
 import { TwitchClipV5 } from "../types";
 
 export const getClipMeta = async (clipSlug: string, apiClient: ApiClient): Promise<TwitchClipV5> => {
@@ -91,37 +92,35 @@ export const retryClipEpoch = async (clipSlug: string, apiClient: ApiClient): Pr
 
 }
 
-// export const retryClipEpochs = async (clipSlugs: string[], apiClient: ApiClient): Promise<UpdatedClipEpoch> => {
-
-//   return await Promise.all(clipSlugs.map(clipSlug => getClipMeta(clipSlug, apiClient))).then(async (clipMetas) => {
-//     console.log('got clipMeta ', clipMetas)
-//     return await getClipEpoch().map()
-//     if (clipMeta.vod) {
-//       console.log(clipMeta.vod)
-//       let epochReport = await getClipEpoch(clipMeta.vod.id, clipMeta.vod.offset, apiClient).then(epoch => {
-
-//         console.log('got epoch: ', epoch, ' for clipslug ', clipSlug)
-//         return epoch ? {
-//           clipSlug,
-//           startEpoch: epoch
-//         } : {
-//           clipSlug,
-//           startEpoch: 0
-//         }
-//       })
-//       console.log('got epochreport, ', epochReport)
-//       return epochReport
-
-//     } else {
-//       return {
-//         clipSlug,
-//         startEpoch: 0
-//       }
-//     }
-//   })
-
-// }
-
-export const fetchUserInfo = async (userName: string, apiClient: ApiClient): Promise<Pick<HelixUser, 'name' | 'profilePictureUrl'> | null> => {
-  return apiClient.helix.users.getUserByName(userName).then(userInfo => userInfo ? { name: userInfo.name, profilePictureUrl: userInfo.profilePictureUrl } : null)
+export const fetchUserInfo = async (userName: string, apiClient: ApiClient): Promise<GetUserInfoPayload | null> => {
+  return apiClient.helix.users.getUserByName(userName).then( async (userInfo) => {
+      if (userInfo) {
+        let followResponse = await userInfo.getFollows()
+        let follows = followResponse.data.map(helixFollow => helixFollow.followedUserName)
+        let timeout = false
+        setTimeout(() => {
+          timeout = true
+        }, 3000)
+        if (followResponse.cursor.length > 0) {
+          do {
+            await apiClient.callApi<HelixPaginatedResponseWithTotal<HelixFollowData>>({ 
+              type: TwitchApiCallType.Helix, 
+              url: `/users/follows?from_id=${userInfo.id}&after=${followResponse.cursor}&first=100`
+            /* eslint-disable-next-line no-loop-func */ // eslint doesn't like this, but i'm ok with it.
+            }).then((data) => {
+              follows = follows.concat(data.data.map(helixFollow => helixFollow.to_name))
+              followResponse.cursor = data.pagination ? data.pagination.cursor : ""
+            })
+          } while (followResponse.cursor && !timeout)
+        }
+        return { 
+          name: userInfo.name, 
+          profilePictureUrl: userInfo.profilePictureUrl,
+          follows
+        }
+      } else {
+        return null
+      }
+      
+    }).catch(err => {console.log(err); return null})
 }
