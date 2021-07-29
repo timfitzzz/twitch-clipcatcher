@@ -9,7 +9,7 @@ import { Lock } from '@styled-icons/fa-solid/Lock'
 const LockedClipsDisplay = styled(({count, className}: {count: string, className?: string}) => {
   return (
     <div className={className}>
-      <span>{count}</span>
+      <span className={'lockedCount'}>{count}</span>
       <Lock/>
     </div>
   )
@@ -19,16 +19,16 @@ const LockedClipsDisplay = styled(({count, className}: {count: string, className
   flex-direction: column;
   height: 20px;
   margin-left: 2px;
-  span {
+  .lockedCount {
     line-height: 10px;
     font-size: 10px;
     margin: 1px auto;
     position: relative;
-    display: flex-item;
   }
 
   svg {
     height: 7px;
+    width: 7px;
   }
 
 `
@@ -50,9 +50,6 @@ export const CountOfClips = styled(({channelName, className}: {channelName: stri
   )
 })`
 
-  font-size: 20px;
-  line-height: 20px;
-  // padding-bottom: 2px;
   display: flex;
   flex-direction: row;
   margin-top: auto;
@@ -64,6 +61,8 @@ export const CountOfClips = styled(({channelName, className}: {channelName: stri
     margin-bottom: auto;
     position: relative;
     display: flex-item;
+    font-size: 20px;
+    line-height: 20px;
   }
 
 

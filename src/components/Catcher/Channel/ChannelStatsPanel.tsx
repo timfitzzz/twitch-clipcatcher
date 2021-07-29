@@ -32,18 +32,18 @@ const ChannelStatsPanel = styled(ReusableStatsPanel)`
   margin-left: auto;
   margin-right: auto;
 
-  span {
-    line-height: 20px;
-    font-size: 20px;
-    margin: 1px auto;
-    position: relative;
-    display: flex-item;
-    margin-left: auto;
-    margin-right: 0px;
-    margin-bottom: auto;
-    position: relative;
-    display: flex-item;
-  }
+  // span {
+  //   line-height: 20px;
+  //   font-size: 20px;
+  //   margin: 1px auto;
+  //   position: relative;
+  //   display: flex-item;
+  //   margin-left: auto;
+  //   margin-right: 0px;
+  //   margin-bottom: auto;
+  //   position: relative;
+  //   display: flex-item;
+  // }
 `
 
 export default ChannelStatsPanel
