@@ -56,17 +56,50 @@ const AddChannelButton = styled(Button)`
   background-color: white;
 `
 
+const ValidationErrorBox = styled.div`
+  font-size: 10px;
+  background-color: ${({theme}) => theme.colors.warning.light};
+  color: ${({theme}) => theme.colors.warning.dark};
+  padding: 4px;
+  margin-left: 4px;
+  border-radius: 4px;
+`
+
+const CharacterRegExp: RegExp = /[^A-Za-z0-9_]+/g
+
 const AddChannelForm = ({className}: {className?: string}) => {
 
-  let [ formText, setFormText ] = useState<string | null>(null)
+  let [ formText, setFormText ] = useState<string>("")
+  let [ validationError, setValidationError ] = useState<string | null>(null)
   let dispatch = useAppDispatch()
 
   const handleFormTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormText(e.currentTarget.value)
+    // name can't begin with an underscore
+    if (formText.length === 0 && e.currentTarget.value === "_") {
+      setFormText(formText)
+      setValidationError("Channel name cannot begin with an underscore.")
+    } else if (formText.length === 0 && e.currentTarget.value === "#") {
+      setFormText(formText)
+      setValidationError("Please enter the name without a # prefix.")
+    } else if (e.currentTarget.value[e.currentTarget.value.length - 1] === " ") {
+      setFormText(formText)
+      setValidationError("Channel name cannot contain a space.")
+    } else if (e.currentTarget.value.length > 25) {
+      setFormText(formText)
+      setValidationError("Channel name cannot exceed 25 characters in length.")
+    } else if (CharacterRegExp.exec(e.currentTarget.value)) {
+      setFormText(formText)
+      setValidationError("Allowed: letters, numbers, underscores")
+    } else {
+      setFormText(e.currentTarget.value.replace(" ", ""))
+      setValidationError(null)
+    }
+
+    CharacterRegExp.lastIndex=0
   }
 
   const handleAddChannel = () => {
-    if (formText) {
+    if (formText && formText.length > 0) {
       let validatedText = formText.replace("#","")
       console.log(validatedText)
       dispatch(channelAdded(validatedText))
@@ -77,8 +110,9 @@ const AddChannelForm = ({className}: {className?: string}) => {
     <Flex flexDirection={'column'} className={'AddButton ' + className}>
       <AddChannelInputContainer>
         <h5>add channel</h5>
-        <AddChannelInput onChange={handleFormTextChange} placeholder={'Channel name'}/>
-        <AddChannelButton onClick={handleAddChannel}>+</AddChannelButton>
+        <AddChannelInput value={formText} onChange={handleFormTextChange} placeholder={'Channel name'}/>
+        <AddChannelButton disabled={!!validationError} onClick={validationError ? () => {} : handleAddChannel}>+</AddChannelButton>
+        {validationError ? (<ValidationErrorBox>{validationError}</ValidationErrorBox>) : <></>}
       </AddChannelInputContainer>
     </Flex>
     

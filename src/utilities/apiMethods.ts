@@ -44,9 +44,12 @@ export const updateClipsViews = async (clipSlugs: string[], apiClient: ApiClient
   clipSets.push(clipSlugs)
 
   return clipSets && clipSets.length > 0 ? await Promise.all(clipSets.map(clipSet => apiClient.helix.clips.getClipsByIds(clipSet)))
-                .then(clipSets => {
+                .then(responseClipSets => {
                   let results: UpdatedClipViews[] = []
-                  clipSets.forEach(clipSet => clipSet.forEach(clip => results.push({slug: clip.id, views: clip.views})))
+                  responseClipSets.forEach((clipSet,i) => {
+                    console.log('missing count for clip set ', i, ': ', clipSets[i].length - responseClipSets.length )
+                    clipSet.forEach(clip => results.push({slug: clip.id, views: clip.views}))
+                  })
                   return results
                 }) : []
 }
