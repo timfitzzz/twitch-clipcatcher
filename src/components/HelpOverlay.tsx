@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 import { selectHelpViewActive } from '../redux/selectors'
 import { helpViewDeactivated } from '../redux/settings'
 
-const HelpPopovers: { [targetName: string]: { h: string, b: string, arrowSide: string, arrowPosition: string } } = {
+const HelpPopovers: { [targetName: string]: { h: string, b: string, arrowSide: string, arrowPosition: string, maxDistanceFromBottom?: number } } = {
   AuthButton: {
     h: "Log in with Twitch",
     b: "Log in with Twitch to begin using ClipsTime!",
@@ -40,19 +40,22 @@ const HelpPopovers: { [targetName: string]: { h: string, b: string, arrowSide: s
     h: "Vote Count",
     b: "See how many people have upvoted a clip (or a stack of clips). Badges show which user types have liked this clip/clipstack, if any have marked it as meta or drama, and if mods have vetoed one or more clips in this stack.",
     arrowSide: 'top',
-    arrowPosition: 'left'
+    arrowPosition: 'left',
+    maxDistanceFromBottom: 350
   },
   StackedBadges: {
     h: "Badges",
     b: "These badges indicate the clock time, duration range, total views or total upvotes for the clip(s) in this stack. Their vertical order depends on your sort preferences.",
     arrowSide: 'left',
-    arrowPosition: 'center'
+    arrowPosition: 'center',
+    maxDistanceFromBottom: 350
   },
   OtherBadges: {
     h: "Tags and Expand Clips",
     b: "Hover to view tags; click below to browse any overlapping clips.",
     arrowSide: 'left',
-    arrowPosition: 'top'
+    arrowPosition: 'top',
+    maxDistanceFromBottom: 350
   },
   ClipUpperRightOverlay: {
     h: "Clip-specific stats",
@@ -143,6 +146,7 @@ max-width: 300px;
             border-bottom-left-radius: 4px;
             border-bottom-right-radius: 4px;
             box-shadow: 0px 1px 1px darkgray;
+            padding-top: 10px;
           }
         `)
         break;
@@ -241,7 +245,17 @@ const HelpOverlayContainer = styled(({className, forwardRef, deactivatePopover, 
 
 const renderPopovers = (document: Document) => {
   return Object.getOwnPropertyNames(HelpPopovers).map(popover => {
-    let target = document.getElementsByClassName(popover)[0]
+    let possibleTargets = document.getElementsByClassName(popover)
+    console.log(possibleTargets)
+    let target = Array.prototype.filter.call(possibleTargets, element => {
+      let { top, left, bottom, right } = element.getBoundingClientRect()
+      if ((element.offsetParent || element.parentElement.offsetParent) && top >= 0 && left >= 0 && bottom >= 0 && right >= 0 && (
+        HelpPopovers[popover].maxDistanceFromBottom ? window.innerHeight - bottom < HelpPopovers[popover].maxDistanceFromBottom! : true)) {
+        return true
+      }
+      else { return false }
+    })[0]
+    console.log(target)
     if (target) {
       let { top, left, bottom, right } = target.getBoundingClientRect()
       console.log('target: ', top, left, bottom, right)
