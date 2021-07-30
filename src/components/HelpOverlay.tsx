@@ -246,7 +246,6 @@ const HelpOverlayContainer = styled(({className, forwardRef, deactivatePopover, 
 const renderPopovers = (document: Document) => {
   return Object.getOwnPropertyNames(HelpPopovers).map(popover => {
     let possibleTargets = document.getElementsByClassName(popover)
-    console.log(possibleTargets)
     let target = Array.prototype.filter.call(possibleTargets, element => {
       let { top, left, bottom, right } = element.getBoundingClientRect()
       if ((element.offsetParent || element.parentElement.offsetParent) && top >= 0 && left >= 0 && bottom >= 0 && right >= 0 && (
@@ -255,10 +254,8 @@ const renderPopovers = (document: Document) => {
       }
       else { return false }
     })[0]
-    console.log(target)
     if (target) {
       let { top, left, bottom, right } = target.getBoundingClientRect()
-      console.log('target: ', top, left, bottom, right)
       return <HelpPopover targetName={popover} top={top} left={right} right={left} bottom={bottom}/>
     } else {
       return (<></>)
