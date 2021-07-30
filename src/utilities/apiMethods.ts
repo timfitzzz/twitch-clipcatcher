@@ -1,6 +1,7 @@
 import { ApiClient, HelixFollowData, HelixPaginatedResponseWithTotal, TwitchApiCallType } from "twitch/lib";
 import { GetUserInfoPayload } from "../redux/actions";
 import { TwitchClipV5 } from "../types";
+import axios from 'axios';
 
 export const getClipMeta = async (clipSlug: string, apiClient: ApiClient): Promise<TwitchClipV5> => {
   return await apiClient
@@ -16,15 +17,29 @@ export const getClipMeta = async (clipSlug: string, apiClient: ApiClient): Promi
 
 export const getClipEpoch = async (vodId: string, offset: number, apiClient: ApiClient): Promise<number | null> => {
   // console.log('getting clip epoch for vodId', vodId, 'offset ', offset, ' using apiclient ', apiClient)
-  let epoch = apiClient.callApi({ type: TwitchApiCallType.Helix, url: `/videos?id=${vodId}`}).then(({data}) => {
-    if (data && data[0]) {
-      return (new Date(data[0].created_at)).getTime() + offset * 1000
-    } else {
-      return null
-    }
-  }).catch(err => {console.log(err); return null})
-  return epoch
+  let accessToken = (await apiClient.getAccessToken())
+  if (accessToken) {
+    return axios.get(`https://api.twitch.tv/helix/videos?id=${vodId}`, { 
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken.accessToken}`,
+        'Client-Id': process.env.REACT_APP_TWITCH_CLIENT_ID
+      }
+    }).then(({data}) => {
+      // console.log('got data:', data)
+      if (data && data.data && data.data[0]) {
+        return (new Date(data.data[0].created_at)).getTime() + offset * 1000
+      } else {
+        // console.log('couldnt determine start epoch, debug: ', data)
+        return 0
+      }
+    }).catch(err => {console.log(err); return 0})
+  } else {
+    // console.log('couldnt get access token')
+    return 0
+  }
 }
+
 
 
 // updateClipsViews: split list of clips into groups of 100 and update their view counts from the helix api.
@@ -67,7 +82,7 @@ export const retryClipEpoch = async (clipSlug: string, apiClient: ApiClient): Pr
   return await getClipMeta(clipSlug, apiClient).then(async (clipMeta) => {
     // console.log('got clipMeta ', clipMeta)
     if (clipMeta.vod) {
-      // console.log(clipMeta.vod)
+      console.log(clipMeta.vod)
       let epochReport = await getClipEpoch(clipMeta.vod.id, clipMeta.vod.offset, apiClient).then(epoch => {
 
         // console.log('got epoch: ', epoch, ' for clipslug ', clipSlug)
@@ -78,7 +93,7 @@ export const retryClipEpoch = async (clipSlug: string, apiClient: ApiClient): Pr
           clipSlug,
           startEpoch: 0
         }
-      })
+      }).catch((err) => { console.log(err); return { clipSlug, startEpoch: 0 }})
       // console.log('got epochreport, ', epochReport)
       return epochReport
 
@@ -88,7 +103,7 @@ export const retryClipEpoch = async (clipSlug: string, apiClient: ApiClient): Pr
         startEpoch: 0
       }
     }
-  })
+  }).catch((err) => { console.log(err); return { clipSlug, startEpoch: 0 }})
 
 }
 

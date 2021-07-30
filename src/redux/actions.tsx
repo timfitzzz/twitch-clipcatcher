@@ -223,7 +223,7 @@ export const intakeReply = createAsyncThunk<
   }>(
     'clipEpochRetry',
     async({clipSlug, apiClient}, {getState, rejectWithValue, requestId, dispatch}) => {
-      let newClipEpoch = retryClipEpoch(clipSlug, apiClient)
+      let newClipEpoch = retryClipEpoch(clipSlug, apiClient).catch(err => { console.log(err); return { clipSlug, startEpoch: 0 } })
       // console.log(newClipEpoch)
       await newClipEpoch
       // console.log('awaited for ', newClipEpoch)
@@ -245,7 +245,7 @@ export const intakeReply = createAsyncThunk<
       let epochsToRefresh = Object.getOwnPropertyNames(clips).reduce((clipSlugs: string[], clipSlug: string) => {
   
         if (clips[clipSlug].startEpoch === 0) {
-          if ((new Date(clips[clipSlug].created_at)).getTime() > (new Date()).getTime() - 3600000) {
+          if ((new Date(clips[clipSlug].created_at)).getTime() > (new Date()).getTime() - 360000) {
             clipSlugs.push(clipSlug)
           }
         }
