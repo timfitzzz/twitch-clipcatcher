@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getUserInfo, GetUserInfoPayload } from './actions'
-import { channelRemoved, ChannelRemovedPayload } from './channels'
+import { channelAdded, ChannelAddedPayload, channelRemoved, ChannelRemovedPayload } from './channels'
 
 interface SettingsSliceState {
   user?: {
@@ -71,6 +71,11 @@ const settingsSlice = createSlice({
         settings.user = { userName: action.payload.name, profilePicUrl: action.payload.profilePictureUrl, follows: action.payload.follows }
       }
       settings.userLoading = false
+    })
+    builder.addCase(channelAdded, (settings, action: PayloadAction<ChannelAddedPayload>) => {
+      if (action.payload) {
+        settings.currentChannel = action.payload.toLocaleLowerCase()
+      }
     })
     builder.addCase(channelRemoved, (settings, action: PayloadAction<ChannelRemovedPayload>) => {
       if (action.payload) {

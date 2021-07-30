@@ -249,7 +249,7 @@ const renderPopovers = (document: Document) => {
     let target = Array.prototype.filter.call(possibleTargets, element => {
       let { top, left, bottom, right } = element.getBoundingClientRect()
       if ((element.offsetParent || element.parentElement.offsetParent) && top >= 0 && left >= 0 && bottom >= 0 && right >= 0 && (
-        HelpPopovers[popover].maxDistanceFromBottom ? window.innerHeight - bottom < HelpPopovers[popover].maxDistanceFromBottom! : true)) {
+        HelpPopovers[popover].maxDistanceFromBottom && window ? window.innerHeight - bottom < HelpPopovers[popover].maxDistanceFromBottom! : true)) {
         return true
       }
       else { return false }

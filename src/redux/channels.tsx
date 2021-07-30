@@ -20,7 +20,7 @@ const initialState: ChannelsSliceState = {
   // }
 }
 
-type ChannelAddedPayload = string
+export type ChannelAddedPayload = string
 export type ChannelRemovedPayload = string
 type ScanningStartedPayload = string
 type ScanningStoppedPayload = string
@@ -94,7 +94,9 @@ const channelsSlice = createSlice({
       channels[action.payload].holdUpdates = false
     },
     channelAdded(channels, action: PayloadAction<ChannelAddedPayload>) {
-      channels[action.payload.toLocaleLowerCase()] = initChannelState(action.payload)
+      if (!channels[action.payload.toLocaleLowerCase()]) {
+        channels[action.payload.toLocaleLowerCase()] = initChannelState(action.payload);
+      }
     },
     channelRemoved(channels, action: PayloadAction<ChannelRemovedPayload>) {
       delete channels[action.payload]
