@@ -82,7 +82,6 @@ export const retryClipEpoch = async (clipSlug: string, apiClient: ApiClient): Pr
   return await getClipMeta(clipSlug, apiClient).then(async (clipMeta) => {
     // console.log('got clipMeta ', clipMeta)
     if (clipMeta.vod) {
-      console.log(clipMeta.vod)
       let epochReport = await getClipEpoch(clipMeta.vod.id, clipMeta.vod.offset, apiClient).then(epoch => {
 
         // console.log('got epoch: ', epoch, ' for clipslug ', clipSlug)
