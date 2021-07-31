@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TwitchClipV5, UserTypes } from '../types'
 import { UpdatedClipEpoch, UpdatedClipViews } from '../utilities/apiMethods'
-import { isEmpowered, tagsReport } from '../utilities/parsers'
+import { tagsReport } from '../utilities/parsers'
 import { clipAdded, ClipAddedPayloadV2, updateClipViews, clipEpochRetry } from './actions'
 import { annotationAdded, annotationsReverted, AnnotationsRevertedPayload, ClipAnnotation, FirstAnnotationAddedPayload } from './annotations'
 import { mutateClipByAnnotation, revertClipByAnnotation } from './mutators'
@@ -148,39 +148,6 @@ export const specialTagsSelector = memoize((obj: SpecialTagsSelectorInput) => {
     }
   })
 })
-  
-export const specialTagsOrderedUsersSelector = memoize((obj: SpecialTagsSelectorInput): string[][] => {
-  let [state, clipSlugs, channelName, type] = obj
-  let users = clipSlugs.reduce((taggerNames: string[], clipSlug: string) => {
-    if (clipSlug 
-      && state.clips.clips[clipSlug] 
-      && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]
-      && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName]) {
-      return taggerNames.concat(
-        state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by.filter(
-          name => taggerNames.indexOf(name) === -1
-        ))
-    } else {
-      return taggerNames
-    }
-  }, [] as string[])
-  .sort((userNameA: string, userNameB: string) => 
-    Math.max(...state.users.users[userNameB].userTypes[channelName]) - 
-    Math.max(...state.users.users[userNameA].userTypes[channelName]))
-
-  let foundRegularUser = false
-  let checkingUser = 0
-  while (!foundRegularUser && checkingUser < users.length) {
-    if (!isEmpowered(state.users.users[users[checkingUser]].userTypes[channelName])) {
-      foundRegularUser = true
-    }
-    checkingUser++
-  }
-  return [
-    users.slice(0, checkingUser),
-    (users.length > 0 || checkingUser === 0) ? users.slice(checkingUser, users.length) : []
-  ]
-})
 
 const selectorsInputRegistry: { 
   [type: string]: {
@@ -202,34 +169,6 @@ export const stackDurationsSelector = memoize(({ state, clipSlugs }: { state: Ro
   return clipSlugs.map(clipSlug => state.clips.clips[clipSlug].duration)
 })
 
-export const specialTagsMaxUserTypeSelector = memoize((obj: SpecialTagsSelectorInput) => {
-  let [state, clipSlugs, channelName, type] = obj
-  let maxType = -1
-  let checkingSlug = 0
-
-  while (maxType < 4 && checkingSlug < clipSlugs.length) {
-    let slug = clipSlugs[checkingSlug]
-    if (clipSlugs[checkingSlug]) {
-      let clip = state.clips.clips[slug]
-      if (clip) {
-        if (clip[type+'edIn' as "metaedIn" | "dramaedIn"] &&
-            clip[type+'edIn' as "metaedIn" | "dramaedIn"]![channelName]) {
-          let checkingUser = 0
-          while (maxType < 4 && checkingUser < clip[type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by.length) {
-            let userMax = Math.max(...state.users.users[clip[type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by[checkingUser]].userTypes[channelName])
-            if (maxType < userMax) {
-              maxType = userMax
-            } 
-            checkingUser++
-          }
-        }
-      }
-    }
-    checkingSlug++
-  }
-  return maxType
-})
-
 interface ChannelClipsSelectorInput {
   state: RootState
   clipSlugs: string[]
@@ -246,11 +185,7 @@ export const selectVotersByClipIds = memoize(({state, clipSlugs, channelName}: {
 
   let votesSets = clipSlugs.map(clipSlug => (getUntrackedObject(state) || state).clips.clips[clipSlug].votes[channelName])
 
-  let stackVoters = selectStackVoters(
-    {
-      votesSets
-    }
-  )
+  let stackVoters = selectStackVoters(votesSets)
 
   output.upVoters = stackVoters.up
   output.downVoters = stackVoters.down

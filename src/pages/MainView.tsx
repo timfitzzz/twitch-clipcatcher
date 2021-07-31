@@ -53,7 +53,7 @@ const MainView = () => {
 
   let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated ? c.isAuthenticated() : false)
   let savedleftColumnWidth = useAppSelector(memoize(({settings}) => settings.leftColumnWidth))
-  let playerPoppedOut = useAppSelector(state => selectPlayerPoppedout({settings: state.settings}))
+  let playerPoppedOut = useAppSelector(state => selectPlayerPoppedout(state.settings))
   let dispatch = useAppDispatch()
   let [ leftColumnWidth, setLeftColumnWidth ] = useState<number>(savedleftColumnWidth || 321)
   let [ draggingDivider, setDraggingDivider ] = useState<boolean>(false)

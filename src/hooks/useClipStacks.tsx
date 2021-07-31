@@ -6,7 +6,7 @@ import useUpdateLock from './useUpdateLock'
 
 const useClipStacks = ({channelName}: { channelName: string}): (string[] | string)[] => {
 
-  let currentClipStacks = useAppSelector(state => selectChannelChronologyWithStacksIfDesired({ state, channel: state.channels[channelName] }))
+  let currentClipStacks = useAppSelector(state => selectChannelChronologyWithStacksIfDesired([state, state.channels[channelName] ]))
   let sort = useAppSelector(state => selectChannelSort(state.channels[channelName]))
 
   let clipStacks = useUpdateLock(currentClipStacks, channelName)
@@ -15,7 +15,7 @@ const useClipStacks = ({channelName}: { channelName: string}): (string[] | strin
   const returnClipStacks = useAppSelector(useCallback(memoize(state => {
     // console.log('resorting clip stacks for ', channelName, clipStacks, sort)
     if (clipStacks) {
-      let result = clipStacks.sort(lexSortClipStackIds({state, channel: state.channels[channelName]}))
+      let result = clipStacks.sort(lexSortClipStackIds([state, state.channels[channelName]]))
       return result
     } else {
       return []

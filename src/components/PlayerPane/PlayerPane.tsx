@@ -49,7 +49,7 @@ const PlayerPane = ({className, draggingDivider}: { draggingDivider: boolean, cl
   let currentClipObject = useContextSelector(PlayerContext, (c) => c.currentClip)
   let currentClipId = useMemo(() => currentClipObject?.currentClipId, [currentClipObject])
   let currentClip = useAppSelector(s => currentClipId && s.clips.clips[currentClipId] ? s.clips.clips[currentClipId] : null)
-  let poppedOut = useAppSelector(state => selectPlayerPoppedout({settings: state.settings}))
+  let poppedOut = useAppSelector(state => selectPlayerPoppedout(state.settings))
   let embed_url = useMemo(() => currentClip ? currentClip.embed_url : null, [currentClip])
   let tracking_id = useMemo(() => currentClip ? currentClip.tracking_id : null, [currentClip])
   let playing = useContextSelector(PlayerContext, (c) => c.playing)
