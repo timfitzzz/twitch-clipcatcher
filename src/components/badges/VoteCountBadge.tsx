@@ -13,46 +13,6 @@ const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: strin
     selectVotersByClipIds({ state, clipSlugs, channelName })
   )
 
-  // let upVoters = useAppSelector(state => clipSlugs.reduce(
-  //   (upvoters, clipSlug) => {
-  //     state.clips.clips[clipSlug].votes[channelName].up.forEach(userName => {
-  //         if (upvoters.indexOf(userName) === -1) {
-  //           upvoters.push(userName)
-  //         }
-  //     })
-  //     return upvoters
-  //   }, [] as string[]).sort(
-  //   (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-  //                             Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  // ), shallowEqual)
-
-  // let downVoters = useAppSelector(state => clipSlugs.reduce(
-  //   (downvoters, clipSlug) => {
-  //     state.clips.clips[clipSlug].votes[channelName].down.forEach(userName => {
-  //         if (downvoters.indexOf(userName) === -1) {
-  //           downvoters.push(userName)
-  //         }
-  //     })
-  //     return downvoters
-  //   }, [] as string[]).sort(
-  //   (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-  //                             Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  // ), shallowEqual)
-  
-  // // let postedBy = useAppSelector(state => [...state.clips.clips[clipSlug].postedBy[channelName]].sort(
-  // //   (usernameA, usernameB) => Math.max(...state.users.users[usernameB].userTypes[channelName]) -
-  // //                             Math.max(...state.users.users[usernameA].userTypes[channelName]) 
-  // // ), shallowEqual)
-
-  // const typesUpvotedBy = useAppSelector(state => upVoters.reduce((foundTypes, userName) => {
-  //   let maxUserType = Math.max(...state.users.users[userName].userTypes[channelName])
-  //   if (foundTypes.indexOf(maxUserType) === -1) {
-  //     foundTypes.push(maxUserType)
-  //   }
-  //   return foundTypes.sort((a, b) => b - a)
-  // }, [] as number[]), shallowEqual)
-
-
   let popoverTarget = useRef<HTMLDivElement>(null)
   let [showPopover, setShowPopover] = useState<any>(false)
 
@@ -75,14 +35,11 @@ const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: strin
       ))}
       <div className={'badgeinner'}>
         <span>{upVoters.length - downVoters.length}</span>
-        {/* <PlusOrMinusIcon className={'plusorminus'}/> */}
       </div>
     </div>
   )
-  // return (<div></div>)
 
 }
-
 
 export default styled(VoteCountBadge)`
   display: flex;

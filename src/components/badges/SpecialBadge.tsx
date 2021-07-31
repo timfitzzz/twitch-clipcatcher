@@ -5,13 +5,13 @@ import { useRef } from 'react'
 import { Popover } from 'rendition'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
-import { specialTagsMaxUserTypeSelector, specialTagsOrderedUsersSelector } from '../../redux/clips'
 import { UserPip } from './UserPip'
 import { SectionTitle } from '../typography/SectionTitle'
 import { TheaterMasks } from '@styled-icons/fa-solid/TheaterMasks'
 import { BookDead } from '@styled-icons/fa-solid/BookDead'
 import { SpecialState } from '../../types'
 import { PlayIcon, PlayIconState } from '../Catcher/ClipList/PlayButton'
+import { selectSortedSpecialStackUsers } from '../../redux/selectors'
 
 
 export const SpecialIcon = styled(({type, specialState, className}: { type: 'drama' | 'meta' | 'veto', specialState: SpecialState, className?: string}) => {
@@ -27,7 +27,6 @@ export const SpecialIcon = styled(({type, specialState, className}: { type: 'dra
       }
     </div>
   )
-
 })`
 
   ${({specialState}) => {
@@ -80,49 +79,6 @@ export const SpecialIcon = styled(({type, specialState, className}: { type: 'dra
 
 `
 
-// const SpecialText = styled(({type, specialState, className}: { type: 'drama' | 'meta', specialState: SpecialState, className?: string}) => {
- 
-//   return (
-//     <svg viewBox={`0 0 ${13 * type.length} 24`} className={className}>
-//       <text y="18">{type.toUpperCase()}</text>
-//     </svg>
-//   )
-  
-// })`
-//   font-size: 20px;
-//   font-weight: bolder;
-//   font-stretch: expanded;
-//   height: 20px;
-//   line-height: 20px;
-
-//   text {
-//     ${({specialState, theme}) => {
-//       switch (specialState) {
-//         case SpecialState.maybe:
-//           return `
-//             fill: none;
-//             stroke: ${theme.colors.warning.main};
-//             stroke-width: 1px;
-//             stroke-linejoin: round;
-//             text-shadow: -1px 1px 0.5px black;
-//           `
-//         case SpecialState.yes:
-//           return `
-//             fill: ${theme.colors.danger.main};
-//             stroke-width: 2px;
-//             stroke: ${theme.colors.danger.main};
-//             text-shadow: -1px 1px 0.5px black;
-//           `
-//         default:
-//           return `
-//             fill: ${theme.colors.gray.light};
-//             opacity: 0.1;
-//           `
-//       }
-//     }}
-//   }
-// `
-
 const SpecialBadgePopover = styled(
   ({
     target,
@@ -138,12 +94,7 @@ const SpecialBadgePopover = styled(
     className?: string
   }) => {
 
-    let [empoweredUsers, otherUsers] = useAppSelector(state => specialTagsOrderedUsersSelector([
-      state,
-      clipSlugs,
-      channelName,
-      type
-    ]))
+    let [empoweredUsers, otherUsers] = useAppSelector(state => selectSortedSpecialStackUsers([state, clipSlugs, state.channels[channelName], type]))
 
     return (
       <Popover placement={'right'} onDismiss={() => null} target={target}>
@@ -220,12 +171,15 @@ const SpecialBadgePopover = styled(
 
 export const SpecialBadge = ({type, clipSlugs, channelName, className}: { type: 'meta' | 'drama', clipSlugs: string[], channelName: string, className?: string}) => {
 
-  let maxUserType = useAppSelector(state => specialTagsMaxUserTypeSelector(
-    [state, clipSlugs, channelName, type]
-  ))
+  let [empoweredUsers, otherUsers] = useAppSelector(state => selectSortedSpecialStackUsers([state, clipSlugs, state.channels[channelName], type]))
 
-  let specialState: SpecialState = useMemo(() => (maxUserType > -1 ? maxUserType > 2  ? SpecialState.yes : SpecialState.maybe : SpecialState.no)
-    , [maxUserType])
+  let specialState: SpecialState = useMemo(
+    () => empoweredUsers.length > 0 
+          ? SpecialState.yes 
+          : otherUsers.length > 0 
+            ? SpecialState.maybe 
+            : SpecialState.no
+    ,[empoweredUsers, otherUsers])
 
   let popoverTarget = useRef<HTMLDivElement>(null)
   let [showPopover, setShowPopover] = useState<any>(false)
@@ -249,9 +203,7 @@ export const SpecialBadge = ({type, clipSlugs, channelName, className}: { type: 
       <SpecialIcon type={type} specialState={specialState}/>
     </div>
   )
-
 }
-
 
 export default styled(SpecialBadge)`
   display: flex;

@@ -52,6 +52,39 @@ import { ChatUser } from './users'
     return clip.vetoedIn && clip.vetoedIn[channel.name] ? clip.vetoedIn[channel.name].by : null
   }, { size: 500 })
 
+  // export const selectSpecialTagOrderedUsers = memoize(([state, clipSlugs, channelName, type]: [RootState, string[], string, 'drama' | 'meta' | 'veto' ])=> {
+  //   let users = clipSlugs.reduce((taggerNames: string[], clipSlug: string) => {
+  //     if (clipSlug 
+  //       && state.clips.clips[clipSlug] 
+  //       && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]
+  //       && state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName]) {
+  //       return taggerNames.concat(
+  //         state.clips.clips[clipSlug][type+'edIn' as "metaedIn" | "dramaedIn"]![channelName].by.filter(
+  //           name => taggerNames.indexOf(name) === -1
+  //         ))
+  //     } else {
+  //       return taggerNames
+  //     }
+  //   }, [] as string[])
+  //   .sort((userNameA: string, userNameB: string) => 
+  //     Math.max(...state.users.users[userNameB].userTypes[channelName]) - 
+  //     Math.max(...state.users.users[userNameA].userTypes[channelName]))
+  
+  //   let foundRegularUser = false
+  //   let checkingUser = 0
+  //   while (!foundRegularUser && checkingUser < users.length) {
+  //     if (!isEmpowered(state.users.users[users[checkingUser]].userTypes[channelName])) {
+  //       foundRegularUser = true
+  //     }
+  //     checkingUser++
+  //   }
+  //   return [
+  //     users.slice(0, checkingUser),
+  //     (users.length > 0 || checkingUser === 0) ? users.slice(checkingUser, users.length) : []
+  //   ]
+  // })
+  
+
 
   // STACKS
 
@@ -546,14 +579,23 @@ export const selectSortedStacks =
     return channelSort
   }
 
+export const selectSortedSpecialStackUsers = memoize(
+  ([state, clipSlugs, channel, type]: [ state: RootState, clipSlugs: string[], channel: ICatcherChannel, type: 'meta' | 'drama']) => {
+
+    let users = type === 'meta' ? selectStackMetas({clipStack: clipSlugs.map(clipSlug => state.clips.clips[clipSlug]), channel})
+                : type === 'drama' ? selectStackDramas({clipStack: clipSlugs.map(clipSlug => state.clips.clips[clipSlug]), channel})
+                                   : null
+    return users ? selectSortedSeparatedUserList({state, channel, userList: users}) : [[],[]]
+
+}, { size: 500 })
   
 export const selectStackModerationReport = memoize(
-  ({ state, clipSlugs, channel }:
-    {
+  ([ state, clipSlugs, channel ]:
+    [
       state: RootState,
       clipSlugs: string[],
       channel: ICatcherChannel
-    }
+    ]
   ) => {
 
     let clipStack = clipSlugs.map(clipSlug => state.clips.clips[clipSlug])

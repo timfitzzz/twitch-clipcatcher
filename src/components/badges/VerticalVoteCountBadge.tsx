@@ -230,7 +230,7 @@ const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlug
     )
 
   const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 
-      selectStackModerationReport({state, clipSlugs, channel: state.channels[channelName]})
+      selectStackModerationReport([state, clipSlugs, state.channels[channelName]])
     )
 
   const metaState = useMemo(() => sortedMetas[0].length > 0 

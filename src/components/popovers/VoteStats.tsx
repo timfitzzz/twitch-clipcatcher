@@ -95,7 +95,7 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
   )
 
   const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 
-    selectStackModerationReport({state, clipSlugs, channel: state.channels[channelName]})
+    selectStackModerationReport([state, clipSlugs, state.channels[channelName]])
   )
 
   return (
