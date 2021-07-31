@@ -69,6 +69,8 @@ export const userTypeReport = (types: UserTypes[]) => {
   }
 }
 
+export const px = (n: any) => (typeof n === 'number' ? n + 'px' : n);
+
 // export const addUserTypes = (userName: string, postedBy: ClipPostedBy = {}, types: UserTypes[]) => {
 //   let index = 0;
 
