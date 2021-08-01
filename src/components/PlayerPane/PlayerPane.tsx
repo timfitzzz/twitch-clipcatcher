@@ -41,7 +41,7 @@ const PlayerIFrame = styled.iframe`
 const parentString = process.env.REACT_APP_VERCEL_ENV === 'production' 
                       ? "clipstime.manapool.nyc" 
                       : process.env.REACT_APP_VERCEL_ENV === 'preview'
-                        ? process.env.REACT_APP_VERCEL_URL
+                        ? process.env.REACT_APP_PREVIEW_URL
                         : "localhost"
 
 const PlayerPane = ({className, draggingDivider}: { draggingDivider: boolean, className?: string }) => {

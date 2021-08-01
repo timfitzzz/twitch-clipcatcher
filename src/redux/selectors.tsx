@@ -54,6 +54,7 @@ import { ChatUser } from './users'
 
   // STACKS
   export const selectStackDuration = memoize(([ sort, clips ]: [ sort: Sort, clips: CaughtClipV2[] ]) => {
+    // console.log('selectStackDuration')
     if (sort.direction === 'asc') {
       return clips.reduce((shortest: number | null, clip: CaughtClipV2) => {
         let duration = selectDuration(getUntrackedObject(clip) || clip)
@@ -289,8 +290,8 @@ import { ChatUser } from './users'
         ]
       ) => {
         // console.log('iteration: stack voters sort')
-        let stackVotersA = selectStackVoters((getUntrackedObject(clipStackA) || clipStackA).map(clip => clip.votes[channel.name]))
-        let stackVotersB = selectStackVoters((getUntrackedObject(clipStackB) || clipStackB).map(clip => clip.votes[channel.name]))
+        let stackVotersA = selectStackVoters((getUntrackedObject(clipStackA) || clipStackA).map(clip => getUntrackedObject(clip.votes[channel.name]) || clip.votes[channel.name]))
+        let stackVotersB = selectStackVoters((getUntrackedObject(clipStackB) || clipStackB).map(clip => getUntrackedObject(clip.votes[channel.name]) || clip.votes[channel.name]))
 
         if (sort.direction === 'asc') {
           return (stackVotersA.up.length - stackVotersA.down.length) - (stackVotersB.up.length - stackVotersB.down.length)
@@ -558,13 +559,13 @@ export const selectStackModerationReport = memoize(
     ]
   ) => {
 
-    let clipStack = clipSlugs.map(clipSlug => state.clips.clips[clipSlug])
+    let clipStack = clipSlugs.map(clipSlug => getUntrackedObject(state.clips.clips[clipSlug]) || state.clips.clips[clipSlug])
 
-    let stackMetas = selectStackMetas([clipStack, channel])
-    let stackDramas = selectStackDramas([clipStack, channel])
-    let stackVetos = selectStackVetos([clipStack, channel])
-    let sortedMetas = selectSortedSeparatedUserList([state, channel, stackMetas])
-    let sortedDramas = selectSortedSeparatedUserList([state, channel, stackDramas])
+    let stackMetas = selectStackMetas([clipStack, getUntrackedObject(channel) || channel])
+    let stackDramas = selectStackDramas([clipStack, getUntrackedObject(channel) || channel])
+    let stackVetos = selectStackVetos([clipStack, getUntrackedObject(channel) || channel])
+    let sortedMetas = selectSortedSeparatedUserList([getUntrackedObject(state) || state, getUntrackedObject(channel) || channel, stackMetas])
+    let sortedDramas = selectSortedSeparatedUserList([getUntrackedObject(state) || state, getUntrackedObject(channel) || channel, stackDramas])
 
     return {
       sortedMetas,
