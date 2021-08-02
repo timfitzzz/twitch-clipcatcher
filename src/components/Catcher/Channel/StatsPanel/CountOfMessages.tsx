@@ -18,7 +18,7 @@ export const CountOfMessages = styled(({channelName, className}: {channelName: s
   line-height: 20px;
   display: flex;
   flex-direction: row;
-  margin-top: 3px;
+  margin-top: auto;
   margin-bottom: auto;
 
   span {

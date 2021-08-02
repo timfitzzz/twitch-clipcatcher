@@ -4,7 +4,7 @@ import { lexSortClipStackIds, selectChannelChronologyWithStacksIfDesired, select
 import { useAppSelector } from './reduxHooks'
 import useUpdateLock from './useUpdateLock'
 
-const useClipStacks = ({channelName}: { channelName: string}): (string[] | string)[] => {
+const useClipStacks = (channelName: string) => {
 
   let currentClipStacks = useAppSelector(state => selectChannelChronologyWithStacksIfDesired({ state, channel: state.channels[channelName] }))
   let sort = useAppSelector(state => selectChannelSort(state.channels[channelName]))
