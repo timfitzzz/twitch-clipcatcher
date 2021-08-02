@@ -74,14 +74,8 @@ const RenderedStack = memo(({ className, style, index, data: { channelName, togg
   </div>
 ))
 
-
-
-// const defaultSort: SortTypes[] = []
-
 const ClipList = ({channelName}: {channelName: string, scanning: boolean}) => {
-  // console.log('re-rending clip list')
-  // const currentClipStacks = useAppSelector(state => selectSortedStacks({ state, channel: state.channels[channelName] }))
-  const currentClipStacks = useClipStacks({channelName})
+  const currentClipStacks = useClipStacks(channelName)
   const clipStacks = useUpdateLock(currentClipStacks, channelName)
   const sort = useAppSelector(state => selectChannelSort(state.channels[channelName]))
   const error = useAppSelector(state => selectChannelError(state.channels[channelName]))

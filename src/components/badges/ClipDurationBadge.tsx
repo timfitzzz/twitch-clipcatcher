@@ -2,10 +2,11 @@ import { Stopwatch } from '@styled-icons/fa-solid/Stopwatch'
 import React from 'react'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
+import { selectDuration } from '../../redux/selectors'
 
 const ClipDurationBadge = ({clipSlug, className, hideIcon = true, zIndex}: {clipSlug: string, zIndex?: number, hideIcon?: boolean, className?: string}) => {
   
-  let duration = useAppSelector(s => s.clips.clips[clipSlug].duration)
+  let duration = useAppSelector(state => selectDuration(state.clips.clips[clipSlug]))
   
   return (
     <div className={className}>

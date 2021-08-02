@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import useApiClient from '../../singleton-hooks/useApiClient'
 import { clipEpochRetry } from '../../redux/actions'
+import { selectCreatedAtEpoch, selectEpoch } from '../../redux/selectors'
 
 const DelayBadge = styled.div<{hideIcon: boolean}>`
 
@@ -86,8 +87,9 @@ const Delay = ({className, clipSlug, hideIcon = true, zIndex}: { hideIcon?: bool
 
   const apiClient = useApiClient()
   const dispatch = useAppDispatch()
-  const startEpoch = useAppSelector(state => state.clips.clips[clipSlug].startEpoch)
-  const createdAt = useAppSelector(state => new Date(state.clips.clips[clipSlug].created_at).getTime())
+  const startEpoch = useAppSelector(state => selectEpoch(state.clips.clips[clipSlug]))
+  const createdAt = useAppSelector(state => selectCreatedAtEpoch(state.clips.clips[clipSlug]))
+  
   const delayText = timeAgo 
                     ? startEpoch === 0 
                       ? timeAgo.format(createdAt, 'mini')

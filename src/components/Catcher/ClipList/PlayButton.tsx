@@ -6,10 +6,9 @@ import { RotateCcw } from '@styled-icons/feather/RotateCcw'
 import { Shield } from '@styled-icons/feather/Shield'
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
-import { UserTypes } from '../../../types';
 import { useContextSelector } from 'use-context-selector';
 import { PlayerContext } from '../../../contexts/PlayerContext/playerCtx';
-import { selectWatchedInChannel } from '../../../redux/selectors';
+import { selectClipVetoedBy, selectWatchedInChannel } from '../../../redux/selectors';
 import { clipPlayed } from '../../../redux/clips';
 
 export enum PlayIconState {
@@ -158,45 +157,47 @@ const PlayButton = ({
   channelName: string;
   className?: string;
 }) => {
-  let vetoedInChannelBy = useAppSelector((s) =>
-    s.clips.clips[clipSlug].vetoedIn &&
-    s.clips.clips[clipSlug].vetoedIn![channelName]
-      ? s.clips.clips[clipSlug].vetoedIn![channelName].by
-      : null
-  );
+  // let vetoedInChannelBy = useAppSelector((s) =>
+  //   s.clips.clips[clipSlug].vetoedIn &&
+  //   s.clips.clips[clipSlug].vetoedIn![channelName]
+  //     ? s.clips.clips[clipSlug].vetoedIn![channelName].by
+  //     : null
+  // );
 
-  let vetoedInChannelByTypes = useAppSelector((s) =>
-    vetoedInChannelBy
-      ? vetoedInChannelBy.map(
-          (userName) => s.users.users[userName].userTypes[channelName]
-        )
-      : null
-  );
+  // let vetoedInChannelByTypes = useAppSelector((s) =>
+  //   vetoedInChannelBy
+  //     ? vetoedInChannelBy.map(
+  //         (userName) => s.users.users[userName].userTypes[channelName]
+  //       )
+  //     : null
+  // );
 
-  let vetoedByTable = useMemo(
-    () =>
-      vetoedInChannelBy
-        ? vetoedInChannelBy.reduce((table, userName, index) => {
-            if (vetoedInChannelByTypes && vetoedInChannelByTypes[index]) {
-              table[userName] = Math.max(...vetoedInChannelByTypes[index]);
-            }
-            return table;
-          }, {} as { [userName: string]: UserTypes })
-        : null,
-    [vetoedInChannelBy, vetoedInChannelByTypes]
-  );
+  // let vetoedByTable = useMemo(
+  //   () =>
+  //     vetoedInChannelBy
+  //       ? vetoedInChannelBy.reduce((table, userName, index) => {
+  //           if (vetoedInChannelByTypes && vetoedInChannelByTypes[index]) {
+  //             table[userName] = Math.max(...vetoedInChannelByTypes[index]);
+  //           }
+  //           return table;
+  //         }, {} as { [userName: string]: UserTypes })
+  //       : null,
+  //   [vetoedInChannelBy, vetoedInChannelByTypes]
+  // );
 
-  let vetoedByRanked = useMemo(
-    () =>
-      vetoedInChannelBy && vetoedByTable
-        ? vetoedInChannelBy.sort(
-            (userA, userB) => vetoedByTable![userA] - vetoedByTable![userB]
-          )
-        : null,
-    [vetoedInChannelBy, vetoedByTable]
-  );
+  // let vetoedByRanked = useMemo(
+  //   () =>
+  //     vetoedInChannelBy && vetoedByTable
+  //       ? vetoedInChannelBy.sort(
+  //           (userA, userB) => vetoedByTable![userA] - vetoedByTable![userB]
+  //         )
+  //       : null,
+  //   [vetoedInChannelBy, vetoedByTable]
+  // );
 
-  let vetoed = useMemo(() => vetoedByRanked ? true : false, [vetoedByRanked])
+  let vetoedBy = useAppSelector(state => selectClipVetoedBy([state.clips.clips[clipSlug], state.channels[channelName]]))
+
+  let vetoed = useMemo(() => vetoedBy ? true : false, [vetoedBy])
   let [vetoOverridden, setVetoOverridden] = useState<boolean>(false)
   let played = useAppSelector(state => selectWatchedInChannel([state.clips.clips[clipSlug], state.channels[channelName]]))
   let playClip = useContextSelector(PlayerContext, (c) => c.playClip)

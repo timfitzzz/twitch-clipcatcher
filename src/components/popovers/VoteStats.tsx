@@ -4,8 +4,7 @@ import { useAppSelector } from '../../hooks/reduxHooks'
 import {UserPip} from '../badges/UserPip'
 import { SectionTitle } from '../typography/SectionTitle'
 import CustomPopover from './CustomPopover'
-import { selectVotersByClipIds } from '../../redux/clips'
-import { selectStackModerationReport } from '../../redux/selectors'
+import { selectStackModerationReport, selectStackVoteReport } from '../../redux/selectors'
 
 const VoteStatsUserPip = styled(UserPip)`
 
@@ -88,7 +87,7 @@ const VoteStatsSection = ({title, limit, userNames, clipSlugs, channelName}: { t
 const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target: HTMLDivElement, clipSlugs: string[], channelName: string, className?: string}) => {
 
   const { upVoters, downVoters } = useAppSelector(state => 
-    selectVotersByClipIds({ state, clipSlugs, channelName })
+    selectStackVoteReport([ state, clipSlugs, channelName ])
   )
 
   const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 

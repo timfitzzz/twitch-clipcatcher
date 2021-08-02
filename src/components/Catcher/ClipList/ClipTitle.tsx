@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useAppSelector } from '../../../hooks/reduxHooks'
+import { selectClipTitle } from '../../../redux/selectors'
 
 export const ClipTitle = ({clipSlug, className}: { clipSlug: string, className?: string}) => {
 
-  let title = useAppSelector(s => s.clips.clips[clipSlug].title)
+  let title = useAppSelector(state => selectClipTitle(state.clips.clips[clipSlug]))
 
   return (
     <div className={className}>

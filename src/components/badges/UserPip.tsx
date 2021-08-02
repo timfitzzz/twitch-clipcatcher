@@ -6,6 +6,7 @@ import { Square } from '@styled-icons/fa-solid/Square';
 import styled from "styled-components";
 import { useAppSelector } from "../../hooks/reduxHooks";
 import { UserTypes } from '../../types'
+import { selectChannelUserType } from '../../redux/selectors';
 
 const PipContainer = styled.div<{ userType: UserTypes }>`
 
@@ -85,9 +86,9 @@ export const DifferentiatedUserPip = styled(({userType, className}: {userType: U
 
 export const UserPip = styled(({userName, channelName, className}: { userName: string, channelName: string, downPip?: boolean, className?: string }) => {
   
-  const maxUserType = useAppSelector(state => Math.max(...state.users.users[userName].userTypes[channelName]))
+  const channelUserType = useAppSelector(state => selectChannelUserType([state.users.users[userName], state.channels[channelName]]))
 
-  return <DifferentiatedUserPip userType={maxUserType} className={className}/>
+  return <DifferentiatedUserPip userType={channelUserType} className={className}/>
 })`
 
   // box-sizing: border-box;

@@ -64,7 +64,7 @@ export const PlayerPaneOverlay = styled(({className, mouseIsOver = false, draggi
   let helpViewActivated = useAppSelector(state => selectHelpViewActive(state.settings))
   let dispatch = useAppDispatch()
 
-  let handlePopOut = () => { console.log('popping player out'); dispatch(playerPoppedOut()) }
+  let handlePopOut = () => {  dispatch(playerPoppedOut()) }
 
 
   return (

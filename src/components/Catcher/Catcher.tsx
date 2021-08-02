@@ -7,10 +7,10 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import ChannelSelector from './ChannelSelector/ChannelSelector'
 import AddChannelForm from './ChannelSelector/AddChannel';
 import Channel from './Channel/Channel';
-import { shallowEqual } from 'react-redux'
 import { useEffect } from 'react'
 import { updateClipEpochs, updateClipViews } from '../../redux/actions'
 import useApiClient from '../../singleton-hooks/useApiClient'
+import { selectChannelNames, selectCurrentChannel } from '../../redux/selectors'
 
 
 const ChannelContainer = styled(Flex).attrs(p => ({
@@ -30,19 +30,11 @@ const ChannelContainer = styled(Flex).attrs(p => ({
 
 const Catcher = styled(({  className }: { className?: string}) => {
 
-  const channelNames = useAppSelector(state => Object.getOwnPropertyNames(state.channels), shallowEqual)
-  const currentChannel = useAppSelector(state => state.settings.currentChannel)
+  const channelNames = useAppSelector(state => selectChannelNames(state.channels))
+  const currentChannel = useAppSelector(state => selectCurrentChannel(state.settings))
+
   const dispatch = useAppDispatch()
   const apiClient = useApiClient()
-  // const displayOrder = useMemo(() => {
-  //   if (currentChannel && typeof currentChannel === 'string') {
-  //     let newOrder = channelNames.filter(name => name !== currentChannel)
-  //     newOrder.push(currentChannel)
-  //     return newOrder
-  //   } else {
-  //     return channelNames
-  //   }
-  // }, [channelNames, currentChannel])
 
   useEffect(() => {
     let interval: any;

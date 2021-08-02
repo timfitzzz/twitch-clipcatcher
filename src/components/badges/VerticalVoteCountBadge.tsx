@@ -6,9 +6,8 @@ import { DifferentiatedUserPip } from './UserPip';
 import VoteStats from '../popovers/VoteStats'
 import debounce from 'lodash/debounce';
 import { abbreviateNumber } from 'js-abbreviation-number'
-import { selectVotersByClipIds } from '../../redux/clips';
 import { SpecialIcon } from './SpecialBadge';
-import { selectStackModerationReport } from '../../redux/selectors';
+import { selectStackModerationReport, selectStackVoteReport } from '../../redux/selectors';
 import { Shield } from '@styled-icons/feather/Shield';
 
 const VetoIcon = styled(({className}: { className?: string }) => (
@@ -226,7 +225,7 @@ const VerticalVoteCountBadgeContainer = styled.div<{specialState: SpecialState}>
 const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
 
   const { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
-      selectVotersByClipIds({ state, clipSlugs, channelName })
+      selectStackVoteReport([state, clipSlugs, channelName])
     )
 
   const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 

@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import useClipStack from '../../../hooks/useClipStack'
 import ViewCountBadge from '../../badges/ViewCountBadge'
 import VerticalVoteCountBadge from '../../badges/VerticalVoteCountBadge'
 import Clip from './Clip'
@@ -12,6 +11,7 @@ import StackDurationBadge from '../../badges/StackDurationBadge';
 import ClipDurationBadge from '../../badges/ClipDurationBadge';
 import ExpandButtonBadge from '../../badges/ExpandButtonBadge'
 import { Flex } from 'rendition'
+import { selectChannelSort, selectSortedClips } from '../../../redux/selectors'
 
 const FirstClipContainer = styled.div`
   flex-direction: row;
@@ -41,8 +41,7 @@ const OtherClip = styled(Clip)`
 
 const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandStack, className}: { clipSlugs: string[], channelName: string, expandStack: boolean, toggleExpandStack: () =>  void, className?: string}) => {
 
-
-  const currentSort = useAppSelector(state => state.channels[channelName].sort)
+  const currentSort = useAppSelector(state => selectChannelSort(state.channels[channelName]))
 
   const renderBadges = useMemo(() => () => {
     let activeresult: JSX.Element[] = []
@@ -207,7 +206,7 @@ const ClipsSeparator = styled.div`
 
 export const ClipStack = ({clipSlugs, stackIndex, toggleExpandStack, isExpanded, channelName, className}: {clipSlugs: string[], stackIndex: number, toggleExpandStack: (clipStack: string[], stackIndex: number) => void, isExpanded: (clipStack: string[]) => string | null, channelName: string, className?: string}) => {
 
-  let sortedSlugs = useClipStack(clipSlugs, channelName)
+  let sortedSlugs = useAppSelector(state => selectSortedClips([state.channels[channelName], clipSlugs.map(slug => state.clips.clips[slug])]))
   
   let toggleExpand = () => {
     toggleExpandStack(clipSlugs, stackIndex)

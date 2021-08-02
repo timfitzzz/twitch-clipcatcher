@@ -6,9 +6,21 @@ import { ChatUser } from './users'
 
 // SINGLE-VALUE SELECTORS
 
+  // STATE
+  export const selectChannelNames = memoize((channels: RootState['channels']) => {
+    let channelNames = []
+    for (let channel in channels) {
+      channelNames.push(channel)
+    }
+    return channelNames
+  })
+
+
   // SETTINGS
   export const selectPlayerPoppedout = memoize((settings: RootState['settings']) => settings.popoutPlayer)
   export const selectHelpViewActive = memoize((settings: RootState['settings']) => settings.helpViewActive)
+  export const selectCurrentChannel = memoize((settings: RootState['settings']) => settings.currentChannel)
+  export const selectLeftColumnWidth = memoize((settings: RootState['settings']) => settings.leftColumnWidth)
 
   // USERS
   export const selectChannelUserType = memoize(([user, channel]: [user: ChatUser, channel: ICatcherChannel]): UserTypes => {
@@ -16,21 +28,30 @@ import { ChatUser } from './users'
   }, { size: 500 })
   export const selectAppUser = memoize((state: RootState) => state.settings.user)
   export const selectAppUserFollows = memoize((state: RootState) => state.settings.user ? state.settings.user.follows : null )
+  export const selectUserLoading = memoize((settings: RootState['settings']) => settings.userLoading)
 
   // CHANNELS
   export const selectChannelSort = memoize((channel: ICatcherChannel) => channel.sort, { size: 500 })
   export const selectChannelError = memoize((channel: ICatcherChannel) => channel.error, { size: 500 })
   export const selectChannelDisplayName = memoize((channel: ICatcherChannel) => channel.displayName, { size: 500 })
+  export const selectChannelClipsCount = memoize((channel: ICatcherChannel) => channel.clips.length, { size: 500 })
+  export const selectChannelScanning = memoize((channel: ICatcherChannel) => channel.scanning, { size: 50 })
+  export const selectChannelUpdateHold = memoize((channel: ICatcherChannel) => channel.holdUpdates, { size: 50 })
 
   // CLIPS
   export const selectUpvoters = memoize((votesSet: CaughtClipV2['votes'][0]) => votesSet.up,  { size: 500 })
   export const selectDownvoters = memoize((votesSet: CaughtClipV2['votes'][0]) => votesSet.down, { size: 500})
   export const selectViews = memoize((clip: CaughtClipV2) => clip.views, { size: 500 })
+  export const selectCreatedAt = memoize((clip: CaughtClipV2) => clip.created_at, { size: 500 })
+  export const selectCreatedAtEpoch = memoize((clip: CaughtClipV2) => new Date(clip.created_at).getTime(), { size: 500 })
   export const selectEpoch = memoize((clip: CaughtClipV2) => clip.startEpoch === 0 ? (new Date(clip.created_at).getTime() ) : clip.startEpoch, { size: 500 })
   export const selectDuration = memoize((clip: CaughtClipV2) => clip.duration, { size: 500})
   export const selectStreamerName = memoize((clip: CaughtClipV2 ) => clip.broadcaster.name, { size: 500})
   export const selectWatchedInChannel = memoize(([clip, channel]: [clip: CaughtClipV2, channel: ICatcherChannel]) => !!clip.watchedIn[channel.name], { size: 500 })
-
+  export const selectClipThumbnails = memoize((clip: CaughtClipV2) => clip.thumbnails, { size: 500 })
+  export const selectClipTitle = memoize((clip: CaughtClipV2) => clip.title, { size: 500})
+  export const selectClipEmbedUrl = memoize((clip: CaughtClipV2) => clip.embed_url, { size: 500 })
+  export const selectClipTrackingId = memoize((clip: CaughtClipV2) => clip.tracking_id, { size: 500 })
   export const selectClipMetaedBy = memoize(([ clip, channel ]: [
     clip: CaughtClipV2,
     channel: ICatcherChannel
@@ -75,6 +96,13 @@ import { ChatUser } from './users'
       }, null as number | null)
     }
   }, { size: 500})
+
+  export const selectStackDurationRange = memoize((clips: CaughtClipV2[]) => {
+    return [
+      Math.min(...clips.map(clip => selectDuration(getUntrackedObject(clip) || clip))),
+      Math.max(...clips.map(clip => selectDuration(getUntrackedObject(clip) || clip)))
+    ]
+  }, { size: 500 })
 
   export const selectStackVoters = memoize((votesSets: { up: string[], down: string[] }[] ) => {
     // console.log('selectStackVoters')
@@ -221,25 +249,32 @@ import { ChatUser } from './users'
     }, { size: 500 })
 
     // VOTERS
-    export const selectAscendingClipVotersSort = memoize(([ votesSetA, votesSetB ]: [ votesSetA: CaughtClipV2['votes'][0], votesSetB: CaughtClipV2['votes'][0] ] ) => {
-      return (
-              selectUpvoters(getUntrackedObject(votesSetA) || votesSetA).length - 
-              selectDownvoters(getUntrackedObject(votesSetA) || votesSetA).length
-            ) - 
-            ( 
-              selectUpvoters(getUntrackedObject(votesSetB) || votesSetB).length - 
-              selectUpvoters(getUntrackedObject(votesSetB) || votesSetB).length
-            )
+    interface ClipVotesSet {
+      up: string[],
+      down: string[]
+    }
+
+    export const selectAscendingClipVotersSort = memoize(([ votesSetA, votesSetB ]: [ votesSetA: ClipVotesSet, votesSetB: ClipVotesSet ] ) => {
+      let upvotersCountA = selectUpvoters(getUntrackedObject(votesSetA) || votesSetA).length
+      let upvotersCountB = selectUpvoters(getUntrackedObject(votesSetB) || votesSetB).length
+      let downvotersCountA = selectDownvoters(getUntrackedObject(votesSetA) || votesSetA).length
+      let downvotersCountB = selectDownvoters(getUntrackedObject(votesSetB) || votesSetB).length
+      return ( upvotersCountA - downvotersCountA) - ( upvotersCountB - downvotersCountB )
     }, { size: 500 })
 
-    export const selectDescendingClipVotersSort = memoize(([ votesSetA, votesSetB ]: [ votesSetA: CaughtClipV2['votes'][0], votesSetB: CaughtClipV2['votes'][0] ] ) => {
+
+    export const selectDescendingClipVotersSort = memoize(([ votesSetA, votesSetB ]: [ votesSetA: ClipVotesSet, votesSetB: ClipVotesSet ] ) => {
+      let upvotersCountA = selectUpvoters(getUntrackedObject(votesSetA) || votesSetA).length
+      let upvotersCountB = selectUpvoters(getUntrackedObject(votesSetB) || votesSetB).length
+      let downvotersCountA = selectDownvoters(getUntrackedObject(votesSetA) || votesSetA).length
+      let downvotersCountB = selectDownvoters(getUntrackedObject(votesSetB) || votesSetB).length
       return (
-              selectUpvoters(getUntrackedObject(votesSetB) || votesSetB).length - 
-              selectDownvoters(getUntrackedObject(votesSetB) || votesSetB).length
+              upvotersCountB - 
+              downvotersCountB
             ) - 
             ( 
-              selectUpvoters(getUntrackedObject(votesSetA) || votesSetA).length - 
-              selectUpvoters(getUntrackedObject(votesSetA) || votesSetA).length
+              upvotersCountA - 
+              downvotersCountA
             )
     }, { size: 500 })
 
@@ -251,7 +286,7 @@ import { ChatUser } from './users'
     }, { size: 500})
 
     export const selectDescendingClipViewsSort = memoize(([clipA, clipB]: [clipA: CaughtClipV2, clipB: CaughtClipV2]) => {
-      return selectViews(getUntrackedObject(clipA) || clipA) - selectViews(getUntrackedObject(clipB) || clipB)
+      return selectViews(getUntrackedObject(clipB) || clipB) - selectViews(getUntrackedObject(clipA) || clipA)
     }, { size: 500})
 
     // DURATION
@@ -391,6 +426,7 @@ import { ChatUser } from './users'
 
 
 // MEMOIZED OTHER
+
 export const selectSortedUserList = memoize(([state, channel, userList]: [
   state: RootState,
   channel: ICatcherChannel,
@@ -478,6 +514,62 @@ export const StacksSortTable = {
   [SortTypes['streamername']]: selectStackStreamerSort
 }
 
+export const ClipsSortTable = {
+  [SortTypes['frogscount']]: {
+    'asc': selectAscendingClipVotersSort,
+    'desc': selectDescendingClipVotersSort
+  },
+  [SortTypes['views']]: {
+    'asc': selectAscendingClipViewsSort,
+    'desc': selectDescendingClipViewsSort
+  },
+  [SortTypes['date']]: {
+    'asc': selectAscendingEpochalSort,
+    'desc': selectDescendingEpochalSort
+  },
+  [SortTypes['length']]: {
+    'asc': selectAscendingClipDurationSort,
+    'desc': selectDescendingClipDurationSort
+  },
+  [SortTypes['streamername']]: {
+    'asc': selectAscendingStreamerSort,
+    'desc': selectDescendingStreamerSort
+  }
+}
+
+export type ClipsSortByClipTypes = SortTypes.views | SortTypes.date | SortTypes.length | SortTypes.streamername
+
+export const lexSortClips = memoize(([
+  clipA,
+  clipB,
+  channel
+]: [
+  clipA: CaughtClipV2,
+  clipB: CaughtClipV2,
+  channel: ICatcherChannel
+]) => {
+  // console.log(`${clipA.slug} vs ${clipB.slug}`)
+  for (let sortNumber = 0; sortNumber < channel.sort.length; sortNumber++) {
+    let result = channel.sort[sortNumber].active
+      ? channel.sort[sortNumber].type === SortTypes['frogscount']
+        ? ClipsSortTable[SortTypes['frogscount']][channel.sort[sortNumber].direction]([(getUntrackedObject(clipA) || clipA).votes[channel.name], (getUntrackedObject(clipB) || clipB).votes[channel.name]])
+        : ClipsSortTable[channel.sort[sortNumber].type as ClipsSortByClipTypes][channel.sort[sortNumber].direction]([(getUntrackedObject(clipA) || clipA), (getUntrackedObject(clipB) || clipB)])
+      : 0
+    if (result !== 0) {
+      return result
+    }
+  }
+  
+  return 0
+
+}, { size: 1000})
+
+export const selectSortedClips = memoize(([channel, clips]: [channel: ICatcherChannel, clips: CaughtClipV2[]]) => {
+
+  return clips.sort((a,b) => lexSortClips([getUntrackedObject(a) || a, getUntrackedObject(b) || b, channel])).map(clip => clip.slug)
+
+}, { size: 1000})
+
 export const lexSortClipStacks = 
   (channel: ICatcherChannel) => 
     (clipStackA: CaughtClipV2[] | CaughtClipV2, 
@@ -549,6 +641,50 @@ export const selectSortedSpecialStackUsers = memoize(
     return users ? selectSortedSeparatedUserList([state, channel, users]) : [[],[]]
 
 }, { size: 500 })
+
+export const selectStacksTagsReport = memoize(
+  ([channel, clipsTaggedInChannelAs]: [ 
+    channel: ICatcherChannel, 
+    clipsTaggedInChannelAs: ({ 
+      tags: string[], 
+      byTag: { 
+        [tagName: string]: string[] 
+      }
+    })[] 
+  ]) => {
+    let tags = clipsTaggedInChannelAs.reduce(
+      (agg: {
+        tags: string[], 
+        byTag: {
+          [tagName: string ]: {
+            names: string[],
+            namesSeen: { [userName: string]: true }
+          }
+        }
+      }, clipTaggedInChannelAs) => {
+        clipTaggedInChannelAs.tags.forEach(tag => {
+          if (agg.byTag[tag]) {
+            clipTaggedInChannelAs.byTag[tag].forEach(userName => {
+              if (!agg.byTag[tag].namesSeen[userName]) {
+                agg.byTag[tag].names = [ ...agg.byTag[tag].names, userName ]
+                agg.byTag[tag].namesSeen[userName] = true
+              }
+            })
+          } else {
+            agg.tags.push(tag)
+            agg.byTag[tag] = {
+              names: clipTaggedInChannelAs.byTag[tag],
+              namesSeen: Object.assign({}, ...clipTaggedInChannelAs.byTag[tag].map(name => ({ [name]: true })))
+            }
+          }
+        })
+        return agg
+      }, { tags: [], byTag: { } }
+    )
+
+    return tags
+
+}, { size: 500 })
   
 export const selectStackModerationReport = memoize(
   ([ state, clipSlugs, channel ]:
@@ -572,4 +708,50 @@ export const selectStackModerationReport = memoize(
       sortedDramas,
       vetos: stackVetos
     }
+}, { size: 500 })
+
+
+export const selectStackVoteReport = memoize(([state, clipSlugs, channelName]: [ state: RootState, clipSlugs: string[], channelName: string]) => {
+  let output = {
+    upVoters: [] as string[],
+    downVoters: [] as string[],
+    upvoterTypes: [] as UserTypes[],
+    downvoterTypes: [] as UserTypes[]
+  }
+
+  let votesSets = clipSlugs.map(clipSlug => (getUntrackedObject(state) || state).clips.clips[clipSlug].votes[channelName])
+
+  let stackVoters = selectStackVoters(votesSets)
+
+  output.upVoters = stackVoters.up
+  output.downVoters = stackVoters.down
+
+  output.upVoters = output.upVoters.sort((usernameA, usernameB) => 
+    state.users.users[usernameB].userTypes[channelName][0] -
+    state.users.users[usernameA].userTypes[channelName][0]
+  )
+  output.downVoters = output.downVoters.sort((usernameA, usernameB) => 
+    state.users.users[usernameB].userTypes[channelName][0] -
+    state.users.users[usernameA].userTypes[channelName][0]
+  )
+
+  output.upvoterTypes = output.upVoters.reduce((voterTypes, upVoterName) => {
+    if (voterTypes.length === 0 || (state.users.users[upVoterName].userTypes[channelName].indexOf(voterTypes[0]) === -1)) {
+      voterTypes.unshift(state.users.users[upVoterName].userTypes[channelName][0])
+      return voterTypes
+    } else {
+      return voterTypes
+    }
+  }, [] as UserTypes[])
+
+  output.downvoterTypes = output.downVoters.reduce((voterTypes, downVoterName) => {
+    if (voterTypes.length === 0 || (state.users.users[downVoterName].userTypes[channelName].indexOf(voterTypes[0]) === -1)) {
+     voterTypes.unshift(state.users.users[downVoterName].userTypes[channelName][0])
+     return voterTypes
+    } else {
+      return voterTypes
+    }
+  }, [] as UserTypes[])
+
+  return output
 }, { size: 500 })

@@ -12,6 +12,7 @@ import { useMemo } from 'react'
 import { sortMoved, sortToggled } from '../../../redux/channels'
 import PlusOrMinusIcon from '../../badges/PlusOrMinusIcon'
 import { Stopwatch } from '@styled-icons/fa-solid/Stopwatch'
+import { selectChannelSort } from '../../../redux/selectors'
 
 
 
@@ -379,8 +380,7 @@ export const SortSetter = ({channelName, className}: {
   channelName: string
   className?: string
 }) => {
-  // const [displaySortOrder, setDisplaySortOrder] = useState<SortList>(currentSort)
-  const currentSort = useAppSelector(state => state.channels[channelName].sort)
+  const currentSort = useAppSelector(state => selectChannelSort(state.channels[channelName]))
   const dispatch = useAppDispatch()
 
   const moveSort = useMemo(() => (dragIndex: number, hoverIndex: number, channelName: string) => {

@@ -5,6 +5,7 @@ import { useAppSelector } from '../../../../hooks/reduxHooks'
 import useUpdateLock from '../../../../hooks/useUpdateLock'
 import { abbreviateNumber } from 'js-abbreviation-number'
 import { Lock } from '@styled-icons/fa-solid/Lock'
+import { selectChannelClipsCount, selectChannelUpdateHold } from '../../../../redux/selectors'
 
 const LockedClipsDisplay = styled(({count, className}: {count: string, className?: string}) => {
   return (
@@ -35,8 +36,8 @@ const LockedClipsDisplay = styled(({count, className}: {count: string, className
 
 export const CountOfClips = styled(({channelName, className}: {channelName: string, className?: string}) => {
   
-  const clipsCount = useAppSelector(state => state.channels[channelName].clips.length)
-  const holdUpdates = useAppSelector(state => state.channels[channelName].holdUpdates)
+  const clipsCount = useAppSelector(state => selectChannelClipsCount(state.channels[channelName]))
+  const holdUpdates = useAppSelector(state => selectChannelUpdateHold(state.channels[channelName]))
   const displayedClipsCount = useUpdateLock(clipsCount, channelName)
   
   return (
