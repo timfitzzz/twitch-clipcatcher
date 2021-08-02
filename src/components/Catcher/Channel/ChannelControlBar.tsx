@@ -5,7 +5,7 @@ import { channelCleared, channelUpdatesHeld, channelUpdatesReleased, scanningSta
 import { RecordingButton } from '../../badges/RecordingButton'
 import { LockButton } from '../../badges/LockButton'
 import ClearButton from '../../badges/ClearButton'
-import memoize from 'proxy-memoize'
+import { selectChannelScanning, selectChannelUpdateHold } from '../../../redux/selectors'
 
 
 const LargerRecordingButton = styled(RecordingButton)`
@@ -22,8 +22,9 @@ const LargerRecordingButton = styled(RecordingButton)`
 
 const ReusableChannelControls = ({channelName, className}: {channelName: string, className?: string}) => {
 
-  const scanning = useAppSelector(memoize(state => state.channels[channelName].scanning))
-  const holdUpdates = useAppSelector(memoize(state => state.channels[channelName].holdUpdates))
+  const scanning = useAppSelector(state => selectChannelScanning(state.channels[channelName]))
+  const holdUpdates = useAppSelector(state => selectChannelUpdateHold(state.channels[channelName]))
+
   const dispatch = useAppDispatch()
 
   const toggleScanning = () => {

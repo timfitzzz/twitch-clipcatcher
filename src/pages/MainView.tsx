@@ -9,11 +9,10 @@ import PlayerPaneContainer from '../components/PlayerPane/PlayerPaneContainer'
 import styled from 'styled-components'
 import LoggedOutConsolePanel from '../components/LoggedOutConsolePanel'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
-import memoize from 'proxy-memoize'
 import { useState } from 'react'
 import { leftColumnWidthAdjusted } from '../redux/settings'
 import { useRef } from 'react'
-import { selectPlayerPoppedout } from '../redux/selectors'
+import { selectLeftColumnWidth, selectPlayerPoppedout } from '../redux/selectors'
 import PlayerPaneUndertray from '../components/PlayerPane/PlayerPaneUndertray'
 import HelpOverlay from '../components/HelpOverlay'
 import WeAreJustSoSoSorry from './MobileApology'
@@ -52,13 +51,13 @@ const VerticalDraggableDivider = styled(({handleDragStart, className}: { handleD
 const MainView = () => {
 
   let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated ? c.isAuthenticated() : false)
-  let savedleftColumnWidth = useAppSelector(memoize(({settings}) => settings.leftColumnWidth))
-  let playerPoppedOut = useAppSelector(state => selectPlayerPoppedout({settings: state.settings}))
+  let savedleftColumnWidth = useAppSelector(state => selectLeftColumnWidth(state.settings))
+  let playerPoppedOut = useAppSelector(state => selectPlayerPoppedout(state.settings))
   let dispatch = useAppDispatch()
+
   let [ leftColumnWidth, setLeftColumnWidth ] = useState<number>(savedleftColumnWidth || 321)
   let [ draggingDivider, setDraggingDivider ] = useState<boolean>(false)
   let viewContainer = useRef<HTMLDivElement>(null)
-
   let hoverSupported = Modernizr.hovermq
 
   let handleDividerDragStart = (e: React.MouseEvent) => {

@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/reduxHooks';
+import { selectClipThumbnails } from '../../../redux/selectors';
 
 export const ClipThumb = styled(({clipSlug, thumbSize = "small", className}: { clipSlug: string, thumbSize?: "small" | "medium" | "tiny", className?: string}) => {
-  let { [thumbSize]: thumbUrl } = useAppSelector(s => s.clips.clips[clipSlug].thumbnails)
+  let { [thumbSize]: thumbUrl } = useAppSelector(state => selectClipThumbnails(state.clips.clips[clipSlug]))
   return (
     <div className={className} style={{ backgroundImage: `url("${thumbUrl}")`}}/>
   )

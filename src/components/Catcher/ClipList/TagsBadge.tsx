@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useRef } from 'react'
-import { shallowEqual } from 'react-redux'
 import styled from 'styled-components'
 import { useAppSelector } from '../../../hooks/reduxHooks'
 import useUpdateLock from '../../../hooks/useUpdateLock'
@@ -7,6 +6,7 @@ import { SectionTitle } from '../../typography/SectionTitle'
 import { Tag as TagIcon } from '@styled-icons/fa-solid/Tag'
 import debounce from 'lodash/debounce'
 import { Popover } from 'rendition'
+import { selectStacksTagsReport } from '../../../redux/selectors'
 
 
 const Tag = styled.div.attrs(p => ({
@@ -50,30 +50,16 @@ export const TagsBadge = ({channelName, hideIcon = true, clipSlugs, className}: 
 
   let [tagsExpanded, setTagsExpanded] = useState<boolean>(false)
 
-  let tags = useAppSelector(state => clipSlugs.reduce((agg: { tags: string[], byTag: { [tagName: string]: string[] }}, clipSlug) => {
-      if (state.clips.clips[clipSlug].taggedIn && state.clips.clips[clipSlug].taggedIn![channelName]) {
-        agg.tags = agg.tags.concat(state.clips.clips[clipSlug].taggedIn![channelName].as.tags)
-        state.clips.clips[clipSlug].taggedIn![channelName].as.tags.forEach(tag => {
-          if (agg.byTag[tag]) {
-            agg.byTag[tag].concat(state.clips.clips[clipSlug].taggedIn![channelName].as.byTag[tag])
-          } else {
-            agg.byTag[tag] = state.clips.clips[clipSlug].taggedIn![channelName].as.byTag[tag]
-          }
-        })
-      }
-      agg.tags.sort((a, b) => agg.byTag[b].length - agg.byTag[a].length)
-      return agg
-    },
-    {
-      tags: [],
-      byTag: {}
-    } as {
-      tags: string[],
-      byTag: { [tagName: string]: string[] }
-    }), shallowEqual)
+  let tags = useAppSelector(state => selectStacksTagsReport(
+    [state.channels[channelName], 
+    clipSlugs.map(slug => 
+      state.clips.clips[slug].taggedIn && 
+      state.clips.clips[slug].taggedIn![channelName]! 
+      ? state.clips.clips[slug].taggedIn![channelName]!.as! 
+      : { tags: [], byTag: {} }).filter(obj => obj.tags.length > 0)]))
 
-  let leadingTagCount = useMemo(() => tags.tags.reduce((counter, tag) => tags.byTag[tag].length > counter ? tags.byTag[tag].length : counter, 0), [tags])
-  let tagElements = useMemo(() => tags.tags.map(tag => <Tag key={tag+channelName+clipSlugs[0]} taggers={tags.byTag[tag]} scale={leadingTagCount > 1 ? tags.byTag[tag].length / leadingTagCount : undefined}>{tag} </Tag>), [channelName, clipSlugs, tags, leadingTagCount])
+  let leadingTagCount = useMemo(() => tags.tags.reduce((counter, tag) => tags.byTag[tag].names.length > counter ? tags.byTag[tag].names.length : counter, 0), [tags])
+  let tagElements = useMemo(() => tags.tags.map(tag => <Tag key={tag+channelName+clipSlugs[0]} taggers={tags.byTag[tag].names} scale={leadingTagCount > 1 ? tags.byTag[tag].names.length / leadingTagCount : undefined}>{tag} </Tag>), [channelName, clipSlugs, tags, leadingTagCount])
 
   let displayTagElements = useUpdateLock(tagElements, channelName)
 

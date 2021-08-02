@@ -1,7 +1,6 @@
-import memoize from 'proxy-memoize'
 import { useEffect, useState } from 'react'
 import { channelErrorSet, scanningStopped } from '../redux/channels'
-import { selectChannelError } from '../redux/selectors'
+import { selectChannelError, selectChannelScanning } from '../redux/selectors'
 import useChatClient from '../singleton-hooks/useChatClient'
 import { useAppDispatch, useAppSelector } from './reduxHooks'
 
@@ -9,7 +8,7 @@ const useChannel = (channelName: string) => {
 
   const { chatClient, loggedIn } = useChatClient()
 
-  const isScanning = useAppSelector(memoize(state => state.channels[channelName].scanning));
+  const isScanning = useAppSelector(state => selectChannelScanning(state.channels[channelName]));
   const error = useAppSelector(state => selectChannelError(state.channels[channelName]))
   const dispatch = useAppDispatch()
   const [joined, setJoined] = useState<boolean>(false)

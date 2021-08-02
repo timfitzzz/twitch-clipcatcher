@@ -6,9 +6,8 @@ import { DifferentiatedUserPip } from './UserPip';
 import VoteStats from '../popovers/VoteStats'
 import debounce from 'lodash/debounce';
 import { abbreviateNumber } from 'js-abbreviation-number'
-import { selectVotersByClipIds } from '../../redux/clips';
 import { SpecialIcon } from './SpecialBadge';
-import { selectStackModerationReport } from '../../redux/selectors';
+import { selectStackModerationReport, selectStackVoteReport } from '../../redux/selectors';
 import { Shield } from '@styled-icons/feather/Shield';
 
 const VetoIcon = styled(({className}: { className?: string }) => (
@@ -99,17 +98,17 @@ const renderPips = (metaState: SpecialState, dramaState: SpecialState, vetoState
 
   if (vetoState !== SpecialState['no']) {
     pipCount++;
-    pips.push(<VetoIcon/>)
+    pips.push(<VetoIcon key={Math.random()}/>)
   }
 
   if (dramaState !== SpecialState['no']) {
     pipCount++
-    pips.push(<SpecialIcon type={'drama'} specialState={dramaState} />)
+    pips.push(<SpecialIcon key={Math.random()} type={'drama'} specialState={dramaState} />)
   }
 
   if (metaState !== SpecialState['no']) { 
     pipCount++; 
-    pips.push(<SpecialIcon type={'meta'} specialState={metaState}/>) 
+    pips.push(<SpecialIcon key={Math.random()} type={'meta'} specialState={metaState}/>) 
   }
 
   let moderationPipCount = pips.length
@@ -124,7 +123,7 @@ const renderPips = (metaState: SpecialState, dramaState: SpecialState, vetoState
   }
 
   if (renderAdditional) {
-    pips.push(<AdditionalPipBadge count={renderAdditional}/>)
+    pips.push(<AdditionalPipBadge key={Math.random()} count={renderAdditional}/>)
   }
 
   return pips
@@ -226,7 +225,7 @@ const VerticalVoteCountBadgeContainer = styled.div<{specialState: SpecialState}>
 const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
 
   const { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
-      selectVotersByClipIds({ state, clipSlugs, channelName })
+      selectStackVoteReport([state, clipSlugs, channelName])
     )
 
   const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 
@@ -266,6 +265,8 @@ const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlug
     abbreviateNumber(upVoters.length - downVoters.length), 
   [upVoters, downVoters])
 
+  const pips = useMemo(() => renderPips(metaState, dramaState, vetoState, typesUpvotedBy), [metaState, dramaState, vetoState, typesUpvotedBy])
+
   return (
     <VerticalVoteCountBadgeContainer className={'VerticalVoteCountBadge ' + className} specialState={specialState} ref={popoverTarget} onMouseLeave={handleMouseExit} onMouseOver={handlePopover}>
       { showPopover
@@ -276,7 +277,7 @@ const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlug
         <span>{voteTotalText}</span>
       </VerticalVoteCount>
       <div className={'types'}>
-        { renderPips(metaState, dramaState, vetoState, typesUpvotedBy) }
+        { pips }
       </div>
     </VerticalVoteCountBadgeContainer>
   )

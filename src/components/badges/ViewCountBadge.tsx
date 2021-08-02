@@ -3,11 +3,10 @@ import styled from 'styled-components'
 import { Visibility } from '@styled-icons/material/Visibility'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import { abbreviateNumber } from 'js-abbreviation-number'
+import { selectStackViews } from '../../redux/selectors'
 
 export const ViewCountBadge = ({clipSlugs, className, hideIcon = true, zIndex}: {clipSlugs: string[], hideIcon?: boolean, zIndex?: number, className?: string}) => {
-  let views = useAppSelector(s => clipSlugs.reduce(
-      (viewCount, clipSlug) => viewCount + s.clips.clips[clipSlug].views
-    , 0))
+  let views = useAppSelector(state => selectStackViews(clipSlugs.map(clipSlug => state.clips.clips[clipSlug])))
 
   return (
     <div className={className}>

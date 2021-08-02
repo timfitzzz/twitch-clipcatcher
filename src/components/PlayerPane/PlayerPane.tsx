@@ -8,7 +8,7 @@ import { AuthContext } from '../../contexts/AuthContext'
 import IntroPanel from '../infopanels/IntroPanel'
 import PlayerPaneOverlay from './PlayerPaneOverlay'
 import PlayerBackground from './PlayerBackground'
-import { selectPlayerPoppedout } from '../../redux/selectors'
+import { selectClipEmbedUrl, selectClipTrackingId, selectPlayerPoppedout } from '../../redux/selectors'
 
 interface ClipEmbedOptions {
   src: string
@@ -41,17 +41,16 @@ const PlayerIFrame = styled.iframe`
 const parentString = process.env.REACT_APP_VERCEL_ENV === 'production' 
                       ? "clipstime.manapool.nyc" 
                       : process.env.REACT_APP_VERCEL_ENV === 'preview'
-                        ? process.env.REACT_APP_VERCEL_URL
+                        ? process.env.REACT_APP_PREVIEW_URL
                         : "localhost"
 
 const PlayerPane = ({className, draggingDivider}: { draggingDivider: boolean, className?: string }) => {
   let isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated ? c.isAuthenticated() : false)
   let currentClipObject = useContextSelector(PlayerContext, (c) => c.currentClip)
   let currentClipId = useMemo(() => currentClipObject?.currentClipId, [currentClipObject])
-  let currentClip = useAppSelector(s => currentClipId && s.clips.clips[currentClipId] ? s.clips.clips[currentClipId] : null)
-  let poppedOut = useAppSelector(state => selectPlayerPoppedout({settings: state.settings}))
-  let embed_url = useMemo(() => currentClip ? currentClip.embed_url : null, [currentClip])
-  let tracking_id = useMemo(() => currentClip ? currentClip.tracking_id : null, [currentClip])
+  let poppedOut = useAppSelector(state => selectPlayerPoppedout(state.settings))
+  let embed_url = useAppSelector(state => currentClipId ? selectClipEmbedUrl(state.clips.clips[currentClipId]) : null)
+  let tracking_id = useAppSelector(state => currentClipId ? selectClipTrackingId(state.clips.clips[currentClipId!]) : null)
   let playing = useContextSelector(PlayerContext, (c) => c.playing)
   let [playerFrame, setPlayerFrame] = useState<ReactChild | null>(null)
   let iframeRef = useRef<HTMLIFrameElement>(null)
@@ -89,7 +88,7 @@ const PlayerPane = ({className, draggingDivider}: { draggingDivider: boolean, cl
   return (
     <PlayerContainer onMouseEnter={handleMouseOver} onMouseLeave={handleMouseExit} className={className} inUse={embed_url ? true : false}>
       { !isAuthenticated && <IntroPanel /> }
-      <PlayerBackground currentClip={currentClip}/>
+      <PlayerBackground currentClipId={currentClipId}/>
       { isAuthenticated && playerFrame }
       <PlayerPaneOverlay mouseIsOver={mouseIsOver} draggingDivider={draggingDivider}/>
     </PlayerContainer>

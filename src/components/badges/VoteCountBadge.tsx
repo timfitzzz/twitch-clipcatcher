@@ -5,12 +5,12 @@ import { UserTypes } from '../../types';
 import { DifferentiatedUserPip } from './UserPip';
 import VoteStats from '../popovers/VoteStats'
 import debounce from 'lodash/debounce';
-import { selectVotersByClipIds } from '../../redux/clips';
+import { selectStackVoteReport } from '../../redux/selectors';
 
 const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
 
   let { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
-    selectVotersByClipIds({ state, clipSlugs, channelName })
+    selectStackVoteReport([state, clipSlugs, channelName])
   )
 
   let popoverTarget = useRef<HTMLDivElement>(null)

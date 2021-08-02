@@ -3,6 +3,7 @@ import React from 'react'
 import { Flex } from 'rendition'
 import styled from 'styled-components'
 import { useAppSelector } from '../../hooks/reduxHooks'
+import { selectStreamerName } from '../../redux/selectors'
 
 const StreamerBadgeContainer = styled(Flex)<{charCount: number}>`
   padding-left: 8px;
@@ -54,7 +55,7 @@ const StreamerBadgeContainer = styled(Flex)<{charCount: number}>`
 
 const StreamerBadge = ({clipSlug, className}: {clipSlug: string, className?: string}) => {
 
-  let { name } = useAppSelector(s => s.clips.clips[clipSlug].broadcaster)
+  let name = useAppSelector(s => selectStreamerName(s.clips.clips[clipSlug]))
 
   return ( 
     <StreamerBadgeContainer flexDirection={"row"} className={className} charCount={name.length}>

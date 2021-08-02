@@ -49,7 +49,7 @@ export default styled(ExpandButtonBadge)`
   .clipsIcon {
     margin-top: 2px;
     margin-bottom: auto;
-    margin-left: 4px;
+    margin-left: 3px;
     margin-right: 2px!important;
     height: 14px;
   }

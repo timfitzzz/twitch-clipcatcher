@@ -29,16 +29,12 @@ interface ModerationListeners {
 
 const SingletonLoader = () => {
 
-  // console.log('rerendering singleton loader')
-
   const apiClient = useApiClient()
   const { chatClient, loggedIn } = useChatClient()
   const [currentMessageListener, setCurrentMessageListener] = useState<Listener | null>(null)
   const [currentModerationListeners, setCurrentModerationListeners] = useState<ModerationListeners>({})
-  // const [currentUpdateSchedulerId, setCurrentUpdateSchedulerId] = useState<number | null>(null)
 
   const dispatch = useAppDispatch()
-  // const channelsToScan = useAppSelector(state => Object.getOwnPropertyNames(state.channels).filter(channelName => state.channels[channelName].scanning), shallowEqual)
 
   const getClipMeta = useMemo(() => apiClient ? async (clipSlug: string) => {
     return apiClient

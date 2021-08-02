@@ -4,7 +4,7 @@ import { Flex } from 'rendition'
 import ClipsCount from '../../badges/ClipsCount'
 import { RecordingIcon } from '../../badges/RecordingIcon'
 import { useAppSelector } from '../../../hooks/reduxHooks'
-import { selectChannelDisplayName } from '../../../redux/selectors'
+import { selectChannelDisplayName, selectChannelScanning } from '../../../redux/selectors'
 
 const ChannelButtonTitleText = styled.h5`
 display: flex;
@@ -133,7 +133,7 @@ const SteadyRecordingIcon = styled(RecordingIcon)<{fade?: boolean}>`
 const ChannelButton = ({title, hidden, onClick, icon, current, className}: {title?: string, icon?: React.FC, hidden?: boolean, clipsCount?: number, scanning?: boolean, onClick: () => void, newClips?: boolean, current: boolean, className?: string}) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  const scanning = useAppSelector(state => icon || !title ? undefined: state.channels[title].scanning)
+  const scanning = useAppSelector(state => icon || !title ? undefined : selectChannelScanning(state.channels[title]))
   const channelDisplayName = useAppSelector(state => icon || !title ? null : selectChannelDisplayName(state.channels[title]))
   const Icon = icon ? icon : null
 
