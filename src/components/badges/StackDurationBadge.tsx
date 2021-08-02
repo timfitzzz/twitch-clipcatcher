@@ -53,6 +53,7 @@ export default styled(StackDurationBadge)`
     margin-right: 3px!important;
     height: 14px;
     line-weight: 2px;
+    padding-bottom: 1px;
   }
 
   

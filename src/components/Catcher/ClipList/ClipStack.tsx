@@ -79,12 +79,6 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
 
   }, [clipSlugs, currentSort])
 
-  // return (
-  //   <div className={className}>
-  //     { renderBadges() }
-  //   </div>
-  // )
-
   return (
     <div className={className}>
       <div className={'StackedBadges'}>
@@ -116,6 +110,7 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
       flex-direction: row;
       // border-radius: 0px;
       align-self: unset;
+      height: 21px;
   
       box-shadow: -2px 2px 5px -3px darkgray;
   
@@ -149,6 +144,10 @@ const StackSummary = styled(({clipSlugs, channelName, expandStack, toggleExpandS
         margin-right: 2px;
         font-size: 14px;
         font-weight: 700;
+        line-height: 21px;
+        margin-top: auto;
+        margin-bottom: auto;
+        padding-bottom: 1px;
       }
   
       svg {

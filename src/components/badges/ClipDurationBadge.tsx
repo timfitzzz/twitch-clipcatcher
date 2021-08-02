@@ -31,6 +31,7 @@ export default styled(ClipDurationBadge)`
   line-height: 21px;
   color: white;
   border-radius: 4px;
+  font-weight: 700;
   
   background-color: ${p => p.theme.colors.primary.dark};
 
@@ -47,6 +48,7 @@ export default styled(ClipDurationBadge)`
     margin-right: 2px;
     height: 14px;
     line-weight: 2px;
+    padding-bottom: 1px;
   }
 
   
