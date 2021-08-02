@@ -6,6 +6,7 @@ import { Flex } from 'rendition';
 import ChannelButton from './Tab';
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
 import { channelChanged } from '../../../redux/settings';
+import { selectCurrentChannel } from '../../../redux/selectors';
 
 const AddIcon = styled(Add)`
   width: 18px;
@@ -62,7 +63,7 @@ export const ReusableChannelSelector = ({
   className?: string;
 }) => {
 
-  const currentChannel = useAppSelector(state => state.settings.currentChannel)
+  const currentChannel = useAppSelector(state => selectCurrentChannel(state.settings))
   const dispatch = useAppDispatch()
 
   const changeChannel = (channelName: string | -1) => {

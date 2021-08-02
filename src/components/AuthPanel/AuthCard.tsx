@@ -2,13 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rendition'
 import TitleImage from './TitleImage'
-// import {Settings} from '@styled-icons/feather/Settings'
 import { AuthButton } from './AuthButton'
 import HelpButton from './HelpButton'
-
-// const SettingsIcon = styled(Settings)`
-//   width: 40px
-// `
 
 const AuthBarContainer = styled(Flex).attrs(p => ({
   flexDirection: 'row'
@@ -35,9 +30,6 @@ const AuthCard = () => {
 
   return <AuthBarContainer>
             <TitleLogo/>
-            {/* <FirstButtonCard>
-              <SettingsIcon/>
-            </FirstButtonCard> */}
             <HelpButton/>
             <AuthButton/>
          </AuthBarContainer>

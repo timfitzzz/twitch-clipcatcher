@@ -2,31 +2,36 @@ import React, { useMemo } from 'react'
 import { Heading } from 'rendition/dist/components/Heading'
 import styled from 'styled-components'
 import { TimeAgoUtil } from '../../utilities/TimeAgo'
-import { CaughtClipV2 } from '../../redux/clips'
+import { useAppSelector } from '../../hooks/reduxHooks'
+import { selectClipTitle, selectCreatedAtEpoch, selectEpoch, selectStreamerName } from '../../redux/selectors'
 
-const PlayerBackground = styled(({className, currentClip}: { className?: string, currentClip: CaughtClipV2 | null }) => {
+const PlayerBackground = styled(({className, currentClipId}: { className?: string, currentClipId?: string }) => {
 
+  let currentClipTitle = useAppSelector(state => currentClipId ? selectClipTitle(state.clips.clips[currentClipId]) : null)
+  let currentClipBroadcasterName = useAppSelector(state => currentClipId ? selectStreamerName(state.clips.clips[currentClipId]) : null)
+  let currentClipStartEpoch = useAppSelector(state => currentClipId ? selectEpoch(state.clips.clips[currentClipId]) : null)
+  let currentClipCreatedAt = useAppSelector(state => currentClipId ? selectCreatedAtEpoch(state.clips.clips[currentClipId]) : null)
   let timeAgo = useMemo(() => {
     return TimeAgoUtil.instance.timeAgo
   }, [])
 
-  const getDelayText = (epoch: number, createdAt: string): string => {
+  const getDelayText = (epoch: number, createdAt: number): string => {
     return timeAgo 
     ? epoch === 0 
-      ? 'clipped ' + timeAgo.format((new Date(createdAt).getTime()))
+      ? 'clipped ' + timeAgo.format(createdAt)
       : 'happened ' + timeAgo.format(epoch)
     : ""
   }
 
     return (
       <div className={className}>
-        {currentClip ? (
+        {currentClipId ? (
           <div>
             <span>
-              {currentClip.title}
+              {currentClipTitle}
             </span>
             { /* eslint-disable-next-line react/jsx-pascal-case */}
-            <Heading.h3>{currentClip.broadcasterName} · {getDelayText(currentClip.startEpoch, currentClip.created_at)} </Heading.h3>            
+            <Heading.h3>{currentClipBroadcasterName} · {getDelayText(currentClipStartEpoch || 0, currentClipCreatedAt || 0)} </Heading.h3>            
           </div>
         ) : (<></>)}
 

@@ -60,11 +60,11 @@ const PlayerPaneOverlayButton = styled.div`
 export const PlayerPaneOverlay = styled(({className, mouseIsOver = false, draggingDivider}: { mouseIsOver: boolean, draggingDivider: boolean, className?: string }) => {
 
 
-  let playerPopped = useAppSelector(state => selectPlayerPoppedout({settings: state.settings}))
+  let playerPopped = useAppSelector(state => selectPlayerPoppedout(state.settings))
   let helpViewActivated = useAppSelector(state => selectHelpViewActive(state.settings))
   let dispatch = useAppDispatch()
 
-  let handlePopOut = () => { console.log('popping player out'); dispatch(playerPoppedOut()) }
+  let handlePopOut = () => {  dispatch(playerPoppedOut()) }
 
 
   return (

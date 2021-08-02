@@ -4,8 +4,7 @@ import { useAppSelector } from '../../hooks/reduxHooks'
 import {UserPip} from '../badges/UserPip'
 import { SectionTitle } from '../typography/SectionTitle'
 import CustomPopover from './CustomPopover'
-import { selectVotersByClipIds } from '../../redux/clips'
-import { selectStackModerationReport } from '../../redux/selectors'
+import { selectStackModerationReport, selectStackVoteReport } from '../../redux/selectors'
 
 const VoteStatsUserPip = styled(UserPip)`
 
@@ -30,10 +29,7 @@ const VoteStatsUserPip = styled(UserPip)`
 `
 
 const VoteStatsPopooverContainer = styled.div<{items: number, sectionCount: number}>`
-  width: ${p => {
-    console.log('items: ', p.items, 'sections: ', p.sectionCount)
-    return Math.ceil(((p.items*18)+(p.sectionCount*18))/488)*130
-  }}px;
+  width: ${p => Math.ceil(((p.items*18)+(p.sectionCount*18))/488)*130}px;
   display: inline-flex;
   overflow: visible;
   flex-direction: column;
@@ -91,7 +87,7 @@ const VoteStatsSection = ({title, limit, userNames, clipSlugs, channelName}: { t
 const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target: HTMLDivElement, clipSlugs: string[], channelName: string, className?: string}) => {
 
   const { upVoters, downVoters } = useAppSelector(state => 
-    selectVotersByClipIds({ state, clipSlugs, channelName })
+    selectStackVoteReport([ state, clipSlugs, channelName ])
   )
 
   const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 
@@ -123,92 +119,6 @@ const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target:
         { sortedMetas[1].length > 0 && <VoteStatsSection title={'meta suggestion'} limit={10} userNames={sortedMetas[1]} clipSlugs={clipSlugs} channelName={channelName} /> }
         { upVoters.length > 0 && <VoteStatsSection title={'upvote'} limit={50} userNames={upVoters} clipSlugs={clipSlugs} channelName={channelName} /> }
         { downVoters.length > 0 && <VoteStatsSection title={'downvote'} limit={50} userNames={downVoters} clipSlugs={clipSlugs} channelName={channelName} /> }
-        {/* { (sortedDramas[0].length > 0 || sortedDramas[1].length) > 0 && (
-          <div id={'sectiondiv'}>
-            {sortedDramas[0].length > 0 && (
-              <>
-                <SectionTitle>{sortedDramas[0].length} drama confirmation{sortedDramas[0].length !== 1 && `s`}:</SectionTitle>
-                {sortedDramas[0].map(userName => (
-                  <div key={clipSlugs.join("")+'dramalistitem'+userName+channelName}>
-                    <VoteStatsUserPip key={clipSlugs.join("")+'dramauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
-                    <span>
-                      {userName}
-                    </span>
-                  </div>
-                ))}
-              </>
-            )}
-            {sortedDramas[1].length > 0 && (
-              <>
-                <SectionTitle>{sortedDramas[1].length} drama suggestion{sortedDramas[1].length !== 1 && `s`}:</SectionTitle>
-                {sortedDramas[1].map(userName => (
-                  <div key={clipSlugs.join("")+'dramalistitem'+userName+channelName}>
-                    <VoteStatsUserPip key={clipSlugs.join("")+'dramauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
-                    <span>
-                      {userName}
-                    </span>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-        )}
-        { (sortedMetas[0].length > 0 || sortedMetas[1].length > 0) && (
-          <div id={'sectiondiv'}>
-            {sortedMetas[0].length > 0 && (
-              <>
-                <SectionTitle>{sortedMetas[0].length} meta confirmation{sortedMetas[0].length !== 1 && `s`}:</SectionTitle>
-                {sortedMetas[0].map(userName => (
-                  <div key={clipSlugs.join("")+'metalistitem'+userName+channelName}>
-                    <VoteStatsUserPip key={clipSlugs.join("")+'metauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
-                    <span>
-                      {userName}
-                    </span>
-                  </div>
-                ))}
-              </>
-            )}
-            {sortedMetas[1].length > 0 && (
-              <>
-                <SectionTitle>{sortedMetas[1].length} meta suggestion{sortedMetas[1].length !== 1 && `s`}:</SectionTitle>
-                {sortedMetas[1].map(userName => (
-                  <div key={clipSlugs.join("")+'metalistitem'+userName+channelName}>
-                    <VoteStatsUserPip key={clipSlugs.join("")+'metauserpip'+userName+channelName} userName={userName} channelName={channelName}/>
-                    <span>
-                      {userName}
-                    </span>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-        )}
-        {upVoters.length > 0 && (
-          <div id={'sectiondiv'}>
-            <SectionTitle>{upVoters.length} upvote{upVoters.length !== 1 && `s`}:</SectionTitle>
-            { upVoters.map(userName => (
-              <div key={'votelistitem'+userName+channelName} >
-                <VoteStatsUserPip key={'userpip'+userName+channelName} userName={userName} channelName={channelName}/>
-                <span>
-                  {userName}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-        {downVoters.length > 0 && (
-          <div id={'sectiondiv'}>
-            <SectionTitle>{downVoters.length} downvote{downVoters.length !== 1 && 's'}:</SectionTitle>
-            { downVoters.map(userName => (
-              <div key={'votelistitem'+userName+channelName} >
-                <VoteStatsUserPip key={'userpip'+userName+channelName}  userName={userName} channelName={channelName}/>
-                <span>
-                  {userName}
-                </span>
-              </div>
-            ))}
-          </div>
-        )} */}
       </VoteStatsPopooverContainer>
     </CustomPopover>
   )

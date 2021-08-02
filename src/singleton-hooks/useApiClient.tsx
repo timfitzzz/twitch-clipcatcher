@@ -11,6 +11,7 @@ import { useContextSelector } from 'use-context-selector';
 import { AuthContext } from '../contexts/AuthContext';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { getUserInfo } from '../redux/actions';
+import { selectAppUser, selectUserLoading } from '../redux/selectors';
 
 const init = null
 
@@ -21,8 +22,8 @@ const useApiClientImpl = () => {
   const authProvider = useContextSelector(AuthContext, (c) => c.authProvider)
   const user = useContextSelector(AuthContext, (c) => c.user)
   const isAuthenticated = useContextSelector(AuthContext, (c) => c.isAuthenticated)
-  const userInfo = useAppSelector(state => state.settings.user)
-  const loadingUser = useAppSelector(state => state.settings.userLoading)
+  const userInfo = useAppSelector(selectAppUser)
+  const loadingUser = useAppSelector(state => selectUserLoading(state.settings))
   const dispatch = useAppDispatch() 
   // const [apiClient, setApiClient] = useState<ApiClient | null>(null);
 

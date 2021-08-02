@@ -6,10 +6,11 @@ import ClipDurationBadge from '../../badges/ClipDurationBadge';
 import VoteCountBadge from '../../badges/VoteCountBadge';
 import { useAppSelector } from '../../../hooks/reduxHooks'
 import { SortTypes } from '../../../types'
+import { selectChannelSort } from '../../../redux/selectors';
 
 export const UpperRightOverlay = ({clipSlug, channelName, className}: { clipSlug: string, channelName: string, className?: string}) => {
   
-  const currentSort = useAppSelector(state => state.channels[channelName].sort)
+  const currentSort = useAppSelector(state => selectChannelSort(state.channels[channelName]))
 
   let FrogCount = useMemo(() => <VoteCountBadge key={'frogs'+clipSlug+channelName} clipSlugs={[clipSlug]} channelName={channelName}/>, [clipSlug, channelName])
   let ViewCount = useMemo(() => <ViewCountBadge clipSlugs={[clipSlug]} key={'views'+clipSlug}/>, [clipSlug])
