@@ -68,9 +68,8 @@ export const TitleAndFeatures = ({className}: { className?: string }) => (
               <Heading.h4>Collect and play Twitch clips linked by Twitch chatters</Heading.h4>
             </>
           }
-          screenshot={
-            <img alt={'full-size view of clipstime panel'} src={'/screenshots/fullsize-screenshot-buddha-2k.png'}/> 
-          }
+          screenshotSrc={'/screenshots/fullsize-screenshot-buddha-2k.png'}
+          screenshotAlt={'full-size view of clipstime panel'}
         />
         <Feature
           body={
@@ -79,9 +78,8 @@ export const TitleAndFeatures = ({className}: { className?: string }) => (
               <span>when • how long • who • viewcount • votes from your chat</span>
             </>
           }
-          screenshot={
-            <img alt={'zoomed-in view of clipstime options panel'} src="/screenshots/options-panel.PNG"/>
-          }
+          screenshotAlt={'zoomed-in view of clipstime options panel'} 
+          screenshotSrc={"/screenshots/options-panel.PNG"}
         />
         <Feature
           body={
@@ -90,9 +88,8 @@ export const TitleAndFeatures = ({className}: { className?: string }) => (
               <span>Find the best version of a great moment</span>
             </>
           }
-          screenshot={
-            <img alt={'zoomed-in view of multiple-clip expander'} src="/screenshots/multipleclipselector-retry3.png"/>
-          }
+          screenshotAlt={'zoomed-in view of multiple-clip expander'} 
+          screenshotSrc={"/screenshots/multipleclipselector-retry3.png"}
         />
         <Feature
           body={
@@ -100,11 +97,8 @@ export const TitleAndFeatures = ({className}: { className?: string }) => (
               <Heading.h4>Avoid unwanted meta or drama</Heading.h4>
             </>
           }
-          screenshot={
-            <>
-              <img alt={'zoomed in view of a clip that has been tagged as meta'} src="/screenshots/meta-vote-count-alt.png "/>
-            </>
-          }
+          screenshotAlt={'zoomed in view of a clip that has been tagged as meta'} 
+          screenshotSrc={"/screenshots/meta-vote-count-alt.png"}
         />
         <Feature
           body={
@@ -112,11 +106,8 @@ export const TitleAndFeatures = ({className}: { className?: string }) => (
               <Heading.h4>Let mods screen for DMCA and TOS risks</Heading.h4>
             </>
           }
-          screenshot={
-            <>
-              <img alt={'view of a clip that has been vetoed due to DMCA violation'} src="/screenshots/vetoed-clip.png"/>
-            </>
-          }
+          screenshotAlt={'view of a clip that has been vetoed due to DMCA violation'}
+          screenshotSrc={"/screenshots/vetoed-clip.png"}
         />
         <Feature
           body={

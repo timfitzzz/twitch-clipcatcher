@@ -9,9 +9,7 @@ export const WhoDidThis = styled(({className}: { className?: string}) => (
         <img alt={'grossly self-promotional shot of unemployed clipstime creator tim fitzgerald'} src={"/tim-photo-cutout-bw.png"}/>
       </div>
     <Txt.span>
-
-      <Txt.span bold={true}>Brought to you by Manapool Engineering,</Txt.span> a.k.a. <a href={"https://timfitz.dev"}>Tim Fitzgerald</a>, who noticed streamers and their chats frequently running into issues sharing and watching clips together. <a href="mailto:timothyliamfitzgerald@gmail.com">Email him!</a>
-
+      <Txt.span bold={true}>Brought to you by Manapool Engineering's</Txt.span> <a href={"https://timfitz.dev"}>Tim Fitzgerald</a>, who noticed his favorite streamers and their chats running into issues sharing and watching clips together. <a rel="noreferrer" href="https://discordapp.com/users/477997376079134730" target="_blank">Message him on Discord</a> or <a target="_blank" rel="noreferrer" href="mailto:timothyliamfitzgerald@gmail.com">send him an email!</a>
     </Txt.span>
   </div>
 ))`
@@ -21,11 +19,16 @@ background-color: ${({theme}) => theme.colors.primary.semilight};
   border-radius: 4px;
   margin-left: auto;
   margin-right: auto;
-  max-width: 400px;
+  margin-top: auto;
+  margin-bottom: 4px;
+  max-width: 500px;
+  display: flex;
 
   .imagecontainer {
     float: right;
     display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;
     img {
       height: 100px;
       width: 140px;
@@ -34,6 +37,11 @@ background-color: ${({theme}) => theme.colors.primary.semilight};
       float: right:
       display: inline-block;
     }
+  }
+
+  >span {
+    margin-top: auto;
+    margin-bottom: auto;
   }
   
 `

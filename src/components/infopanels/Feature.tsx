@@ -1,17 +1,12 @@
 import React from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
+import { Modal } from 'rendition'
 
 const FeatureTextPanel = styled.div`
 margin-top: auto;
 margin-bottom: 16px;
 color: white;
-
-  // background-color: ${({theme}) => theme.colors.primary.semilight};
-  // border-right: 5px solid ${({theme}) => theme.colors.primary.light};
-  // border-left: 3px solid ${({theme}) => theme.colors.primary.light};
-  // border-bottom: 3px solid ${({theme}) => theme.colors.primary.light};
-  // border-top: 5px solid ${({theme}) => theme.colors.primary.light};
-  // border-radius: 8px;
 `
 
 const FeatureScreenshotPanel = styled.div`
@@ -28,7 +23,6 @@ const FeatureScreenshotPanel = styled.div`
     border-radius: 4px;
     border: 1px solid ${({theme}) => theme.colors.primary.main};
   }
-
 `
 
 const FeatureCardInnerColumn = styled.div`
@@ -36,31 +30,38 @@ const FeatureCardInnerColumn = styled.div`
   flex-direction: column;
 `
 
-// const FeatureCardColumn = styled.div<{edge: string}>`
-//  display: flex;
-//  height: 100%;
-//  flex-direction: column;
-//  ${({edge}) => edge === 'left' ? `
-//   margin-left: 0px;
-//   margin-right: auto;
-//  ` : `
-//   margin-left: auto;
-//   margin-right: 0px;
-//  `}
-//  padding: 8px;
-//  max-width: 45%;
-// `
+const CustomModal = styled(Modal)`
+  > div {
+    padding: 0px;
+    margin: 0px;
+    display: contents;
+
+    > div {
+      display: none;
+    }
+  }
+  padding: 16px;
+  width: unset;
+
+  img {
+    width: 100%;
+  }
+`
 
 export const Feature = styled((
   {
     className, 
     body, 
-    screenshot
+    screenshotSrc,
+    screenshotAlt
   }: { 
     className?: string, 
     body: React.ReactNode 
-    screenshot?: React.ReactNode
+    screenshotSrc?: string,
+    screenshotAlt?: string
   }) => {
+
+  let [displayModal, setDisplayModal] = useState<boolean>(false)
 
   return ( 
     
@@ -69,19 +70,27 @@ export const Feature = styled((
         <FeatureTextPanel>
           {body}
         </FeatureTextPanel>
-        { screenshot ? (
-          <FeatureScreenshotPanel>
-            {screenshot}
+        { screenshotSrc && screenshotAlt ? <>
+          { displayModal && (
+            <CustomModal onClick={() => setDisplayModal(false)} done={() => setDisplayModal(false)} primaryButtonProps={{style: {display: 'none'}}}>
+              <img style={{cursor: 'zoom-out'}} onClick={() => setDisplayModal(false)} src={screenshotSrc} alt={screenshotAlt}/>
+            </CustomModal>
+          )}
+          <FeatureScreenshotPanel onClick={() => setDisplayModal(true)}>
+            <img style={{ cursor: 'zoom-in' }} src={screenshotSrc} alt={screenshotAlt}/>
           </FeatureScreenshotPanel>
-        ) : (<></>)}
+        </> : (<></>)}
        </FeatureCardInnerColumn>
 
     </div>
   )
 
 })`
-  margin: 2%;
-  max-width: 25%;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  margin-left: 20px;
+  margin-right: 20px;
+  max-width: 30%;
   display: flex;
   flex-direction: column;
   justify-content: left;
