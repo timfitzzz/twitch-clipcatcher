@@ -225,11 +225,11 @@ const VerticalVoteCountBadgeContainer = styled.div<{specialState: SpecialState}>
 const VerticalVoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
 
   const { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
-      selectStackVoteReport([state, clipSlugs, channelName])
+      selectStackVoteReport([state, clipSlugs.map(clipSlug => state.clips.clips[clipSlug]), state.channels[channelName]])
     )
 
   const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 
-      selectStackModerationReport([state, clipSlugs, state.channels[channelName]])
+      selectStackModerationReport([state, clipSlugs.map(clipSlug => state.clips.clips[clipSlug]), state.channels[channelName]])
     )
 
   const metaState = useMemo(() => sortedMetas[0].length > 0 

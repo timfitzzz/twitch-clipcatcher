@@ -687,15 +687,15 @@ export const selectStacksTagsReport = memoize(
 }, { size: 500 })
   
 export const selectStackModerationReport = memoize(
-  ([ state, clipSlugs, channel ]:
+  ([ state, clips, channel ]:
     [
       state: RootState,
-      clipSlugs: string[],
+      clips: CaughtClipV2[],
       channel: ICatcherChannel
     ]
   ) => {
 
-    let clipStack = clipSlugs.map(clipSlug => getUntrackedObject(state.clips.clips[clipSlug]) || state.clips.clips[clipSlug])
+    let clipStack = clips.map(clip => getUntrackedObject(clip) || clip)
 
     let stackMetas = selectStackMetas([clipStack, getUntrackedObject(channel) || channel])
     let stackDramas = selectStackDramas([clipStack, getUntrackedObject(channel) || channel])
@@ -711,7 +711,7 @@ export const selectStackModerationReport = memoize(
 }, { size: 500 })
 
 
-export const selectStackVoteReport = memoize(([state, clipSlugs, channelName]: [ state: RootState, clipSlugs: string[], channelName: string]) => {
+export const selectStackVoteReport = memoize(([state, clips, channel]: [ state: RootState, clips: CaughtClipV2[], channel: ICatcherChannel]) => {
   let output = {
     upVoters: [] as string[],
     downVoters: [] as string[],
@@ -719,7 +719,7 @@ export const selectStackVoteReport = memoize(([state, clipSlugs, channelName]: [
     downvoterTypes: [] as UserTypes[]
   }
 
-  let votesSets = clipSlugs.map(clipSlug => (getUntrackedObject(state) || state).clips.clips[clipSlug].votes[channelName])
+  let votesSets = clips.map(clip => (getUntrackedObject(clip) || clip).votes[channel.name])
 
   let stackVoters = selectStackVoters(votesSets)
 
@@ -727,17 +727,17 @@ export const selectStackVoteReport = memoize(([state, clipSlugs, channelName]: [
   output.downVoters = stackVoters.down
 
   output.upVoters = output.upVoters.sort((usernameA, usernameB) => 
-    state.users.users[usernameB].userTypes[channelName][0] -
-    state.users.users[usernameA].userTypes[channelName][0]
+    state.users.users[usernameB].userTypes[channel.name][0] -
+    state.users.users[usernameA].userTypes[channel.name][0]
   )
   output.downVoters = output.downVoters.sort((usernameA, usernameB) => 
-    state.users.users[usernameB].userTypes[channelName][0] -
-    state.users.users[usernameA].userTypes[channelName][0]
+    state.users.users[usernameB].userTypes[channel.name][0] -
+    state.users.users[usernameA].userTypes[channel.name][0]
   )
 
   output.upvoterTypes = output.upVoters.reduce((voterTypes, upVoterName) => {
-    if (voterTypes.length === 0 || (state.users.users[upVoterName].userTypes[channelName].indexOf(voterTypes[0]) === -1)) {
-      voterTypes.unshift(state.users.users[upVoterName].userTypes[channelName][0])
+    if (voterTypes.length === 0 || (state.users.users[upVoterName].userTypes[channel.name].indexOf(voterTypes[0]) === -1)) {
+      voterTypes.unshift(state.users.users[upVoterName].userTypes[channel.name][0])
       return voterTypes
     } else {
       return voterTypes
@@ -745,8 +745,8 @@ export const selectStackVoteReport = memoize(([state, clipSlugs, channelName]: [
   }, [] as UserTypes[])
 
   output.downvoterTypes = output.downVoters.reduce((voterTypes, downVoterName) => {
-    if (voterTypes.length === 0 || (state.users.users[downVoterName].userTypes[channelName].indexOf(voterTypes[0]) === -1)) {
-     voterTypes.unshift(state.users.users[downVoterName].userTypes[channelName][0])
+    if (voterTypes.length === 0 || (state.users.users[downVoterName].userTypes[channel.name].indexOf(voterTypes[0]) === -1)) {
+     voterTypes.unshift(state.users.users[downVoterName].userTypes[channel.name][0])
      return voterTypes
     } else {
       return voterTypes

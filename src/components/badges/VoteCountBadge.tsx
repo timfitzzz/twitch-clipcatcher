@@ -10,7 +10,7 @@ import { selectStackVoteReport } from '../../redux/selectors';
 const VoteCountBadge = ({ clipSlugs, channelName, className}: { clipSlugs: string[], channelName: string, className?: string}) => {
 
   let { upVoters, downVoters, upvoterTypes: typesUpvotedBy } = useAppSelector(state => 
-    selectStackVoteReport([state, clipSlugs, channelName])
+    selectStackVoteReport([state, clipSlugs.map(clipSlug => state.clips.clips[clipSlug]), state.channels[channelName]])
   )
 
   let popoverTarget = useRef<HTMLDivElement>(null)

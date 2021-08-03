@@ -87,11 +87,11 @@ const VoteStatsSection = ({title, limit, userNames, clipSlugs, channelName}: { t
 const VoteStatsPopover = ({target, clipSlugs, channelName, className}: { target: HTMLDivElement, clipSlugs: string[], channelName: string, className?: string}) => {
 
   const { upVoters, downVoters } = useAppSelector(state => 
-    selectStackVoteReport([ state, clipSlugs, channelName ])
+    selectStackVoteReport([state, clipSlugs.map(clipSlug => state.clips.clips[clipSlug]), state.channels[channelName]])
   )
 
   const { sortedMetas, sortedDramas, vetos } = useAppSelector(state => 
-    selectStackModerationReport([state, clipSlugs, state.channels[channelName]])
+    selectStackModerationReport([state, clipSlugs.map(clipSlug => state.clips.clips[clipSlug]), state.channels[channelName]])
   )
 
   return (
