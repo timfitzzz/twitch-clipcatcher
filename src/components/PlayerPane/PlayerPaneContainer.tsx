@@ -8,13 +8,16 @@ import { playerPoppedIn } from '../../redux/settings'
 const PlayerPaneContainer = styled(({children, className}: {children: React.ReactElement, className?: string}) => {
 
   let poppedOut = useAppSelector(state => selectPlayerPoppedout(state.settings))
-  let [playerWindow, setPlayerWindow] = useState<Window | null>(null)
   let dispatch = useAppDispatch()
+
+  let [playerWindow, setPlayerWindow] = useState<Window | null>(null)
+
   let windowContainer = useMemo(() => {
     let element = document.createElement('div');
     element.style.display = "content";
     return element
   },[])
+  
   let renderedPlayer = useMemo(() => children, [children])
 
   useEffect(() => {
