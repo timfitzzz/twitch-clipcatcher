@@ -88,14 +88,14 @@ export const intakeClip = createAsyncThunk<
 
       try {
         clipMeta = await getClipMeta(clipSlug) as Partial<CaughtClipV2>
-      } catch (err) {
+      } catch (err: any) {
         rejectWithValue(err)
       }
 
       if (clipMeta && clipMeta.vod) {
         try {
           startEpoch = await getVodEpoch(clipMeta.vod.id, clipMeta.vod.offset)
-        } catch (err) {
+        } catch (err: any) {
           rejectWithValue(err)
         }
       }
