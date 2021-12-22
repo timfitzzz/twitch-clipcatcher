@@ -1,9 +1,15 @@
-import React from 'react'
 import styled from 'styled-components'
 import { Flex } from 'rendition'
 import TitleImage from './TitleImage'
 import { AuthButton } from './AuthButton'
 import HelpButton from './HelpButton'
+import HeaderIcon from './HeaderIcon'
+
+import { LogOut } from '@styled-icons/feather/LogOut'
+import { useAppSelector } from '../../hooks/reduxHooks'
+import { selectAppUser } from '../../redux/selectors'
+import { useMemo } from 'react'
+
 
 const AuthBarContainer = styled(Flex).attrs(p => ({
   flexDirection: 'row'
@@ -28,9 +34,14 @@ export const TitleLogo = styled(TitleImage)`
 
 const AuthCard = () => {
 
+  let user = useAppSelector(selectAppUser)
+
+  const UserIcon = useMemo(() => user && typeof user.profilePicUrl !== 'undefined' ? styled.img.attrs(p => ({ ...p, src: user?.profilePicUrl }))`` : undefined, [user])
+
   return <AuthBarContainer>
             <TitleLogo/>
             <HelpButton/>
+            <HeaderIcon<typeof UserIcon, typeof LogOut> DefaultIcon={UserIcon} HoverIcon={LogOut} onClick={() => { return }}/>
             <AuthButton/>
          </AuthBarContainer>
 
