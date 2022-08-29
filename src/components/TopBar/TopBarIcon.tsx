@@ -2,7 +2,6 @@ import { StyledIcon } from '@styled-icons/styled-icon'
 import React, { ReactElement } from 'react'
 import styled, { StyledComponent } from 'styled-components'
 
-
 // TopBar icons have two states: default, and hover.
 // if a Styled Icon is not provided for either one, nothing will be displayed for that state.
 // also accepts click handler.
@@ -18,19 +17,21 @@ export const TopBarIcon: <T extends StyledComponent<any, any> | undefined = unde
     DefaultIcon?: T
     HoverIcon?: K
     className?: string
+    defaultIconSrc?: string
     toggledOn?: boolean
     onClick: (e: React.MouseEvent) => void
-  }) => ReactElement = styled(({ DefaultIcon, HoverIcon, className, onClick, toggledOn}) => {
-
-    console.log(DefaultIcon)
+  }) => ReactElement = styled(({ DefaultIcon, HoverIcon, defaultIconSrc, className, onClick, toggledOn}) => {
 
     return (
       <div className={className} onClick={onClick}>
+        { defaultIconSrc && (
+          <img src={defaultIconSrc} alt={'user profile'} className={`headerIcon defaultIcon imageIcon`}/>
+        )}
         { typeof DefaultIcon != 'undefined' && (
           <DefaultIcon className={`headerIcon defaultIcon ${ DefaultIcon && isImage(DefaultIcon) ? 'imageIcon' : 'svgIcon' }`} />
         )}
-        { typeof DefaultIcon != 'undefined' && (
-          <HoverIcon className={`headerIcon hoverIcon svgIcon ${ DefaultIcon && toggledOn ? " toggledOn" : ""}`}/>
+        { (typeof DefaultIcon != 'undefined' || defaultIconSrc) && (
+          <HoverIcon className={`headerIcon hoverIcon svgIcon ${ (DefaultIcon || defaultIconSrc) && toggledOn ? " toggledOn" : ""}`}/>
         )}
       </div>
     )
@@ -108,7 +109,6 @@ export const TopBarIcon: <T extends StyledComponent<any, any> | undefined = unde
 `
 
 function isImage(icon: StyledComponent<"svg", any> | StyledComponent<"image", any>): icon is StyledComponent<"image", any> {
-  console.log(icon)
   return (icon as StyledComponent<"image", any>).target && (icon as StyledComponent<"image", any>).target === "img" ? true : false
 }
 

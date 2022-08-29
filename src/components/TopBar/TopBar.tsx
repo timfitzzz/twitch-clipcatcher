@@ -20,7 +20,6 @@ export const TopBar = styled(({className}: {className?: string}) => {
     }
   }
 
-
   return (
     <div className={className}>
       <TitleLogo />

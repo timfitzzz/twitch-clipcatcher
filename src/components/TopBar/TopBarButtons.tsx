@@ -13,30 +13,31 @@ export interface LogInButtonProps extends Parameters<typeof TopBarIcon> {
   onClick: () => void
 }
 
-export const IfYouAreLoggedInYouCanLogOut = styled(TopBarIcon).attrs(
-  p => ({
-  ...p,
-  HoverIcon: LogOut,
-  toggledOn: false
-}))`
+export const IfYouAreLoggedInYouCanLogOut = styled(TopBarIcon).attrs(p => { return { 
+  ...p, 
+  DefaultIcon: p.DefaultIcon,
+  HoverIcon: LogOut, 
+  toggledOn: false 
+}})<{DefaultIcon: StyledComponent<'img', any>}>``
 
-`
-
-export const IfYouAreLoggedOutYouCanLogIn = styled(TopBarIcon).attrs(p => ({
+export const IfYouAreLoggedOutYouCanLogIn = styled(TopBarIcon).attrs(p => { return {
   className: p.className,
   DefaultIcon: Twitch,
   HoverIcon: Twitch,
   toggledOn: false,
   onClick: p.onClick
-}))``
+}})``
 
-export const YouCanGetHelpIfYouNeed = styled(TopBarIcon).attrs(p => ({
+export const DefaultHelpIcon = styled(Help).attrs(p => ({...p, viewBox: '2 2 20 20'}))``
+export const HoverHelpIcon = styled(Help).attrs(p => ({...p, viewBox: '2 2 20 20'}))``
+
+export const YouCanGetHelpIfYouNeed = styled(TopBarIcon).attrs(p => { return {
   className: p.className,
-  DefaultIcon: styled(Help).attrs(p => ({...p, viewBox: '2 2 20 20'}))``,
-  HoverIcon: styled(Help).attrs(p => ({...p, viewBox: '2 2 20 20'}))``,
+  DefaultIcon: DefaultHelpIcon,
+  HoverIcon: HoverHelpIcon,
   toggledOn: p.toggledOn,
   onClick: p.onClick
-}))`
+}})`
 
   .svgIcon {
     padding: 2px;
@@ -70,7 +71,7 @@ export const YouCanGetHelpIfYouNeed = styled(TopBarIcon).attrs(p => ({
 
 `
 
-let getUserIcon = (src: string) => styled.img.attrs(p => ({ ...p, src }))``
+export const UserIcon = styled.img``
 
 export const AuthButton = styled(({className}: { className?: string }) => {
 
@@ -85,7 +86,7 @@ export const AuthButton = styled(({className}: { className?: string }) => {
   return (
     <div className={className}>
       { typeof user != 'undefined' && typeof logOut != 'undefined' ? (
-        <IfYouAreLoggedInYouCanLogOut DefaultIcon={getUserIcon(user.profilePicUrl) || undefined} onClick={logOut}/>
+        <IfYouAreLoggedInYouCanLogOut defaultIconSrc={user?.profilePicUrl} onClick={logOut}/>
       ): (
         <IfYouAreLoggedOutYouCanLogIn onClick={logIn}/>
       )}

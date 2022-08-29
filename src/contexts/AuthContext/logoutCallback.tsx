@@ -1,6 +1,6 @@
 import React from "react";
 import { useContextSelector } from 'use-context-selector';
-import { AuthContext } from './twitchCtx';
+import { AuthContext } from './authCtx';
 
 export const LogoutCallback = () => {
 

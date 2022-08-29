@@ -38,8 +38,6 @@ const AuthContextProvider = ({
   children?: ReactChild | ReactChildren | ReactChild[];
 }) => {
 
-  // const [apiClient, setApiClient] = useState<ApiClient | null>(null)
-
   const {
     authProvider,
     user,
