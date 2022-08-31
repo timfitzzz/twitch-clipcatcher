@@ -16,12 +16,11 @@ const ErrorCard = styled(({className, channelName}: { channelName: string, class
         Error
       </Heading.h4>
       <p>Joining channel {channelName} failed. Does it exist?</p>
-      <p>Next steps:
+      <p>Next steps:</p>
       <ul>
-      <li>Use Record button to retry</li>
-      <li>Click below to close the channel</li>
+        <li>Use Record button to retry</li>
+        <li>Click below to close the channel</li>
       </ul>
-      </p>
       <div onClick={() => dispatch(channelRemoved(channelName))}>Close channel</div>
     </div>
   )
