@@ -5,7 +5,7 @@ import React, {
 import { createContext } from 'use-context-selector';
 import {
   StaticAuthProvider,
-} from 'twitch/lib';
+} from '@twurple/auth';
 import { OIDCUserData } from '../../types';
 import useTwitchAuth from './useTwitchAuth';
 

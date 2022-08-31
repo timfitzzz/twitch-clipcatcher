@@ -6,8 +6,8 @@ import { Listener } from '@d-fischer/typed-event-emitter'
 import { useAppDispatch } from '../hooks/reduxHooks';
 import { intakeClip, intakeReply, messageRemoved, userTimedOut } from '../redux/actions';
 import { MessageCountStore } from '../contexts/ChannelsContext/MessageCountStore';
-import { TwitchApiCallType } from 'twitch/lib'
 import { parseUserType } from '../utilities/parsers';
+import { getClipMeta as altGetClipMeta } from '../utilities/apiMethods';
 
 // const messageParser = (msg: TwitchPrivateMessage) => {
 //   let { target, message } = msg
@@ -36,16 +36,7 @@ const SingletonLoader = () => {
 
   const dispatch = useAppDispatch()
 
-  const getClipMeta = useMemo(() => apiClient ? async (clipSlug: string) => {
-    return apiClient
-      .callApi({
-        type: TwitchApiCallType.Kraken,
-        url: `/clips/${clipSlug}`,
-      })
-      .then((clip) => {
-        return clip;
-      });
-  } : null, [apiClient])
+  const getClipMeta = useMemo(() => apiClient ? ((clipId: string) => altGetClipMeta(clipId, apiClient)) : null, [apiClient])
 
   const getVodEpoch = useMemo(() => apiClient ? async (vodId: string, offset: number): Promise<number | undefined> => {
     return apiClient.helix.videos.getVideoById(vodId).then((video) => {
@@ -64,13 +55,13 @@ const SingletonLoader = () => {
 
     if (apiClient && chatClient && loggedIn && getClipMeta && getVodEpoch) {
       newListener = chatClient.onMessage((_channel, _user, _message, msg) => {
-        let { target, message } = msg;
+        let { target, content } = msg;
         let channelName = target.value.substr(1, target.value.length);
         let replyParentId = msg.tags.get('reply-parent-msg-id')
         ClipRegExp.lastIndex = 0;
-        let clipResult = ClipRegExp.exec(message.value)
+        let clipResult = ClipRegExp.exec(content.value)
         if (replyParentId || clipResult) {
-          let messageText = message.value
+          let messageText = content.value
           // we'll process all replies, and any non reply with a clip
           let words: string[];
           if (clipResult && clipResult.groups) {
