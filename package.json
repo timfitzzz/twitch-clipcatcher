@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@reduxjs/toolkit": "^1.6.0",
+    "@reduxjs/toolkit": "^1.8.5",
     "@styled-icons/fa-solid": "^10.34.0",
     "@styled-icons/feather": "^10.34.0",
     "@styled-icons/foundation": "^10.34.0",
