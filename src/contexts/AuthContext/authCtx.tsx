@@ -5,7 +5,7 @@ import React, {
 import { createContext } from 'use-context-selector';
 import {
   StaticAuthProvider,
-} from 'twitch/lib';
+} from '@twurple/auth';
 import { OIDCUserData } from '../../types';
 import useTwitchAuth from './useTwitchAuth';
 
@@ -37,8 +37,6 @@ const AuthContextProvider = ({
 }: {
   children?: ReactChild | ReactChildren | ReactChild[];
 }) => {
-
-  // const [apiClient, setApiClient] = useState<ApiClient | null>(null)
 
   const {
     authProvider,

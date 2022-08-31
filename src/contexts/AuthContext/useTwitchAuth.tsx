@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { StaticAuthProvider } from 'twitch/lib'
+import { StaticAuthProvider } from '@twurple/auth'
 import { useAppDispatch } from '../../hooks/reduxHooks'
 import { userLoggedOut } from '../../redux/settings'
 import { OIDCUserData } from '../../types'

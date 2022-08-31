@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { singletonHook } from 'react-singleton-hook'
 import {
   ApiClient
-} from 'twitch/lib';
+} from '@twurple/api'
 import { useContextSelector } from 'use-context-selector';
 import { AuthContext } from '../contexts/AuthContext';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';

@@ -1,12 +1,12 @@
 import React from "react";
-import { TwitchPrivateMessage } from "twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage";
+import { TwitchPrivateMessage } from "@twurple/chat/lib/commands/TwitchPrivateMessage";
 
 export interface TwitchClipV5 {
   slug: string
   tracking_id: string
   url: string
   embed_url: string
-  embed_html: string
+  // embed_html: string
   broadcaster: {
     id: string
     name: string
@@ -24,7 +24,7 @@ export interface TwitchClipV5 {
   vod: {
     id: string
     url: string
-    offset: number
+    offset: number | null
     preview_image_url: string
   }
   broadcast_id: string

@@ -1,6 +1,7 @@
-import { TwitchPrivateMessage } from "twitch-chat-client/lib/StandardCommands/TwitchPrivateMessage"
+import { HelixClip } from "@twurple/api/lib"
+import { TwitchPrivateMessage } from "@twurple/chat/lib/commands/TwitchPrivateMessage"
 import { AnnotationTypes } from "../redux/annotations"
-import { UserTypes } from "../types"
+import { TwitchClipV5, UserTypes } from "../types"
 
 export const parseUserType = (userInfo: TwitchPrivateMessage ['userInfo'], sub: 0 | 1): UserTypes[] => {
   let response = [UserTypes['user']]
@@ -103,3 +104,49 @@ export const px = (n: any) => (typeof n === 'number' ? n + 'px' : n);
   
 //   return postedBy
 // }
+
+export const helixClipToKraken = async (helixClip: HelixClip): Promise<TwitchClipV5> => {
+
+  const broadcaster = await helixClip.getBroadcaster();
+  const creator = await helixClip.getCreator();
+  const vod = await helixClip.getVideo();
+
+  return {
+    slug: helixClip.id,
+    tracking_id: helixClip.id,
+    url: helixClip.url,
+    embed_url: helixClip.embedUrl,
+    broadcaster: {
+      id: broadcaster.id,
+      name: broadcaster.name,
+      display_name: broadcaster.displayName,
+      channel_url: `https://twitch.tv/${broadcaster.name}`,
+      logo: broadcaster.profilePictureUrl
+    },
+    curator: {
+      id: creator.id,
+      name: creator.name,
+      display_name: creator.displayName,
+      channel_url: `https://twitch.tv/${creator.name}`,
+      logo: creator.profilePictureUrl
+    },
+    vod: {
+      id: vod.id,
+      url: vod.url,
+      offset: helixClip.vodOffset,
+      preview_image_url: vod.thumbnailUrl
+    },
+    broadcast_id: helixClip.videoId,
+    game: helixClip.gameId,
+    language: helixClip.language,
+    title: helixClip.title,
+    views: helixClip.views,
+    duration: helixClip.duration,
+    created_at: helixClip.creationDate.toISOString(),
+    thumbnails: {
+      medium: helixClip.thumbnailUrl,
+      small: helixClip.thumbnailUrl,
+      tiny: helixClip.thumbnailUrl,
+    }
+  }
+}

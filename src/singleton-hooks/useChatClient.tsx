@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { singletonHook } from 'react-singleton-hook'
-import { ChatClient } from 'twitch-chat-client/lib';
+import { ChatClient } from "@twurple/chat";
 import { useContextSelector } from 'use-context-selector';
 import { AuthContext } from '../contexts/AuthContext';
 
@@ -23,7 +23,7 @@ const useChatClientImpl = () => {
 
   useEffect(() => {
     if (authProvider && !chatClient) {
-      const chatClient = ChatClient.anonymous({webSocket: true}) //new ChatClient(authProvider, { webSocket: true});
+      const chatClient = new ChatClient({webSocket: true}) //new ChatClient(authProvider, { webSocket: true});
       if (chatClient) {
         setChatClient(chatClient);
       }

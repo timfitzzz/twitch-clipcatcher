@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk } from "@reduxjs/toolkit"
-import { ApiClient, HelixUser } from "twitch/lib"
+import { ApiClient, HelixUser } from "@twurple/api"
 import { TwitchClipV5, UserTypes } from '../types'
 import { fetchUserInfo, retryClipEpoch, UpdatedClipEpoch, UpdatedClipViews } from "../utilities/apiMethods"
 import { getAnnotationTypes, parseTags } from "../utilities/parsers"
@@ -51,7 +51,7 @@ export const intakeClip = createAsyncThunk<
   userTypes: UserTypes[]
   messageId: string
   // msg: TwitchPrivateMessage,
-  getClipMeta: (clipSlug: string) => Promise<TwitchClipV5>
+  getClipMeta: (clipSlug: string) => Promise<TwitchClipV5 | null>
   getVodEpoch: (vodId: string, offset: number) => Promise<number | undefined>
 },
 {
@@ -88,14 +88,14 @@ export const intakeClip = createAsyncThunk<
 
       try {
         clipMeta = await getClipMeta(clipSlug) as Partial<CaughtClipV2>
-      } catch (err) {
+      } catch (err: any) {
         rejectWithValue(err)
       }
 
       if (clipMeta && clipMeta.vod) {
         try {
           startEpoch = await getVodEpoch(clipMeta.vod.id, clipMeta.vod.offset)
-        } catch (err) {
+        } catch (err: any) {
           rejectWithValue(err)
         }
       }
@@ -144,7 +144,7 @@ export const intakeReply = createAsyncThunk<
     userName: string
     userTypes: UserTypes[]
     clipSlug?: string
-    getClipMeta: (clipSlug: string) => Promise<TwitchClipV5>
+    getClipMeta: (clipSlug: string) => Promise<TwitchClipV5 | null>
     getVodEpoch: (vodId: string, offset: number) => Promise<number | undefined>
   },
   { 
@@ -295,7 +295,7 @@ export const updateClipViews = createAsyncThunk<
     let updatedViews: UpdatedClipViews[] = []
 
     while (clipSets.length > 0) {
-      let clips = await apiClient.helix.clips.getClipsByIds(clipSets.shift()!)
+      let clips = await apiClient.clips.getClipsByIds(clipSets.shift()!)
       updatedViews = updatedViews.concat(clips.map(clip => ({ slug: clip.id, views: clip.views })))
     }
 

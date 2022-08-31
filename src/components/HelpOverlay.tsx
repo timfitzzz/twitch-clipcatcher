@@ -256,7 +256,7 @@ const renderPopovers = (document: Document) => {
     })[0]
     if (target) {
       let { top, left, bottom, right } = target.getBoundingClientRect()
-      return <HelpPopover targetName={popover} top={top} left={right} right={left} bottom={bottom}/>
+      return <HelpPopover key={'helppopover-' + popover} targetName={popover} top={top} left={right} right={left} bottom={bottom}/>
     } else {
       return (<></>)
     }

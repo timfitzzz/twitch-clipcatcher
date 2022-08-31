@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { singletonHook } from 'react-singleton-hook'
 import {
-  ApiClient, TwitchApiCallType,
-} from 'twitch/lib';
+  ApiClient,
+} from '@twurple/api';
 import { useContextSelector } from 'use-context-selector';
 import { AuthContext } from '../contexts/AuthContext';
 

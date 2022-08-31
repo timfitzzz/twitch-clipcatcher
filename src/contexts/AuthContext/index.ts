@@ -1,1 +1,1 @@
-export * from './twitchCtx'
+export * from './authCtx'

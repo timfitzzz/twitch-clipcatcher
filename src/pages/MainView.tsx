@@ -2,7 +2,6 @@ import React from 'react'
 import { useContextSelector } from 'use-context-selector'
 import { Divider, Flex } from 'rendition'
 import { AuthContext } from '../contexts/AuthContext'
-import AuthCard from '../components/AuthPanel/AuthCard'
 import Catcher from '../components/Catcher/Catcher'
 import PlayerPane from '../components/PlayerPane/PlayerPane'
 import PlayerPaneContainer from '../components/PlayerPane/PlayerPaneContainer'
@@ -16,6 +15,7 @@ import { selectLeftColumnWidth, selectPlayerPoppedout } from '../redux/selectors
 import PlayerPaneUndertray from '../components/PlayerPane/PlayerPaneUndertray'
 import HelpOverlay from '../components/HelpOverlay'
 import WeAreJustSoSoSorry from './MobileApology'
+import TopBar from '../components/TopBar/TopBar'
 
 const MainViewContainer = styled(Flex)`
   height: 100%;
@@ -89,7 +89,7 @@ const MainView = () => {
         <>
         <HelpOverlay/>
         <MainViewSideColumn flexDirection={"column"} width={leftColumnWidth} minWidth={leftColumnWidth}>
-          <AuthCard />
+          <TopBar />
           <MainViewDivider />
           { isAuthenticated ? (
             <Catcher />
