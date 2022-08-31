@@ -115,7 +115,7 @@ export const fetchUserInfo = async (userName: string, apiClient: ApiClient): Pro
         if (followResponse.cursor.length > 0) {
           follows = [];
           let request = apiClient.users.getFollowsPaginated({ user: userName });
-          follows = await (await request.getAll()).map(helixFollow => helixFollow.followedUserName);
+          follows = (await request.getAll()).map(helixFollow => helixFollow.followedUserName);
         }
         return { 
           name: userInfo.name, 
