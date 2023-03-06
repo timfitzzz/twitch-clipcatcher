@@ -66,8 +66,7 @@ const PlayerPane = ({className, draggingDivider}: { draggingDivider: boolean, cl
 
   const renderPlayer = useMemo(() => (props: ClipEmbedOptions) => {
     let { autoplay, muted, title, ...rest } = props;
-    // console.log(rest)
-    return <PlayerIFrame ref={iframeRef} style={{visibility: 'hidden'}} onLoad={makeIFrameVisible} key={Math.random()} allowFullScreen title={title} {...rest}/>
+    return <PlayerIFrame ref={iframeRef} style={{visibility: 'hidden'}} allow={`${autoplay ? 'autoplay' : ''}; fullscreen`} onLoad={makeIFrameVisible} key={Math.random()} allowFullScreen title={title} {...rest}/>
   }, [])
 
   useEffect(() => {
